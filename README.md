@@ -59,34 +59,17 @@ Extend the PathMeasure because the original class not consider the contours in i
 
 # Some examples from **[ScArcGauge](raw/sc-arcgauge/ScArcGauge.md)**
 
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-01.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-02.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-03.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-04.jpg" height="120px" />
-<br />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-01.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-02.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-03.jpg" height="120px" />
-<br />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-04.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-05.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-01.jpg" height="120px" />
-<br />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-02single.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-03.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-04.jpg" height="120px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-05.jpg" height="120px" />
-<br />
-<br />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-01.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-02.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-03.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-04.jpg" height="120px" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-01.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-02.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-03.jpg" height="120px" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-04.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-05.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-01.jpg" height="120px" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-02single.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-03.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-04.jpg" height="120px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-05.jpg" height="120px" />
 
 
 # Some examples from **[ScLinearGauge](raw/sc-lineargauge/ScLinearGauge.md)**
 
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-01.jpg" width="300px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-02.jpg" width="300px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-01.jpg" height="200px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-02.jpg" height="200px" />
-<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-03.jpg" height="200px" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-01.jpg" width="300px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-02.jpg" width="300px" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-01.jpg" height="200px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-02.jpg" height="200px" /> <img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-03.jpg" height="200px" />
+
 <br />
 <br />
 
