@@ -874,8 +874,10 @@ public abstract class ScGauge extends ScDrawer implements
         if (this.mPointerSelectMode == PointerSelectMode.OVER)
             this.mSelectedPointer = this.findOverPointer(distance);
 
-        if (this.mSelectedPointer != null)
+        if (this.mSelectedPointer != null) {
             this.setValueByPointer(percentage, this.mSelectedPointer);
+            this.invalidate();
+        }
 
         // Super
         super.onPathTouch(distance);
