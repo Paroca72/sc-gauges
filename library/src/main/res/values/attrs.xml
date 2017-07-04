@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Components -->
+    <declare-styleable name="ScGauges">
+        <attr name="scc_stroke_size" format="dimension"/>
+        <attr name="scc_stroke_color" format="color"/>
+        <attr name="scc_stroke_colors" format="string"/>
+        <attr name="scc_stroke_colors_mode"/>
+        <attr name="scc_fill_area"/>
+        <attr name="scc_fill_mode"/>
+        <attr name="scc_angle_start" format="float"/>
+        <attr name="scc_angle_sweep" format="float"/>
+        <attr name="scc_progress_size" format="dimension"/>
+        <attr name="scc_progress_color" format="color"/>
+        <attr name="scc_progress_colors" format="string"/>
+        <attr name="scc_progress_colors_mode"/>
+        <attr name="scc_value" format="float"/>
+        <attr name="scc_pointer_radius" format="dimension"/>
+        <attr name="scc_pointer_color" format="color"/>
+        <attr name="scc_pointer_colors" format="string"/>
+        <attr name="scc_pointer_colors_mode"/>
+        <attr name="scc_pointer_select_mode"/>
+        <attr name="scc_halo_size" format="dimension"/>
+        <attr name="scc_notches_size" format="dimension"/>
+        <attr name="scc_notches_color" format="color"/>
+        <attr name="scc_notches_colors" format="string"/>
+        <attr name="scc_notches_colors_mode"/>
+        <attr name="scc_notches" format="integer"/>
+        <attr name="scc_notches_length" format="dimension"/>
+        <attr name="scc_notches_position"/>
+        <attr name="scc_snap_to_notches" format="boolean"/>
+        <attr name="scc_text_tokens" format="string"/>
+        <attr name="scc_text_size" format="dimension"/>
+        <attr name="scc_text_color" format="color"/>
+        <attr name="scc_text_colors" format="string"/>
+        <attr name="scc_text_colors_mode"/>
+        <attr name="scc_text_position"/>
+        <attr name="scc_text_align"/>
+        <attr name="scc_text_unbend" format="boolean"/>
+        <attr name="scc_max_width" format="dimension"/>
+        <attr name="scc_max_height" format="dimension"/>
+        <attr name="scc_path_touchable" format="boolean"/>
+        <attr name="scc_layout" format="reference"/>
+        <attr name="scc_start_open" format="boolean"/>
+        <attr name="scc_toggle_ontouch" format="boolean"/>
+        <attr name="scc_animate_alpha" format="boolean"/>
+        <attr name="scc_animate_translation" format="boolean"/>
+        <attr name="scc_duration" format="integer"/>
+        <attr name="scc_handle_size" format="dimension"/>
+        <attr name="scc_offset" format="dimension"/>
+        <attr name="scc_hide_onclose" format="boolean"/>
+        <attr name="scc_left" format="float" />
+        <attr name="scc_top" format="float" />
+        <attr name="scc_bottom" format="float" />
+        <attr name="scc_right" format="float" />
+        <attr name="scc_rounded_line" format="boolean" />
+        <attr name="scc_orientation" />
+    </declare-styleable>
+
+    <attr name="scc_fill_area" format="enum">
+        <enum name="none" value="0"/>
+        <enum name="both" value="1"/>
+        <enum name="horizontal" value="2"/>
+        <enum name="vertical" value="3"/>
+    </attr>
+
+    <attr name="scc_fill_mode" format="enum">
+        <enum name="stretch" value="0"/>
+        <enum name="draw" value="1"/>
+    </attr>
+
+    <attr name="scc_stroke_colors_mode" format="enum">
+        <enum name="solid" value="0"/>
+        <enum name="gradient" value="1"/>
+    </attr>
+
+    <attr name="scc_progress_colors_mode" format="enum">
+        <enum name="solid" value="0"/>
+        <enum name="gradient" value="1"/>
+    </attr>
+
+    <attr name="scc_notches_colors_mode" format="enum">
+        <enum name="solid" value="0"/>
+        <enum name="gradient" value="1"/>
+    </attr>
+
+    <attr name="scc_pointer_colors_mode" format="enum">
+        <enum name="solid" value="0"/>
+        <enum name="gradient" value="1"/>
+    </attr>
+
+    <attr name="scc_pointer_select_mode" format="enum">
+        <enum name="nearest" value="0"/>
+        <enum name="over" value="1"/>
+    </attr>
+
+    <attr name="scc_text_colors_mode" format="enum">
+        <enum name="solid" value="0"/>
+        <enum name="gradient" value="1"/>
+    </attr>
+
+    <attr name="scc_notches_position" format="enum">
+        <enum name="inside" value="0"/>
+        <enum name="middle" value="1"/>
+        <enum name="outside" value="2"/>
+    </attr>
+
+    <attr name="scc_text_position" format="enum">
+        <enum name="inside" value="0"/>
+        <enum name="middle" value="1"/>
+        <enum name="outside" value="2"/>
+    </attr>
+
+    <attr name="scc_text_align" format="enum">
+        <enum name="left" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="right" value="2"/>
+    </attr>
+
+    <attr name="scc_orientation" format="enum">
+        <enum name="custom" value="0" />
+        <enum name="horizontal" value="1" />
+        <enum name="vertical" value="2" />
+    </attr>
+
+</resources>
