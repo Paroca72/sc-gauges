@@ -77,7 +77,7 @@ NotchInfo properties list: `size`, `length`, `color`, `index`, `offset`, `distan
 
 - **Create a bezier line path and the notches on it.**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-notches/1.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-notches/1.jpg" align="right" />
 
 ```java
     // Dimensions
@@ -118,7 +118,7 @@ NotchInfo properties list: `size`, `length`, `color`, `index`, `offset`, `distan
 
 - **Circle contour type**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-notches/2.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-notches/2.jpg" align="right" />
 
 ```java
     ...
@@ -136,7 +136,7 @@ NotchInfo properties list: `size`, `length`, `color`, `index`, `offset`, `distan
 
 - **Circle filled type**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-notches/3.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-notches/3.jpg" align="right" />
 
 ```java
     ...
@@ -153,7 +153,7 @@ NotchInfo properties list: `size`, `length`, `color`, `index`, `offset`, `distan
 
 - **Play with colors and notches info structure**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-notches/4.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-notches/4.jpg" align="right" />
 
 ```java
     ...
@@ -187,7 +187,7 @@ NotchInfo properties list: `size`, `length`, `color`, `index`, `offset`, `distan
 
 - **Complex path and play with the points distance from path start**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-notches/5.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-notches/5.jpg" align="right" />
 
 ```java
     // Dimensions
@@ -243,7 +243,7 @@ NotchInfo properties list: `size`, `length`, `color`, `index`, `offset`, `distan
 
 - **Multiple contours path managing**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-notches/6.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-notches/6.jpg" align="right" />
 
 ```java
     ...

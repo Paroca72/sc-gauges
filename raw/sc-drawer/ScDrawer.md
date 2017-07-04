@@ -17,7 +17,7 @@ For better understand this important mode to use the settings will propose **som
 <br />
 
 ## ScDrawer class details
-This class extend the [ScWidget](..\sc-widget\ScWidget.md) class.<br />
+This class extend the [ScBase](..\sc-base\ScBase.md) class.<br />
 This is an abstract class and cannot be instantiate directly but only inherited from another class.
 Note that this class no have path properties exposed to modify it directly but you need to override the `createPath()` method.
 If you decide to expose some property for manage the path you can use the **protected** property named `mPath`.
@@ -124,11 +124,11 @@ This called only if before had a onTouch event.
 
 ###### Understanding the canvas and area filling
 
-![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-drawer/1.jpg)
-![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-drawer/2.jpg)
+![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-drawer/1.jpg)
+![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-drawer/2.jpg)
 
-![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-drawer/3.jpg)
-![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-drawer/4.jpg)
+![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-drawer/3.jpg)
+![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-drawer/4.jpg)
 <br />
 <br />
 

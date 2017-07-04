@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 /**
- * The base widget class.
+ * The base class.
  * This is class no have a direct utility. This made only for define some common function used
  * in the inherited classes.
  *

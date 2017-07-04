@@ -81,7 +81,7 @@ Properties list: `point`, `index`, `text`, `distance`, `angle`, `unbend`, `color
 
 - **Normal flow**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-writer/1.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-writer/1.jpg" align="right" />
 
 ```java
     // Dimensions
@@ -126,7 +126,7 @@ Properties list: `point`, `index`, `text`, `distance`, `angle`, `unbend`, `color
 
 - **Before drawing the token**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-writer/2.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-writer/2.jpg" align="right" />
 
 ```java
     ...

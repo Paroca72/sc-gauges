@@ -32,7 +32,7 @@ Values over the limits will be normalized to the limit.
 ###### XML using
 
 ```xml
-    <com.sccomponents.widgets.ScArcGauge
+    <com.sccomponents.gauges.ScArcGauge
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -53,22 +53,22 @@ Values over the limits will be normalized to the limit.
 ---
 ###### Let's play
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/1.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/1.jpg" align="right" />
 
 - **Basic**
 ```xml
-    <com.sccomponents.widgets.ScArcGauge
+    <com.sccomponents.gauges.ScArcGauge
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:padding="10dp"
         android:background="#f5f5f5"/>
 ```
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/2.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/2.jpg" align="right" />
 
 - **All feature in basic mode**
 ```xml
-    <com.sccomponents.widgets.ScArcGauge
+    <com.sccomponents.gauges.ScArcGauge
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:padding="30dp"
@@ -92,21 +92,21 @@ Values over the limits will be normalized to the limit.
 
 Press on the picture linked below to see the demonstration.
 
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-01.jpg)](flat.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-02.jpg)](flat.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-03.jpg)](flat.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-04.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-01.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-02.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-03.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-04.jpg)](flat.md)
 
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/i-01.jpg)](indicator.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/i-02.jpg)](indicator.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/i-03.jpg)](indicator.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/i-04.jpg)](indicator.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-01.jpg)](indicator.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-02.jpg)](indicator.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-03.jpg)](indicator.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/i-04.jpg)](indicator.md)
 
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-01.jpg)](notches.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-02single.jpg)](notches.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-03.jpg)](notches.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-04.jpg)](notches.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-05.jpg)](notches.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-01.jpg)](notches.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-02single.jpg)](notches.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-03.jpg)](notches.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-04.jpg)](notches.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-05.jpg)](notches.md)
 <br />
 <br />
 

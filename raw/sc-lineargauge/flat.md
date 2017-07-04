@@ -14,7 +14,7 @@ So this example as been only a demonstration of the most used configurations.
 ---
 ## Example 1
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/f-01.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-01.jpg">
 
 ```xml
     <LinearLayout
@@ -31,7 +31,7 @@ So this example as been only a demonstration of the most used configurations.
             android:textColor="#5B5B5A"
             android:textSize="24dp" />
 
-        <com.sccomponents.widgets.ScLinearGauge 
+        <com.sccomponents.gauges.ScLinearGauge
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/line"
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@ So this example as been only a demonstration of the most used configurations.
 ---
 ## Example 2
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/f-02.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-02.jpg">
 
 ```xml
     <LinearLayout
@@ -67,7 +67,7 @@ So this example as been only a demonstration of the most used configurations.
             android:textColor="#5B5B5A"
             android:textSize="24dp" />
 
-        <com.sccomponents.widgets.ScLinearGauge
+        <com.sccomponents.gauges.ScLinearGauge
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/line"
             android:layout_width="match_parent"
@@ -108,7 +108,7 @@ So this example as been only a demonstration of the most used configurations.
 ---
 ## Example 3
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/n-02.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-02.jpg">
 
 ```xml
     <LinearLayout
@@ -118,7 +118,7 @@ So this example as been only a demonstration of the most used configurations.
         android:orientation="vertical"
         android:padding="10dp">
 
-        <com.sccomponents.widgets.ScLinearGauge xmlns:sc="http://schemas.android.com/apk/res-auto"
+        <com.sccomponents.gauges.ScLinearGauge xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/line"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -185,7 +185,7 @@ So this example as been only a demonstration of the most used configurations.
 ---
 ## Example 4
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/n-01.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-01.jpg">
 
 ```xml
     <LinearLayout
@@ -195,7 +195,7 @@ So this example as been only a demonstration of the most used configurations.
         android:orientation="vertical"
         android:padding="10dp">
 
-        <com.sccomponents.widgets.ScLinearGauge xmlns:sc="http://schemas.android.com/apk/res-auto"
+        <com.sccomponents.gauges.ScLinearGauge xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/line"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -264,7 +264,7 @@ So this example as been only a demonstration of the most used configurations.
 ---
 ## Example 5
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/n-03.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-03.jpg">
 
 ```xml
     <FrameLayout
@@ -273,7 +273,7 @@ So this example as been only a demonstration of the most used configurations.
         android:background="#ECECEA"
         android:padding="10dp">
 
-        <com.sccomponents.widgets.ScLinearGauge xmlns:sc="http://schemas.android.com/apk/res-auto"
+        <com.sccomponents.gauges.ScLinearGauge xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/line"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

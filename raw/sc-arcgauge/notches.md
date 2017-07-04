@@ -16,7 +16,7 @@ These example as been only a demonstration of the most used configurations and a
 ## Example 1
 You can download the indicator image used below from [**HERE**](indicator-06.png).
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-01.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-01.jpg">
 
 ```xml
     <FrameLayout
@@ -24,7 +24,7 @@ You can download the indicator image used below from [**HERE**](indicator-06.png
         android:layout_height="wrap_content"
         android:background="#f5f5f5">
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -124,7 +124,7 @@ You can download the indicator image used below from [**HERE**](indicator-06.png
 ## Example 2
 You can download the indicator image used below from [**HERE**](indicator-07.png).
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-02.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-02.jpg">
 
 ```xml
     <FrameLayout
@@ -132,7 +132,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
         android:layout_height="wrap_content"
         android:background="#f5f5f5">
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -272,7 +272,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
 ---
 ## Example 3
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-03.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-03.jpg">
 
 ```xml
     <FrameLayout
@@ -280,7 +280,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
         android:layout_height="wrap_content"
         android:background="#f5f5f5">
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -388,7 +388,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
 ---
 ## Example 4
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-04.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-04.jpg">
 
 ```xml
     <FrameLayout
@@ -396,7 +396,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
         android:layout_height="wrap_content"
         android:background="#f5f5f5">
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -517,7 +517,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
 ---
 ## Example 5
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/n-05.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/n-05.jpg">
 
 ```xml
     <FrameLayout
@@ -525,7 +525,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
         android:layout_height="wrap_content"
         android:background="#000000">
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="240dp"

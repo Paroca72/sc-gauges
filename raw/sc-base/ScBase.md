@@ -1,10 +1,10 @@
-# ScWidget
-The base class for all widget component of this series.<br />
+# ScBase
+The base class for all components of this series.<br />
 Contains just utility methods for facilitate the building of a component.
 <br />
 <br />
 
-## ScWidget class details
+## ScBase class details
 This is an abstract class and extend the <code>View</code> class.<br />
 This class cannot instanced directly but must be inherited.
 <br />

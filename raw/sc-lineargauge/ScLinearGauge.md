@@ -32,7 +32,7 @@ The bottom bounds in percentage.
 ---
 ###### XML using
 ```xml
-    <com.sccomponents.widgets.ScLinearGauge
+    <com.sccomponents.gauges.ScLinearGauge
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -56,10 +56,10 @@ The bottom bounds in percentage.
 ###### Let's play
 
 - **Basic**
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/1.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/1.jpg" align="right" />
 
 ```xml
-    <com.sccomponents.widgets.ScLinearGauge
+    <com.sccomponents.gauges.ScLinearGauge
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:padding="10dp"
@@ -67,10 +67,10 @@ The bottom bounds in percentage.
 ```
 
 - **All feature in basic mode**
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/2.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/2.jpg" align="right" />
 
 ```xml
-    <com.sccomponents.widgets.ScLinearGauge
+    <com.sccomponents.gauges.ScLinearGauge
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:padding="30dp"
@@ -91,11 +91,11 @@ The bottom bounds in percentage.
 
 Press on the picture linked below to see the demonstration.
 
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/f-01.jpg)](flat.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/f-02.jpg)](flat.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/n-01.jpg)](flat.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/n-02.jpg)](flat.md)
-[![image](https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-lineargauge/n-03.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-01.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/f-02.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-01.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-02.jpg)](flat.md)
+[![image](https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-lineargauge/n-03.jpg)](flat.md)
 
 <br />
 <br />

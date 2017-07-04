@@ -15,7 +15,7 @@ So this example as been only a demonstration of the most used configurations.
 ## Example 1
 
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-01.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-01.jpg">
 
 ```xml
     <FrameLayout
@@ -23,7 +23,7 @@ So this example as been only a demonstration of the most used configurations.
         android:layout_height="wrap_content"
         android:background="#f5f5f5" >
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/gauge"
             android:layout_width="match_parent"
@@ -87,7 +87,7 @@ So this example as been only a demonstration of the most used configurations.
 ---
 ## Example 2
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-02.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-02.jpg">
 
 ```xml
     <FrameLayout
@@ -95,7 +95,7 @@ So this example as been only a demonstration of the most used configurations.
         android:layout_height="wrap_content"
         android:background="#f5f5f5" >
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/gauge"
             android:layout_width="match_parent"
@@ -141,7 +141,7 @@ So this example as been only a demonstration of the most used configurations.
 ---
 ## Example 3
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-03.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-03.jpg">
 
 ```xml
     <FrameLayout
@@ -149,7 +149,7 @@ So this example as been only a demonstration of the most used configurations.
         android:layout_height="wrap_content"
         android:background="#f5f5f5">
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -185,7 +185,7 @@ So this example as been only a demonstration of the most used configurations.
 ## Example 4
 Note that the `scc_path_touchable` is enable so you can drag the pointers.
 
-<img align="right" src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-arcgauge/f-04.jpg">
+<img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-04.jpg">
 
 ```
     <FrameLayout
@@ -193,7 +193,7 @@ Note that the `scc_path_touchable` is enable so you can drag the pointers.
         android:layout_height="wrap_content"
         android:background="#f5f5f5">
 
-        <com.sccomponents.widgets.ScArcGauge
+        <com.sccomponents.gauges.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"

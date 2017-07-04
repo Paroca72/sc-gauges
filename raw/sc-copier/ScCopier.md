@@ -64,7 +64,7 @@ Properties list: `scale`, `offset`, `rotate`.
 
 - **Create a bezier line and colorize it**
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-copier/1.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-copier/1.jpg" align="right" />
 
 ```java
     // Dimensions
@@ -106,7 +106,7 @@ Properties list: `scale`, `offset`, `rotate`.
 - **Using `onBeforeDrawCopy` listener method.**
 Refer to known issue listed above.
 
-<img src="https://github.com/Paroca72/sc-widgets/blob/master/raw/sc-copier/2.jpg" align="right" />
+<img src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-copier/2.jpg" align="right" />
 
 ```java
     ...
