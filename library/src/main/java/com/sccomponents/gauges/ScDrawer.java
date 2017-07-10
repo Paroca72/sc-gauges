@@ -433,10 +433,14 @@ public abstract class ScDrawer extends ScBase {
 
         // If have some dimension to wrap will use the path boundaries for have the right
         // dimension summed to the global padding.
-        if (this.getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT)
-            width = (int) this.mPathMeasure.getBounds().width() + widthGlobalPadding;
-        if (this.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT)
-            height = (int) this.mPathMeasure.getBounds().height() + heightGlobalPadding;
+        if (this.getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT) {
+            RectF rect = this.mPathMeasure.getBounds();
+            width = (int) (rect != null ? rect.width() : 0) + widthGlobalPadding;
+        }
+        if (this.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+            RectF rect = this.mPathMeasure.getBounds();
+            height = (int) (rect != null ? rect.height() : 0) + heightGlobalPadding;
+        }
 
         // Get all area info that we need to hold
         this.mDrawArea = this
