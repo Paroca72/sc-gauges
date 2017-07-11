@@ -27,9 +27,8 @@ import android.graphics.PointF;
  */
 public class ScFeature {
 
-    /****************************************************************************************
-     * Enumerators
-     */
+    // ***************************************************************************************
+    // Enumerators
 
     /**
      * The mode to building the painter shader.
@@ -41,9 +40,8 @@ public class ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Privates and protected variable
-     */
+    // ***************************************************************************************
+    // Privates and protected variable
 
     protected Path mPath;
     protected ScPathMeasure mPathMeasure;
@@ -87,9 +85,8 @@ public class ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Protected methods
-     */
+    // ***************************************************************************************
+    // Protected methods
 
     /**
      * The draw method to override in the inherited classes.
@@ -102,9 +99,8 @@ public class ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public and static methods
-     */
+    // ***************************************************************************************
+    // Public and static methods
 
     /**
      * Draw something on the canvas.
@@ -315,9 +311,8 @@ public class ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public properties
-     */
+    // ***************************************************************************************
+    // Public properties
 
     /**
      * Return the painter

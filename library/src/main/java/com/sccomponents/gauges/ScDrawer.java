@@ -26,9 +26,8 @@ import java.util.List;
  */
 public abstract class ScDrawer extends ScBase {
 
-    /****************************************************************************************
-     * Enumerators
-     */
+    // ***************************************************************************************
+    // Enumerators
 
     /**
      * The area filling types.
@@ -51,9 +50,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Private and protected attributes
-     */
+    // ***************************************************************************************
+    // Private and protected attributes
 
     protected Path mPath;
     protected ScPathMeasure mPathMeasure;
@@ -80,9 +78,8 @@ public abstract class ScDrawer extends ScBase {
     private OnPathTouchListener mOnPathTouchListener;
 
 
-    /****************************************************************************************
-     * Constructors
-     */
+    // ***************************************************************************************
+    // Constructors
 
     // Constructor
     public ScDrawer(Context context) {
@@ -103,9 +100,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Abstract methods
-     */
+    // ***************************************************************************************
+    // Abstract methods
 
     /**
      * Create the path to draw.
@@ -123,9 +119,8 @@ public abstract class ScDrawer extends ScBase {
     protected abstract Path createPath(int width, int height);
 
 
-    /****************************************************************************************
-     * Privates methods
-     */
+    // ***************************************************************************************
+    // Privates methods
 
     /**
      * Check all input values if over the limits
@@ -298,9 +293,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Draw methods
-     */
+    // ***************************************************************************************
+    // Draw methods
 
     /**
      * Draw all the features
@@ -377,9 +371,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * This method is used to calc the areas and filling it by call/set the right draw plan.
@@ -528,9 +521,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Instance state
-     */
+    // ***************************************************************************************
+    // Instance state
 
     /**
      * Save the current instance state
@@ -577,9 +569,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Public
-     */
+    // ***************************************************************************************
+    // Public
 
     /**
      * Return true is the path is touched.
@@ -592,9 +583,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Features
-     */
+    // ***************************************************************************************
+    // Features
 
     /**
      * Add one feature to this drawer.
@@ -800,9 +790,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * User input interface
-     */
+    // ***************************************************************************************
+    // User input interface
 
     /**
      * Called when the path is touched.
@@ -839,9 +828,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /****************************************************************************************
-     * Public properties
-     */
+    // ***************************************************************************************
+    // Public properties
 
     /**
      * Return the current area filling type.
@@ -1004,9 +992,8 @@ public abstract class ScDrawer extends ScBase {
     }
 
 
-    /********************************************************************************************
-     * Public listener and interface
-     */
+    // ***************************************************************************************
+    // Public listener and interface
 
     /**
      * Generic event listener

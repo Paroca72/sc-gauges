@@ -15,9 +15,8 @@ import android.graphics.PointF;
  */
 public class ScPointer extends ScFeature {
 
-    /****************************************************************************************
-     * Constants
-     */
+    // ***************************************************************************************
+    // Constants
 
     public static final float DEFAULT_HALO_WIDTH = 10.0f;
     public static final int DEFAULT_HALO_ALPHA = 128;
@@ -63,15 +62,15 @@ public class ScPointer extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Draw methods
-     * <p>
-     * ATTENTION!
-     * In these methods I used to instantiate new objects and is preferable NOT do it for improve
-     * the performance of the component drawing.
-     * In case of low performance the first solution must be to move the new object creation in
-     * the global scope for do it once.
-     */
+    // ***************************************************************************************
+    // Draw methods
+    //
+    // ATTENTION!
+    // In these methods I used to instantiate new objects and is preferable NOT do it for improve
+    // the performance of the component drawing.
+    // In case of low performance the first solution must be to move the new object creation in
+    // the global scope for do it once.
+    //
 
     /**
      * Default drawing the circles that representing the pointer.
@@ -161,9 +160,8 @@ public class ScPointer extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Draw the pointer on the canvas.
@@ -181,9 +179,8 @@ public class ScPointer extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public classes and methods
-     */
+    // ***************************************************************************************
+    // Public classes and methods
 
     /**
      * This is a structure to hold the notch information before draw it.
@@ -202,9 +199,8 @@ public class ScPointer extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public methods
-     */
+    // ***************************************************************************************
+    // Public methods
 
     /**
      * Get the distance of the pointer from the start of path.
@@ -218,9 +214,8 @@ public class ScPointer extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public properties
-     */
+    // ***************************************************************************************
+    // Public properties
 
     /**
      * Return the position of pointer in percentage respect to the path length.
@@ -333,9 +328,8 @@ public class ScPointer extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Listeners and Interfaces
-     */
+    // ***************************************************************************************
+    // Listeners and Interfaces
 
     /**
      * Define the draw listener interface

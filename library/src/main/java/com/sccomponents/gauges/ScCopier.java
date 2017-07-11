@@ -22,9 +22,8 @@ import java.util.Arrays;
  */
 public class ScCopier extends ScFeature {
 
-    /****************************************************************************************
-     * Private and protected variables
-     */
+    // ***************************************************************************************
+    // Private and protected variables
 
     private Path mSegment;
     private BitmapShader mShader;
@@ -33,9 +32,8 @@ public class ScCopier extends ScFeature {
     private OnDrawListener mOnDrawListener;
 
 
-    /****************************************************************************************
-     * Constructor
-     */
+    // ***************************************************************************************
+    // Constructor
 
     @SuppressWarnings("unused")
     public ScCopier(Path path) {
@@ -48,15 +46,15 @@ public class ScCopier extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Draw methods
-     *
-     * ATTENTION!
-     * In these methods I used to instantiate new objects and is preferable NOT do it for improve
-     * the performance of the component drawing.
-     * In case of low performance the first solution must be to move the new object creation in
-     * the global scope for do it once.
-     */
+    // ***************************************************************************************
+    // Draw methods
+    //
+    // ATTENTION!
+    // In these methods I used to instantiate new objects and is preferable NOT do it for improve
+    // the performance of the component drawing.
+    // In case of low performance the first solution must be to move the new object creation in
+    // the global scope for do it once.
+    //
 
     /**
      * Create a colored bitmap following the path.
@@ -168,9 +166,8 @@ public class ScCopier extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Draw method
@@ -244,9 +241,8 @@ public class ScCopier extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public classes and methods
-     */
+    // ***************************************************************************************
+    // Public classes and methods
 
     /**
      * This is a structure to hold the notch information before draw it.
@@ -263,9 +259,8 @@ public class ScCopier extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Listeners and Interfaces
-     */
+    // ***************************************************************************************
+    // Listeners and Interfaces
 
     /**
      * Define the draw listener interface

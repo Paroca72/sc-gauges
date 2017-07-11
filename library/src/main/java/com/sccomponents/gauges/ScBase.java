@@ -18,9 +18,8 @@ import android.view.WindowManager;
  */
 public abstract class ScBase extends View {
 
-    /****************************************************************************************
-     * Constructors
-     */
+    // ***************************************************************************************
+    // Constructors
 
     public ScBase(Context context) {
         super(context);
@@ -35,9 +34,8 @@ public abstract class ScBase extends View {
     }
 
 
-    /****************************************************************************************
-     * Privates methods
-     */
+    // ***************************************************************************************
+    // Privates methods
 
     /**
      * Get the display metric.
@@ -57,9 +55,8 @@ public abstract class ScBase extends View {
     }
 
 
-    /****************************************************************************************
-     * Public methods
-     */
+    // ***************************************************************************************
+    // Public methods
 
     /**
      * Convert Dip to Pixel using the current display metrics.
@@ -77,9 +74,8 @@ public abstract class ScBase extends View {
     }
 
 
-    /****************************************************************************************
-     * Static methods
-     */
+    // ***************************************************************************************
+    // Static methods
 
     /**
      * Limit number within a values range.

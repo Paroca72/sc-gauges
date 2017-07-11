@@ -29,9 +29,8 @@ public class ScPathMeasure extends PathMeasure {
     private int mCount;
 
 
-    /****************************************************************************************
-     * Constructor
-     */
+    // ***************************************************************************************
+    // Constructor
 
     @SuppressWarnings("unused")
     public ScPathMeasure() {
@@ -52,9 +51,8 @@ public class ScPathMeasure extends PathMeasure {
     }
 
 
-    /****************************************************************************************
-     * Private methods
-     */
+    // ***************************************************************************************
+    // Private methods
 
     /**
      * Internal method to get the path contours info.
@@ -107,9 +105,8 @@ public class ScPathMeasure extends PathMeasure {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Set the current path.
@@ -257,9 +254,8 @@ public class ScPathMeasure extends PathMeasure {
     }
 
 
-    /****************************************************************************************
-     * Public methods
-     */
+    // ***************************************************************************************
+    // Public methods
 
     /**
      * Divide the current path in an array of contours.
@@ -374,11 +370,11 @@ public class ScPathMeasure extends PathMeasure {
         // Cycle all contours
         do {
             // Find the length of the path
-            float len = super.getLength();
+            double len = Math.ceil(super.getLength());
             int distance = 0;
 
             // Cycle all the point of the path using an arbitrary increment
-            while (distance < len) {
+            while (distance <= len) {
                 // Get the points position on the path
                 super.getPosTan(distance, point, tangent);
 

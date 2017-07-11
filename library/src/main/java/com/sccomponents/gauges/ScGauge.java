@@ -41,9 +41,8 @@ public abstract class ScGauge extends ScDrawer implements
         ScNotches.OnDrawListener,
         ScWriter.OnDrawListener {
 
-    /****************************************************************************************
-     * Constants
-     */
+    // ***************************************************************************************
+    // Constants
 
     public static final float DEFAULT_STROKE_SIZE = 3.0f;
     public static final int DEFAULT_STROKE_COLOR = Color.BLACK;
@@ -62,9 +61,8 @@ public abstract class ScGauge extends ScDrawer implements
     public static final String LOW_POINTER_IDENTIFIER = "ScGauge_Pointer_Low";
 
 
-    /****************************************************************************************
-     * Enumerators
-     */
+    // ***************************************************************************************
+    // Enumerators
 
     /**
      * The mode to select a pointer.
@@ -76,9 +74,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Privates attribute
-     */
+    // ***************************************************************************************
+    // Privates attribute
 
     private float mStrokeSize;
     private int[] mStrokeColors;
@@ -115,9 +112,8 @@ public abstract class ScGauge extends ScDrawer implements
     private Boolean mRoundedLineCap;
 
 
-    /****************************************************************************************
-     * Privates variable
-     */
+    // ***************************************************************************************
+    // Privates variable
 
     private float mHighValue;
     private float mLowValue;
@@ -131,9 +127,8 @@ public abstract class ScGauge extends ScDrawer implements
     private OnDrawListener mOnDrawListener;
 
 
-    /****************************************************************************************
-     * Constructors
-     */
+    // ***************************************************************************************
+    // Constructors
 
     public ScGauge(Context context) {
         super(context);
@@ -151,9 +146,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Privates methods
-     */
+    // ***************************************************************************************
+    // Privates methods
 
     /**
      * Set a feature with the default setting values by its type.
@@ -690,9 +684,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Instance state
-     */
+    // ***************************************************************************************
+    // Instance state
 
     /**
      * Save the current instance state
@@ -775,9 +768,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Setting the features and call the ScDrawer base draw method.
@@ -874,10 +866,7 @@ public abstract class ScGauge extends ScDrawer implements
         if (this.mPointerSelectMode == PointerSelectMode.OVER)
             this.mSelectedPointer = this.findOverPointer(distance);
 
-        if (this.mSelectedPointer != null) {
-            this.setValueByPointer(percentage, this.mSelectedPointer);
-            this.invalidate();
-        }
+        this.setValueByPointer(percentage, this.mSelectedPointer);
 
         // Super
         super.onPathTouch(distance);
@@ -963,9 +952,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Public methods
-     */
+    // ***************************************************************************************
+    // Public methods
 
     /**
      * Get the high value animator.
@@ -1008,9 +996,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Common
-     */
+    // ***************************************************************************************
+    // Common
 
     /**
      * Return if the line style cap is set on rounded or not
@@ -1040,9 +1027,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Base
-     */
+    // ***************************************************************************************
+    // Base
 
     /**
      * Return the stroke size
@@ -1120,9 +1106,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Progress
-     */
+    // ***************************************************************************************
+    // Progress
 
     /**
      * Return the progress stroke size
@@ -1308,9 +1293,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Notches
-     */
+    // ***************************************************************************************
+    // Notches
 
     /**
      * Return the progress notch size
@@ -1491,9 +1475,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Texts
-     */
+    // ***************************************************************************************
+    // Texts
 
     /**
      * Return the text tokens to write on the path
@@ -1668,9 +1651,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /****************************************************************************************
-     * Pointers
-     */
+    // ***************************************************************************************
+    // Pointers
 
     /**
      * Return the pointers radius in pixel.
@@ -1861,9 +1843,8 @@ public abstract class ScGauge extends ScDrawer implements
     }
 
 
-    /********************************************************************************************
-     * Public listener and interface
-     */
+    // ***************************************************************************************
+    // Public listener and interface
 
     /**
      * Generic event listener

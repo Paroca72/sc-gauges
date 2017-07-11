@@ -15,9 +15,8 @@ import android.graphics.PointF;
  */
 public class ScNotches extends ScFeature {
 
-    /****************************************************************************************
-     * Enumerators
-     */
+    // ***************************************************************************************
+    // Enumerators
 
     /**
      * Define the types of notches can be draw
@@ -40,9 +39,8 @@ public class ScNotches extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Private and protected variables
-     */
+    // ***************************************************************************************
+    // Private and protected variables
 
     private Paint mPaintClone;
 
@@ -56,9 +54,8 @@ public class ScNotches extends ScFeature {
     private OnDrawListener mOnDrawListener;
 
 
-    /****************************************************************************************
-     * Constructor
-     */
+    // ***************************************************************************************
+    // Constructor
 
     @SuppressWarnings("unused")
     public ScNotches(Path path) {
@@ -75,15 +72,15 @@ public class ScNotches extends ScFeature {
         this.mPaintClone = new Paint(this.mPaint);
     }
 
-    /****************************************************************************************
-     * Draw methods
-     *
-     * ATTENTION!
-     * In these methods I used to instantiate new objects and is preferable NOT do it for improve
-     * the performance of the component drawing.
-     * In case of low performance the first solution must be to move the new object creation in
-     * the global scope for do it once.
-     */
+    // ***************************************************************************************
+    // Draw methods
+    //
+    // ATTENTION!
+    // In these methods I used to instantiate new objects and is preferable NOT do it for improve
+    // the performance of the component drawing.
+    // In case of low performance the first solution must be to move the new object creation in
+    // the global scope for do it once.
+    //
 
     /**
      * Draw a line.
@@ -195,6 +192,7 @@ public class ScNotches extends ScFeature {
 
         // If the path is not closed add one notch to the beginning of path.
         int count = this.mNotchesCount + (measure.isClosed() ? 0 : 1);
+        if (startLimit == 0 && endLimit == 0) count = 0;
 
         // Cycle all notches.
         for (int index = 0; index < count; index++) {
@@ -254,9 +252,8 @@ public class ScNotches extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Draw method
@@ -274,9 +271,8 @@ public class ScNotches extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public methods
-     */
+    // ***************************************************************************************
+    // Public methods
 
     /**
      * Return the point on path by the notch index.
@@ -298,9 +294,8 @@ public class ScNotches extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public classes and methods
-     */
+    // ***************************************************************************************
+    // Public classes and methods
 
     /**
      * This is a structure to hold the notch information before draw it.
@@ -355,9 +350,8 @@ public class ScNotches extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public properties
-     */
+    // ***************************************************************************************
+    // Public properties
 
     /**
      * Return the notches count.
@@ -442,9 +436,8 @@ public class ScNotches extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Listeners and Interfaces
-     */
+    // ***************************************************************************************
+    // Listeners and Interfaces
 
     /**
      * Define the draw listener interface

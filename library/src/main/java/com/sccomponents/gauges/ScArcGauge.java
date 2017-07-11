@@ -35,9 +35,8 @@ public class ScArcGauge extends ScGauge {
     protected float mAngleSweep;
 
 
-    /****************************************************************************************
-     * Constructors
-     */
+    // ***************************************************************************************
+    // Constructors
 
     public ScArcGauge(Context context) {
         super(context);
@@ -55,9 +54,8 @@ public class ScArcGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Privates methods
-     */
+    // ***************************************************************************************
+    // Privates methods
 
     /**
      * Init the component.
@@ -87,9 +85,8 @@ public class ScArcGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Create the path to draw.
@@ -126,9 +123,8 @@ public class ScArcGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Instance state
-     */
+    // ***************************************************************************************
+    // Instance state
 
     /**
      * Save the current instance state
@@ -171,9 +167,8 @@ public class ScArcGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Public methods
-     */
+    // ***************************************************************************************
+    // Public methods
 
     /**
      * Convert a percentage value in a angle (in degrees) value respect the start and sweep angles.
@@ -187,9 +182,8 @@ public class ScArcGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Public properties
-     */
+    // ***************************************************************************************
+    // Public properties
 
     /**
      * Return the start angle

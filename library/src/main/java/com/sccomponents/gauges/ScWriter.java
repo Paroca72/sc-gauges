@@ -17,9 +17,8 @@ import android.graphics.Rect;
  */
 public class ScWriter extends ScFeature {
 
-    /****************************************************************************************
-     * Enumerators
-     */
+    // ***************************************************************************************
+    // Enumerators
 
     /**
      * Define the text position respect path
@@ -42,9 +41,8 @@ public class ScWriter extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Private variables
-     */
+    // ***************************************************************************************
+    // Private variables
 
     private Paint mPaintClone;
 
@@ -84,9 +82,8 @@ public class ScWriter extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Private methods
-     */
+    // ***************************************************************************************
+    // Private methods
 
     /**
      * Calculate the extra vertical offset by the text position respect to the path.
@@ -135,15 +132,15 @@ public class ScWriter extends ScFeature {
         }
     }
 
-    /****************************************************************************************
-     * Draw methods
-     *
-     * ATTENTION!
-     * In these methods I used to instantiate new objects and is preferable NOT do it for improve
-     * the performance of the component drawing.
-     * In case of low performance the first solution must be to move the new object creation in
-     * the global scope for do it once.
-     */
+    // ***************************************************************************************
+    // Draw methods
+    //
+    // ATTENTION!
+    // In these methods I used to instantiate new objects and is preferable NOT do it for improve
+    // the performance of the component drawing.
+    // In case of low performance the first solution must be to move the new object creation in
+    // the global scope for do it once.
+    //
 
     /**
      * Draw a single unbend string token.
@@ -321,9 +318,8 @@ public class ScWriter extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Draw method
@@ -337,9 +333,8 @@ public class ScWriter extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public classes and methods
-     */
+    // ***************************************************************************************
+    // Public classes and methods
 
     /**
      * This is a structure to hold the token information before draw it
@@ -376,9 +371,8 @@ public class ScWriter extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Public properties
-     */
+    // ***************************************************************************************
+    // Public properties
 
     /**
      * Return the string tokens.
@@ -484,9 +478,8 @@ public class ScWriter extends ScFeature {
     }
 
 
-    /****************************************************************************************
-     * Listeners and Interfaces
-     */
+    // ***************************************************************************************
+    // Listeners and Interfaces
 
     /**
      * Define the draw listener interface

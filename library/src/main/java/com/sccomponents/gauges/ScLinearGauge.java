@@ -15,11 +15,11 @@ import android.util.AttributeSet;
  * @version 1.1.0
  * @since 2016-08-16
  */
+@SuppressWarnings("unused")
 public class ScLinearGauge extends ScGauge {
 
-    /****************************************************************************************
-     * Enumerators
-     */
+    // ***************************************************************************************
+    // Enumerators
 
     /**
      * The mode to building the painter shader.
@@ -32,16 +32,14 @@ public class ScLinearGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Private attributes
-     */
+    // ***************************************************************************************
+    // Private attributes
 
     protected RectF mBounds;
 
 
-    /****************************************************************************************
-     * Constructors
-     */
+    // ***************************************************************************************
+    // Constructors
 
     public ScLinearGauge(Context context) {
         super(context);
@@ -59,9 +57,8 @@ public class ScLinearGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Privates methods
-     */
+    // ***************************************************************************************
+    // Privates methods
 
     /**
      * Reflect the current orientation on the path bounds limit.
@@ -121,9 +118,8 @@ public class ScLinearGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Overrides
-     */
+    // ***************************************************************************************
+    // Overrides
 
     /**
      * Create the path to draw.
@@ -149,9 +145,8 @@ public class ScLinearGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Instance state
-     */
+    // ***************************************************************************************
+    // Instance state
 
     /**
      * Save the current instance state
@@ -198,9 +193,8 @@ public class ScLinearGauge extends ScGauge {
     }
 
 
-    /****************************************************************************************
-     * Public properties
-     */
+    // ***************************************************************************************
+    // Public properties
 
     /**
      * Return the left bounds in percentage
