@@ -33,13 +33,13 @@ You can download the indicator image used below from [**HERE**](indicator-06.png
             android:padding="50dp"
             sc:scc_angle_start="180"
             sc:scc_angle_sweep="180"
-            sc:scc_stroke_size="40dp"
-            sc:scc_stroke_colors="#03A409|#FFF506|#EB0100"
-            sc:scc_notches="10"
-            sc:scc_notches_size="1dp"
-            sc:scc_notches_length="20dp"
-            sc:scc_notches_color="#4e4e4e"
-            sc:scc_text_align="center"/>
+            sc:strokeSize="40dp"
+            sc:strokeColors="#03A409|#FFF506|#EB0100"
+            sc:notches="10"
+            sc:notchesSize="1dp"
+            sc:notchesLength="20dp"
+            sc:notchesColor="#4e4e4e"
+            sc:textAlign="center"/>
 
         <ImageView
             android:id="@+id/indicator"
@@ -141,14 +141,14 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
             android:padding="30dp"
             sc:scc_angle_start="135"
             sc:scc_angle_sweep="270"
-            sc:scc_stroke_size="10dp"
-            sc:scc_notches="80"
-            sc:scc_notches_size="1dp"
-            sc:scc_notches_length="10dp"
-            sc:scc_notches_color="#000000"
-            sc:scc_notches_position="inside"
-            sc:scc_progress_size="3dp"
-            sc:scc_text_position="inside"
+            sc:strokeSize="10dp"
+            sc:notches="80"
+            sc:notchesSize="1dp"
+            sc:notchesLength="10dp"
+            sc:notchesColor="#000000"
+            sc:notchesPosition="inside"
+            sc:progressSize="3dp"
+            sc:textPosition="inside"
             sc:scc_path_touchable="true"/>
 
         <TextView
@@ -288,10 +288,10 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
             sc:scc_angle_start="-90"
-            sc:scc_stroke_size="10dp"
-            sc:scc_stroke_color="#dbdfe6"
-            sc:scc_progress_size="10dp"
-            sc:scc_progress_color="#6184be"
+            sc:strokeSize="10dp"
+            sc:strokeColor="#dbdfe6"
+            sc:progressSize="10dp"
+            sc:progressColor="#6184be"
             />
 
         <LinearLayout
@@ -405,10 +405,10 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
             android:padding="10dp"
             sc:scc_angle_start="-180"
             sc:scc_angle_sweep="90"
-            sc:scc_stroke_size="4dp"
-            sc:scc_stroke_color="#dbdfe6"
-            sc:scc_progress_size="4dp"
-            sc:scc_progress_colors="#0BA60A|#FEF301|#EA0C01"
+            sc:strokeSize="4dp"
+            sc:strokeColor="#dbdfe6"
+            sc:progressSize="4dp"
+            sc:progressColors="#0BA60A|#FEF301|#EA0C01"
             />
 
         <LinearLayout
@@ -533,19 +533,19 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
             android:padding="10dp"
             sc:scc_angle_start="-180"
             sc:scc_angle_sweep="135"
-            sc:scc_stroke_size="2dp"
-            sc:scc_stroke_colors="white|white|white|white|white|white|red|red"
-            sc:scc_stroke_colors_mode="solid"
-            sc:scc_progress_size="15dp"
-            sc:scc_notches="8"
-            sc:scc_notches_size="2dp"
-            sc:scc_notches_color="#ffffff"
-            sc:scc_notches_position="inside"
-            sc:scc_text_tokens="0|40|80|120|160|200|240|280"
-            sc:scc_text_color="#ffffff"
-            sc:scc_text_size="12dp"
-            sc:scc_text_position="inside"
-            sc:scc_text_unbend="true"
+            sc:strokeSize="2dp"
+            sc:strokeColors="white|white|white|white|white|white|red|red"
+            sc:strokeColors_mode="solid"
+            sc:progressSize="15dp"
+            sc:notches="8"
+            sc:notchesSize="2dp"
+            sc:notchesColor="#ffffff"
+            sc:notchesPosition="inside"
+            sc:textTokens="0|40|80|120|160|200|240|280"
+            sc:textColor="#ffffff"
+            sc:textSize="12dp"
+            sc:textPosition="inside"
+            sc:textUnbend="true"
           />
 
         <LinearLayout

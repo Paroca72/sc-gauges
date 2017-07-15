@@ -30,10 +30,10 @@ You can download the indicator image used below from [**HERE**](indicator-01.png
             android:id="@+id/gauge"
             sc:scc_angle_start="-180"
             sc:scc_angle_sweep="180"
-            sc:scc_progress_color="#ff35c44a"
-            sc:scc_progress_size="50dp"
-            sc:scc_stroke_color="#f5f5f5"
-            sc:scc_stroke_size="50dp"
+            sc:progressColor="#ff35c44a"
+            sc:progressSize="50dp"
+            sc:strokeColor="#f5f5f5"
+            sc:strokeSize="50dp"
             android:layout_gravity="center_horizontal"
             android:padding="25dp"
             android:layout_marginTop="20dp"/>
@@ -98,18 +98,18 @@ You can download the indicator image used below from [**HERE**](indicator-02.png
             android:padding="30dp"
             sc:scc_angle_start="-180"
             sc:scc_angle_sweep="180"
-            sc:scc_progress_color="#00B4FF"
-            sc:scc_progress_size="30dp"
-            sc:scc_stroke_color="#ffffff"
-            sc:scc_stroke_size="30dp"
-            sc:scc_notches="3"
-            sc:scc_notches_length="32dp"
-            sc:scc_notches_size="6dp"
-            sc:scc_notches_color="#354051"
-            sc:scc_text_tokens="1000|2000|3000"
-            sc:scc_text_align="left"
-            sc:scc_text_position="middle"
-            sc:scc_text_color="#354051"/>
+            sc:progressColor="#00B4FF"
+            sc:progressSize="30dp"
+            sc:strokeColor="#ffffff"
+            sc:strokeSize="30dp"
+            sc:notches="3"
+            sc:notchesLength="32dp"
+            sc:notchesSize="6dp"
+            sc:notchesColor="#354051"
+            sc:textTokens="1000|2000|3000"
+            sc:textAlign="left"
+            sc:textPosition="middle"
+            sc:textColor="#354051"/>
 
         <ImageView
             android:id="@+id/indicator"
@@ -194,9 +194,9 @@ You can download the indicator image used below from [**HERE**](indicator-02.png
             android:padding="30dp"
             sc:scc_angle_start="-180"
             sc:scc_angle_sweep="180"
-            sc:scc_stroke_colors="#EC4949|#EC4949|#F7AD36|#F7AD36|#F7AD36|#F7AD36|#8BBE28"
-            sc:scc_stroke_colors_mode="solid"
-            sc:scc_stroke_size="30dp"/>
+            sc:strokeColors="#EC4949|#EC4949|#F7AD36|#F7AD36|#F7AD36|#F7AD36|#8BBE28"
+            sc:strokeColors_mode="solid"
+            sc:strokeSize="30dp"/>
 
         <ImageView
             android:id="@+id/indicator"
@@ -260,7 +260,7 @@ You can download the indicator image used below from [**HERE**](indicator-04.png
             android:padding="30dp"
             sc:scc_angle_start="135"
             sc:scc_angle_sweep="270"
-            sc:scc_stroke_size="40dp"/>
+            sc:strokeSize="40dp"/>
 
         <ImageView
             android:id="@+id/indicator"
@@ -347,7 +347,7 @@ You can download the indicator image used below from [**HERE**](indicator-05.png
             android:padding="30dp"
             sc:scc_angle_start="180"
             sc:scc_angle_sweep="180"
-            sc:scc_stroke_size="50dp"/>
+            sc:strokeSize="50dp"/>
 
         <TextView
             android:layout_width="wrap_content"

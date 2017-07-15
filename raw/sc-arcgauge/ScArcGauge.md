@@ -75,13 +75,13 @@ Values over the limits will be normalized to the limit.
         android:background="#f5f5f5"
         sc:scc_angle_start="135"
         sc:scc_angle_sweep="270"
-        sc:scc_stroke_size="6dp"
-        sc:scc_progress_size="4dp"
-        sc:scc_value="45"
-        sc:scc_notches="8"
-        sc:scc_notches_length="10dp"
-        sc:scc_text_tokens="01|02|03|04|05|06|07|08"
-        sc:scc_pointer_radius="10dp"
+        sc:strokeSize="6dp"
+        sc:progressSize="4dp"
+        sc:value="45"
+        sc:notches="8"
+        sc:notchesLength="10dp"
+        sc:textTokens="01|02|03|04|05|06|07|08"
+        sc:pointerRadius="10dp"
         />
 ```
 <br />

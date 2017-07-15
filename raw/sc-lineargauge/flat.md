@@ -38,11 +38,11 @@ So this example as been only a demonstration of the most used configurations.
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            sc:scc_progress_colors="#3589F6"
-            sc:scc_progress_size="6dp"
-            sc:scc_stroke_color="#ABCDED"
-            sc:scc_stroke_size="6dp"
-            sc:scc_value="75" />
+            sc:progressColors="#3589F6"
+            sc:progressSize="6dp"
+            sc:strokeColor="#ABCDED"
+            sc:strokeSize="6dp"
+            sc:value="75" />
 
     </LinearLayout>
 ```
@@ -74,12 +74,12 @@ So this example as been only a demonstration of the most used configurations.
             android:layout_height="wrap_content"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
-            sc:scc_progress_colors="#3589F6"
-            sc:scc_progress_size="6dp"
-            sc:scc_stroke_color="#ABCDED"
-            sc:scc_stroke_size="6dp"
-            sc:scc_pointer_radius="10dp"
-            sc:scc_pointer_colors="#3589F6"
+            sc:progressColors="#3589F6"
+            sc:progressSize="6dp"
+            sc:strokeColor="#ABCDED"
+            sc:strokeSize="6dp"
+            sc:pointerRadius="10dp"
+            sc:pointerColors="#3589F6"
             sc:scc_path_touchable="true" />
 
     </LinearLayout>
@@ -127,10 +127,10 @@ So this example as been only a demonstration of the most used configurations.
             android:paddingRight="30dp"
             android:paddingTop="10dp"
             sc:scc_orientation="vertical"
-            sc:scc_stroke_size="10dp"
-            sc:scc_stroke_color="#dcdcdc"
-            sc:scc_progress_size="10dp"
-            sc:scc_progress_colors="#67ce5c|#E23D3D" />
+            sc:strokeSize="10dp"
+            sc:strokeColor="#dcdcdc"
+            sc:progressSize="10dp"
+            sc:progressColors="#67ce5c|#E23D3D" />
 
     </LinearLayout>
 ```
@@ -204,15 +204,15 @@ So this example as been only a demonstration of the most used configurations.
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             sc:scc_orientation="vertical"
-            sc:scc_notches="8"
-            sc:scc_notches_color="#313131"
-            sc:scc_progress_colors="#3589F6"
-            sc:scc_progress_size="6dp"
-            sc:scc_stroke_size="0dp"
-            sc:scc_text_align="left"
-            sc:scc_text_position="outside"
-            sc:scc_text_tokens="0|50|100"
-            sc:scc_text_unbend="true" />
+            sc:notches="8"
+            sc:notchesColor="#313131"
+            sc:progressColors="#3589F6"
+            sc:progressSize="6dp"
+            sc:strokeSize="0dp"
+            sc:textAlign="left"
+            sc:textPosition="outside"
+            sc:textTokens="0|50|100"
+            sc:textUnbend="true" />
 
     </LinearLayout>
 ```
@@ -281,15 +281,15 @@ So this example as been only a demonstration of the most used configurations.
             android:paddingLeft="20dp"
             android:paddingRight="50dp"
             android:paddingTop="20dp"
-            sc:scc_notches="300"
-            sc:scc_notches_colors="#67ce5c|#f2f200|#e23d3d"
-            sc:scc_notches_length="10dp"
-            sc:scc_notches_position="inside"
-            sc:scc_notches_size="2dp"
+            sc:notches="300"
+            sc:notchesColors="#67ce5c|#f2f200|#e23d3d"
+            sc:notchesLength="10dp"
+            sc:notchesPosition="inside"
+            sc:notchesSize="2dp"
             sc:scc_orientation="vertical"
-            sc:scc_text_tokens="100%"
-            sc:scc_text_unbend="true"
-            sc:scc_text_align="left"
+            sc:textTokens="100%"
+            sc:textUnbend="true"
+            sc:textAlign="left"
             sc:scc_path_touchable="true" />
 
     </FrameLayout>

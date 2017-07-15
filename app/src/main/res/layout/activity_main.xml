@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sc="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,40 +12,19 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content">
 
-        <com.sccomponents.gauges.ScArcGauge xmlns:sc="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/gauge"
+        <com.sccomponents.gauges.ScArcGauge
+            android:id="@+id/alarmVolumeGauge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            sc:scc_path_touchable="true"
-            sc:scc_pointer_color="#FDB806"
-            sc:scc_pointer_radius="16dp"
-            sc:scc_angle_start="135"
-            sc:scc_angle_sweep="270"
-            sc:scc_progress_color="#ffff00ff"
-            sc:scc_progress_size="10dp"
-            sc:scc_stroke_color="#009688"
-            sc:scc_stroke_size="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Percentage"
-            android:textColor="#009688"
-            android:textSize="24dp" />
-
-        <TextView
-            android:id="@+id/counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:text="0%"
-            android:textColor="#009688"
-            android:textSize="38dp" />
+            android:layout_gravity="center_horizontal"
+            android:padding="10dp"
+            sc:angleStart="-180"
+            sc:angleSweep="90"
+            sc:pathTouchable="true"
+            sc:progressColors="#0BA60A|#FEF301|#EA0C01"
+            sc:progressSize="2dp"
+            sc:strokeColor="#dddddd"
+            sc:strokeSize="2dp" />
 
     </FrameLayout>
 

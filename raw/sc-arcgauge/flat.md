@@ -30,10 +30,10 @@ So this example as been only a demonstration of the most used configurations.
             android:layout_height="wrap_content"
             sc:scc_angle_start="135"
             sc:scc_angle_sweep="270"
-            sc:scc_progress_color="#ffff00ff"
-            sc:scc_progress_size="10dp"
-            sc:scc_stroke_color="#009688"
-            sc:scc_stroke_size="10dp"
+            sc:progressColor="#ffff00ff"
+            sc:progressSize="10dp"
+            sc:strokeColor="#009688"
+            sc:strokeSize="10dp"
             android:paddingBottom="20dp"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
@@ -102,10 +102,10 @@ So this example as been only a demonstration of the most used configurations.
             android:layout_height="wrap_content"
             android:padding="10dp"
             sc:scc_angle_start="-90"
-            sc:scc_progress_color="#288636"
-            sc:scc_progress_size="10dp"
-            sc:scc_stroke_color="#585258"
-            sc:scc_stroke_size="2dp" />
+            sc:progressColor="#288636"
+            sc:progressSize="10dp"
+            sc:strokeColor="#585258"
+            sc:strokeSize="2dp" />
 
         <TextView
             android:id="@+id/counter"
@@ -157,13 +157,13 @@ So this example as been only a demonstration of the most used configurations.
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
             sc:scc_angle_start="-90"
-            sc:scc_stroke_size="10dp"
-            sc:scc_stroke_color="#e9e6e6"
-            sc:scc_pointer_radius="5dp"
-            sc:scc_pointer_color="#a4abaa"
-            sc:scc_progress_size="20dp"
-            sc:scc_progress_color="#a4abaa"
-            sc:scc_value="30"/>
+            sc:strokeSize="10dp"
+            sc:strokeColor="#e9e6e6"
+            sc:pointerRadius="5dp"
+            sc:pointerColor="#a4abaa"
+            sc:progressSize="20dp"
+            sc:progressColor="#a4abaa"
+            sc:value="30"/>
 
     </FrameLayout>
 ```
@@ -201,17 +201,17 @@ Note that the `scc_path_touchable` is enable so you can drag the pointers.
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
             sc:scc_angle_start="-90"
-            sc:scc_stroke_size="4dp"
-            sc:scc_stroke_color="#e9e6e6"
-            sc:scc_pointer_radius="10dp"
-            sc:scc_pointer_color="#a4abaa"
-            sc:scc_progress_size="4dp"
-            sc:scc_progress_color="#a4abaa"
+            sc:strokeSize="4dp"
+            sc:strokeColor="#e9e6e6"
+            sc:pointerRadius="10dp"
+            sc:pointerColor="#a4abaa"
+            sc:progressSize="4dp"
+            sc:progressColor="#a4abaa"
             sc:scc_path_touchable="true"
-            sc:scc_notches="1"
-            sc:scc_notches_size="4dp"
-            sc:scc_notches_length="10dp"
-            sc:scc_notches_color="#e9e6e6"/>
+            sc:notches="1"
+            sc:notchesSize="4dp"
+            sc:notchesLength="10dp"
+            sc:notchesColor="#e9e6e6"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -94,10 +94,10 @@ public class ScLinearGauge extends ScGauge {
                 .obtainStyledAttributes(attrs, R.styleable.ScGauges, defStyle, 0);
 
         // Read all attributes from xml and assign the value to linked variables
-        float left = attrArray.getFloat(R.styleable.ScGauges_scc_left, 0.0f);
-        float top = attrArray.getFloat(R.styleable.ScGauges_scc_top, 0.0f);
-        float right = attrArray.getFloat(R.styleable.ScGauges_scc_right, 100.0f);
-        float bottom = attrArray.getFloat(R.styleable.ScGauges_scc_bottom, 0.0f);
+        float left = attrArray.getFloat(R.styleable.ScGauges_left, 0.0f);
+        float top = attrArray.getFloat(R.styleable.ScGauges_top, 0.0f);
+        float right = attrArray.getFloat(R.styleable.ScGauges_right, 100.0f);
+        float bottom = attrArray.getFloat(R.styleable.ScGauges_bottom, 0.0f);
 
         // Check the value
         left = ScBase.valueRangeLimit(left, 0.0f, 100.0f);
@@ -110,7 +110,7 @@ public class ScLinearGauge extends ScGauge {
 
         // Predefined orientation
         int orientation = attrArray.getInt(
-                R.styleable.ScGauges_scc_orientation, Orientation.CUSTOM.ordinal());
+                R.styleable.ScGauges_orientation, Orientation.CUSTOM.ordinal());
         this.internalSetOrientation(Orientation.values()[orientation]);
 
         // Recycle

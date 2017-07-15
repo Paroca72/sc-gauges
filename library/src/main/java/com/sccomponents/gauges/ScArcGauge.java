@@ -76,9 +76,9 @@ public class ScArcGauge extends ScGauge {
 
         // Read all attributes from xml and assign the value to linked variables
         this.mAngleStart = attrArray.getFloat(
-                R.styleable.ScGauges_scc_angle_start, ScArcGauge.DEFAULT_ANGLE_START);
+                R.styleable.ScGauges_angleStart, ScArcGauge.DEFAULT_ANGLE_START);
         this.mAngleSweep = attrArray.getFloat(
-                R.styleable.ScGauges_scc_angle_sweep, ScArcGauge.DEFAULT_ANGLE_SWEEP);
+                R.styleable.ScGauges_angleSweep, ScArcGauge.DEFAULT_ANGLE_SWEEP);
 
         // Recycle
         attrArray.recycle();

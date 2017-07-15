@@ -313,128 +313,128 @@ public abstract class ScGauge extends ScDrawer implements
         // BASE
 
         this.mStrokeSize = attrArray.getDimension(
-                R.styleable.ScGauges_scc_stroke_size, this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE));
+                R.styleable.ScGauges_strokeSize, this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE));
         this.mStrokeColors = this
-                .splitToColors(attrArray.getString(R.styleable.ScGauges_scc_stroke_colors));
+                .splitToColors(attrArray.getString(R.styleable.ScGauges_strokeColors));
 
         int strokeColor = attrArray.getColor(
-                R.styleable.ScGauges_scc_stroke_color, ScGauge.DEFAULT_STROKE_COLOR);
+                R.styleable.ScGauges_strokeColor, ScGauge.DEFAULT_STROKE_COLOR);
         if (this.mStrokeColors == null) {
             this.mStrokeColors = new int[]{strokeColor};
         }
 
         int strokeColorsMode = attrArray.getInt(
-                R.styleable.ScGauges_scc_stroke_colors_mode, ScFeature.ColorsMode.GRADIENT.ordinal());
+                R.styleable.ScGauges_strokeColorsMode, ScFeature.ColorsMode.GRADIENT.ordinal());
         this.mStrokeColorsMode = ScFeature.ColorsMode.values()[strokeColorsMode];
 
         //--------------------------------------------------
         // PROGRESS
 
         this.mProgressSize = attrArray.getDimension(
-                R.styleable.ScGauges_scc_progress_size, this.dipToPixel(ScGauge.DEFAULT_PROGRESS_SIZE));
+                R.styleable.ScGauges_progressSize, this.dipToPixel(ScGauge.DEFAULT_PROGRESS_SIZE));
         this.mProgressColors = this
-                .splitToColors(attrArray.getString(R.styleable.ScGauges_scc_progress_colors));
+                .splitToColors(attrArray.getString(R.styleable.ScGauges_progressColors));
         this.mHighValue = attrArray.getFloat(
-                R.styleable.ScGauges_scc_value, 0.0f);
+                R.styleable.ScGauges_value, 0.0f);
 
         int progressColor = attrArray.getColor(
-                R.styleable.ScGauges_scc_progress_color, ScGauge.DEFAULT_PROGRESS_COLOR);
+                R.styleable.ScGauges_progressColor, ScGauge.DEFAULT_PROGRESS_COLOR);
         if (this.mProgressColors == null) {
             this.mProgressColors = new int[]{progressColor};
         }
 
         int progressColorsMode = attrArray.getInt(
-                R.styleable.ScGauges_scc_progress_colors_mode, ScFeature.ColorsMode.GRADIENT.ordinal());
+                R.styleable.ScGauges_progressColorsMode, ScFeature.ColorsMode.GRADIENT.ordinal());
         this.mProgressColorsMode = ScFeature.ColorsMode.values()[progressColorsMode];
 
         //--------------------------------------------------
         // NOTCHES
 
         this.mNotchesSize = attrArray.getDimension(
-                R.styleable.ScGauges_scc_notches_size, this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE));
+                R.styleable.ScGauges_notchesSize, this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE));
         this.mNotchesCount = attrArray.getInt(
-                R.styleable.ScGauges_scc_notches, 0);
+                R.styleable.ScGauges_notches, 0);
         this.mNotchesLength = attrArray.getDimension(
-                R.styleable.ScGauges_scc_notches_length, this.mStrokeSize * 2);
+                R.styleable.ScGauges_notchesLength, this.mStrokeSize * 2);
         this.mSnapToNotches = attrArray.getBoolean(
-                R.styleable.ScGauges_scc_snap_to_notches, false);
+                R.styleable.ScGauges_snapToNotches, false);
         this.mNotchesColors = this
-                .splitToColors(attrArray.getString(R.styleable.ScGauges_scc_notches_colors));
+                .splitToColors(attrArray.getString(R.styleable.ScGauges_notchesColors));
 
         int notchesColor = attrArray.getColor(
-                R.styleable.ScGauges_scc_notches_color, ScGauge.DEFAULT_STROKE_COLOR);
+                R.styleable.ScGauges_notchesColor, ScGauge.DEFAULT_STROKE_COLOR);
         if (this.mNotchesColors == null) {
             this.mNotchesColors = new int[]{notchesColor};
         }
 
         int notchesColorsMode = attrArray.getInt(
-                R.styleable.ScGauges_scc_notches_colors_mode, ScFeature.ColorsMode.GRADIENT.ordinal());
+                R.styleable.ScGauges_notchesColorsMode, ScFeature.ColorsMode.GRADIENT.ordinal());
         this.mNotchesColorsMode = ScFeature.ColorsMode.values()[notchesColorsMode];
 
         int notchesPosition = attrArray.getInt(
-                R.styleable.ScGauges_scc_notches_position, ScNotches.NotchPositions.MIDDLE.ordinal());
+                R.styleable.ScGauges_notchesPosition, ScNotches.NotchPositions.MIDDLE.ordinal());
         this.mNotchesPosition = ScNotches.NotchPositions.values()[notchesPosition];
 
         //--------------------------------------------------
         // TEXT
 
         this.mTextSize = attrArray.getDimension(
-                R.styleable.ScGauges_scc_text_size, this.dipToPixel(ScGauge.DEFAULT_TEXT_SIZE));
+                R.styleable.ScGauges_textSize, this.dipToPixel(ScGauge.DEFAULT_TEXT_SIZE));
         this.mTextColors = this
-                .splitToColors(attrArray.getString(R.styleable.ScGauges_scc_text_colors));
+                .splitToColors(attrArray.getString(R.styleable.ScGauges_textColors));
         this.mTextUnbend = attrArray.getBoolean(
-                R.styleable.ScGauges_scc_text_unbend, false);
+                R.styleable.ScGauges_textUnbend, false);
 
-        String stringTokens = attrArray.getString(R.styleable.ScGauges_scc_text_tokens);
+        String stringTokens = attrArray.getString(R.styleable.ScGauges_textTokens);
         this.mTextTokens = stringTokens != null ? stringTokens.split("\\|") : null;
 
         int textColor = attrArray.getColor(
-                R.styleable.ScGauges_scc_text_color, ScGauge.DEFAULT_STROKE_COLOR);
+                R.styleable.ScGauges_textColor, ScGauge.DEFAULT_STROKE_COLOR);
         if (this.mTextColors == null) {
             this.mTextColors = new int[]{textColor};
         }
 
         int textColorsMode = attrArray.getInt(
-                R.styleable.ScGauges_scc_text_colors_mode, ScFeature.ColorsMode.GRADIENT.ordinal());
+                R.styleable.ScGauges_textColorsMode, ScFeature.ColorsMode.GRADIENT.ordinal());
         this.mTextColorsMode = ScFeature.ColorsMode.values()[textColorsMode];
 
         int textPosition = attrArray.getInt(
-                R.styleable.ScGauges_scc_text_position, ScWriter.TokenPositions.MIDDLE.ordinal());
+                R.styleable.ScGauges_textPosition, ScWriter.TokenPositions.MIDDLE.ordinal());
         this.mTextPosition = ScWriter.TokenPositions.values()[textPosition];
         int textAlign = attrArray.getInt(
-                R.styleable.ScGauges_scc_text_align, ScWriter.TokenAlignments.LEFT.ordinal());
+                R.styleable.ScGauges_textAlign, ScWriter.TokenAlignments.LEFT.ordinal());
         this.mTextAlignment = ScWriter.TokenAlignments.values()[textAlign];
 
         //--------------------------------------------------
         // POINTER
 
         this.mPointerRadius = attrArray.getDimension(
-                R.styleable.ScGauges_scc_pointer_radius, 0.0f);
+                R.styleable.ScGauges_pointerRadius, 0.0f);
         this.mPointerColors = this
-                .splitToColors(attrArray.getString(R.styleable.ScGauges_scc_pointer_colors));
+                .splitToColors(attrArray.getString(R.styleable.ScGauges_pointerColors));
         this.mPointerHaloWidth = attrArray.getDimension(
-                R.styleable.ScGauges_scc_halo_size, ScGauge.DEFAULT_HALO_SIZE);
+                R.styleable.ScGauges_haloSize, ScGauge.DEFAULT_HALO_SIZE);
 
         int pointerColor = attrArray.getColor(
-                R.styleable.ScGauges_scc_pointer_color, ScGauge.DEFAULT_STROKE_COLOR);
+                R.styleable.ScGauges_pointerColor, ScGauge.DEFAULT_STROKE_COLOR);
         if (this.mPointerColors == null) {
             this.mPointerColors = new int[]{pointerColor};
         }
 
         int pointerColorsMode = attrArray.getInt(
-                R.styleable.ScGauges_scc_pointer_colors_mode, ScFeature.ColorsMode.GRADIENT.ordinal());
+                R.styleable.ScGauges_pointerColorsMode, ScFeature.ColorsMode.GRADIENT.ordinal());
         this.mPointerColorsMode = ScFeature.ColorsMode.values()[pointerColorsMode];
 
         int pointerSelectMode = attrArray.getInt(
-                R.styleable.ScGauges_scc_pointer_select_mode, PointerSelectMode.NEAREST.ordinal());
+                R.styleable.ScGauges_pointerSelectMode, PointerSelectMode.NEAREST.ordinal());
         this.mPointerSelectMode = PointerSelectMode.values()[pointerSelectMode];
 
         //--------------------------------------------------
         // COMMON
 
         // Rounded line cap style
-        if (attrArray.hasValue(R.styleable.ScGauges_scc_rounded_line)) {
-            this.mRoundedLineCap = attrArray.getBoolean(R.styleable.ScGauges_scc_rounded_line, false);
+        if (attrArray.hasValue(R.styleable.ScGauges_roundedLine)) {
+            this.mRoundedLineCap = attrArray.getBoolean(R.styleable.ScGauges_roundedLine, false);
         } else {
             this.mRoundedLineCap = null;
         }

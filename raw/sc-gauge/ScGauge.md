@@ -191,38 +191,38 @@ Called before draw the single text token.
 ```xml
     <declare-styleable name="ScComponents">
         ...
-        <attr name="scc_stroke_size" format="dimension" />
-        <attr name="scc_stroke_color" format="color" />
-        <attr name="scc_stroke_colors" format="string" />
-        <attr name="scc_stroke_colors_mode"/>
-        <attr name="scc_progress_size" format="dimension" />
-        <attr name="scc_progress_color" format="color" />
-        <attr name="scc_progress_colors" format="string" />
-        <attr name="scc_progress_colors_mode"/>
-        <attr name="scc_value" format="float" />
-        <attr name="scc_notches_size" format="dimension" />
-        <attr name="scc_notches_color" format="color" />
-        <attr name="scc_notches_colors" format="string" />
-        <attr name="scc_notches_colors_mode"/>
-        <attr name="scc_notches" format="integer" />
-        <attr name="scc_notches_length" format="float" />
-        <attr name="scc_notches_position"/>
-        <attr name="scc_snap_to_notches" format="boolean" />
-        <attr name="scc_text_size" format="dimension" />
-        <attr name="scc_text_color" format="color" />
-        <attr name="scc_text_colors" format="string" />
-        <attr name="scc_text_colors_mode"/>
-        <attr name="scc_text_position"/>
-        <attr name="scc_text_align"/>
-        <attr name="scc_text_tokens" format="string" />
-        <attr name="scc_text_unbend" format="boolean"/>
-        <attr name="scc_pointer_radius" format="dimension" />
-        <attr name="scc_pointer_color" format="color" />
-        <attr name="scc_pointer_colors" format="string" />
-        <attr name="scc_pointer_colors_mode" />
-        <attr name="scc_pointer_select_mode" />
-        <attr name="scc_halo_size" format="dimension" />
-        <attr name="scc_rounded_line" format="boolean" />
+        <attr name="strokeSize" format="dimension" />
+        <attr name="strokeColor" format="color" />
+        <attr name="strokeColors" format="string" />
+        <attr name="strokeColorsMode"/>
+        <attr name="progressSize" format="dimension" />
+        <attr name="progressColor" format="color" />
+        <attr name="progressColors" format="string" />
+        <attr name="progressColorsMode"/>
+        <attr name="value" format="float" />
+        <attr name="notchesSize" format="dimension" />
+        <attr name="notchesColor" format="color" />
+        <attr name="notchesColors" format="string" />
+        <attr name="notchesColorsMode"/>
+        <attr name="notches" format="integer" />
+        <attr name="notchesLength" format="float" />
+        <attr name="notchesPosition"/>
+        <attr name="snapToNotches" format="boolean" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color" />
+        <attr name="textColors" format="string" />
+        <attr name="textColorsMode"/>
+        <attr name="textPosition"/>
+        <attr name="textAlign"/>
+        <attr name="textTokens" format="string" />
+        <attr name="textUnbend" format="boolean"/>
+        <attr name="pointerRadius" format="dimension" />
+        <attr name="pointerColor" format="color" />
+        <attr name="pointerColors" format="string" />
+        <attr name="pointerColorsMode" />
+        <attr name="pointerSelectMode" />
+        <attr name="haloSize" format="dimension" />
+        <attr name="roundedLine" format="boolean" />
     </declare-styleable>
 ```
 <br />
