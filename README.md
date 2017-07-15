@@ -110,7 +110,7 @@ Add the dependency
 ```java
 dependencies {
     ...
-    compile 'com.github.paroca72:sc-gauges:2.5.3'
+    compile 'com.github.paroca72:sc-gauges:2.6.0'
 }
 ```
 <br />
