@@ -646,6 +646,7 @@ public abstract class ScGauge extends ScDrawer implements
         if (pointer != null && pointer.getTag() != null &&
                 pointer.getTag().equalsIgnoreCase(ScGauge.LOW_POINTER_IDENTIFIER)) {
             // Set and exit
+            this.invalidate();
             this.setGenericValue(value, true);
             return;
         }
@@ -654,6 +655,7 @@ public abstract class ScGauge extends ScDrawer implements
         if (pointer == null ||
                 (pointer.getTag() != null && pointer.getTag().equalsIgnoreCase(ScGauge.HIGH_POINTER_IDENTIFIER))) {
             // Set and exit
+            this.invalidate();
             this.setGenericValue(value, false);
             return;
         }

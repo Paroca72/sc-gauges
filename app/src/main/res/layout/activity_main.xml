@@ -8,24 +8,88 @@
     android:gravity="center_vertical|center_horizontal"
     tools:context="com.sccomponents.gauges.demo.MainActivity">
 
-    <FrameLayout
-        android:layout_width="200dp"
-        android:layout_height="wrap_content">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
 
         <com.sccomponents.gauges.ScArcGauge
-            android:id="@+id/alarmVolumeGauge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            sc:angleStart="-180"
-            sc:angleSweep="90"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_margin="5dp"
+            android:padding="30dp"
+            sc:angleStart="-90"
+            sc:notches="60"
+            sc:notchesColor="#1D5BB9"
+            sc:notchesLength="5dp"
+            sc:notchesPosition="inside"
+            sc:notchesSize="2dp"
             sc:pathTouchable="true"
-            sc:progressColors="#0BA60A|#FEF301|#EA0C01"
-            sc:progressSize="2dp"
-            sc:strokeColor="#dddddd"
-            sc:strokeSize="2dp" />
+            sc:pointerColor="#FDB806"
+            sc:pointerRadius="16dp"
+            sc:progressColor="#FDB806"
+            sc:progressSize="4dp"
+            sc:snapToNotches="true"
+            sc:strokeColor="#1D5BB9"
+            sc:strokeSize="4dp"
+            sc:textAlign="left"
+            sc:textColor="#1D5BB9"
+            sc:textPosition="inside"
+            sc:textSize="10sp"
+            sc:textTokens="00|05|10|15|20|25|30|35|40|45|50|55"
+            sc:textUnbend="true" />
 
-    </FrameLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

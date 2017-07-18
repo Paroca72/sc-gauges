@@ -799,6 +799,9 @@ public abstract class ScDrawer extends ScBase {
      * @param distance the distance from the path start
      */
     protected void onPathTouch(float distance) {
+        // Disable the parent touch
+        this.getParent().requestDisallowInterceptTouchEvent(true);
+
         // Call the event if need
         if (this.mOnPathTouchListener != null) {
             this.mOnPathTouchListener.onTouch(distance);
@@ -809,6 +812,9 @@ public abstract class ScDrawer extends ScBase {
      * Called when the user release the touch after than he touched the path.
      */
     protected void onPathRelease() {
+        // Enable the parent touch
+        this.getParent().requestDisallowInterceptTouchEvent(false);
+
         // Call the event if need
         if (this.mOnPathTouchListener != null) {
             this.mOnPathTouchListener.onRelease();
