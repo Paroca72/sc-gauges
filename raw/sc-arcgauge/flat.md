@@ -28,8 +28,8 @@ So this example as been only a demonstration of the most used configurations.
             android:id="@+id/gauge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            sc:scc_angle_start="135"
-            sc:scc_angle_sweep="270"
+            sc:angleStart="135"
+            sc:angleSweep="270"
             sc:progressColor="#ffff00ff"
             sc:progressSize="10dp"
             sc:strokeColor="#009688"
@@ -101,7 +101,7 @@ So this example as been only a demonstration of the most used configurations.
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            sc:scc_angle_start="-90"
+            sc:angleStart="-90"
             sc:progressColor="#288636"
             sc:progressSize="10dp"
             sc:strokeColor="#585258"
@@ -156,7 +156,7 @@ So this example as been only a demonstration of the most used configurations.
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
-            sc:scc_angle_start="-90"
+            sc:angleStart="-90"
             sc:strokeSize="10dp"
             sc:strokeColor="#e9e6e6"
             sc:pointerRadius="5dp"
@@ -183,7 +183,7 @@ So this example as been only a demonstration of the most used configurations.
 
 ---
 ## Example 4
-Note that the `scc_path_touchable` is enable so you can drag the pointers.
+Note that the `pathTouchable` is enable so you can drag the pointers.
 
 <img align="right" src="https://github.com/Paroca72/sc-gauges/blob/master/raw/sc-arcgauge/f-04.jpg">
 
@@ -200,14 +200,14 @@ Note that the `scc_path_touchable` is enable so you can drag the pointers.
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
-            sc:scc_angle_start="-90"
+            sc:angleStart="-90"
             sc:strokeSize="4dp"
             sc:strokeColor="#e9e6e6"
             sc:pointerRadius="10dp"
             sc:pointerColor="#a4abaa"
             sc:progressSize="4dp"
             sc:progressColor="#a4abaa"
-            sc:scc_path_touchable="true"
+            sc:pathTouchable="true"
             sc:notches="1"
             sc:notchesSize="4dp"
             sc:notchesLength="10dp"

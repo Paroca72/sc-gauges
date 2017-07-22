@@ -28,8 +28,8 @@ You can download the indicator image used below from [**HERE**](indicator-01.png
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:id="@+id/gauge"
-            sc:scc_angle_start="-180"
-            sc:scc_angle_sweep="180"
+            sc:angleStart="-180"
+            sc:angleSweep="180"
             sc:progressColor="#ff35c44a"
             sc:progressSize="50dp"
             sc:strokeColor="#f5f5f5"
@@ -96,8 +96,8 @@ You can download the indicator image used below from [**HERE**](indicator-02.png
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
-            sc:scc_angle_start="-180"
-            sc:scc_angle_sweep="180"
+            sc:angleStart="-180"
+            sc:angleSweep="180"
             sc:progressColor="#00B4FF"
             sc:progressSize="30dp"
             sc:strokeColor="#ffffff"
@@ -192,8 +192,8 @@ You can download the indicator image used below from [**HERE**](indicator-02.png
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
-            sc:scc_angle_start="-180"
-            sc:scc_angle_sweep="180"
+            sc:angleStart="-180"
+            sc:angleSweep="180"
             sc:strokeColors="#EC4949|#EC4949|#F7AD36|#F7AD36|#F7AD36|#F7AD36|#8BBE28"
             sc:strokeColors_mode="solid"
             sc:strokeSize="30dp"/>
@@ -258,8 +258,8 @@ You can download the indicator image used below from [**HERE**](indicator-04.png
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
-            sc:scc_angle_start="135"
-            sc:scc_angle_sweep="270"
+            sc:angleStart="135"
+            sc:angleSweep="270"
             sc:strokeSize="40dp"/>
 
         <ImageView
@@ -345,8 +345,8 @@ You can download the indicator image used below from [**HERE**](indicator-05.png
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="30dp"
-            sc:scc_angle_start="180"
-            sc:scc_angle_sweep="180"
+            sc:angleStart="180"
+            sc:angleSweep="180"
             sc:strokeSize="50dp"/>
 
         <TextView

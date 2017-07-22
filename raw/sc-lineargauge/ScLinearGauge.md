@@ -44,10 +44,10 @@ The bottom bounds in percentage.
 ```xml
     <declare-styleable name="ScComponents">
         ...
-        <attr name="scc_left" format="float" />
-        <attr name="scc_top" format="float" />
-        <attr name="scc_right" format="float" />
-        <attr name="scc_bottom" format="float" />
+        <attr name="left" format="float" />
+        <attr name="top" format="float" />
+        <attr name="right" format="float" />
+        <attr name="bottom" format="float" />
     </declare-styleable>
 ```
 

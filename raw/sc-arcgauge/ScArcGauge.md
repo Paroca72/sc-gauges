@@ -44,8 +44,8 @@ Values over the limits will be normalized to the limit.
 ```xml
     <declare-styleable name="ScComponents">
         ...
-        <attr name="scc_angle_start" format="float" />
-        <attr name="scc_angle_sweep" format="float" />
+        <attr name="angleStart" format="float" />
+        <attr name="angleSweep" format="float" />
     </declare-styleable>
 ```
 
@@ -73,8 +73,8 @@ Values over the limits will be normalized to the limit.
         android:layout_height="wrap_content"
         android:padding="30dp"
         android:background="#f5f5f5"
-        sc:scc_angle_start="135"
-        sc:scc_angle_sweep="270"
+        sc:angleStart="135"
+        sc:angleSweep="270"
         sc:strokeSize="6dp"
         sc:progressSize="4dp"
         sc:value="45"

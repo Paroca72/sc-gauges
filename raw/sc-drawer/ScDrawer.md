@@ -112,11 +112,11 @@ This called only if before had a onTouch event.
 ###### XML Properties
 ```xml
     <declare-styleable name="ScComponents">
-        <attr name="scc_max_width" format="dimension" />
-        <attr name="scc_max_height" format="dimension" />
-        <attr name="scc_fill_area" format="enum" />
-        <attr name="scc_fill_mode" format="enum" />
-        <attr name="scc_input_enabled" format="boolean" />
+        <attr name="maxWidth" format="dimension" />
+        <attr name="maxHeight" format="dimension" />
+        <attr name="fillArea" format="enum" />
+        <attr name="fillMode" format="enum" />
+        <attr name="inputEnabled" format="boolean" />
     </declare-styleable>
 ```
 <br />

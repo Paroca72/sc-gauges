@@ -80,7 +80,7 @@ So this example as been only a demonstration of the most used configurations.
             sc:strokeSize="6dp"
             sc:pointerRadius="10dp"
             sc:pointerColors="#3589F6"
-            sc:scc_path_touchable="true" />
+            sc:pathTouchable="true" />
 
     </LinearLayout>
 ```
@@ -126,7 +126,7 @@ So this example as been only a demonstration of the most used configurations.
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            sc:scc_orientation="vertical"
+            sc:orientation="vertical"
             sc:strokeSize="10dp"
             sc:strokeColor="#dcdcdc"
             sc:progressSize="10dp"
@@ -203,7 +203,7 @@ So this example as been only a demonstration of the most used configurations.
             android:paddingLeft="50dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            sc:scc_orientation="vertical"
+            sc:orientation="vertical"
             sc:notches="8"
             sc:notchesColor="#313131"
             sc:progressColors="#3589F6"
@@ -286,11 +286,11 @@ So this example as been only a demonstration of the most used configurations.
             sc:notchesLength="10dp"
             sc:notchesPosition="inside"
             sc:notchesSize="2dp"
-            sc:scc_orientation="vertical"
+            sc:orientation="vertical"
             sc:textTokens="100%"
             sc:textUnbend="true"
             sc:textAlign="left"
-            sc:scc_path_touchable="true" />
+            sc:pathTouchable="true" />
 
     </FrameLayout>
 ```
