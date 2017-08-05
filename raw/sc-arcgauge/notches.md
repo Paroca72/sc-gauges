@@ -498,7 +498,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
         @Override
         public void onBeforeDrawNotch(ScNotches.NotchInfo info) {
             // Set the length of the notch
-            info.source.setLength(gauge.dipToPixel(info.index + 5));
+            info.length = gauge.dipToPixel(info.index + 5);
         }
 
         @Override
