@@ -535,7 +535,7 @@ You can download the indicator image used below from [**HERE**](indicator-07.png
             sc:angleSweep="135"
             sc:strokeSize="2dp"
             sc:strokeColors="white|white|white|white|white|white|red|red"
-            sc:strokeColors_mode="solid"
+            sc:strokeColorsMode="solid"
             sc:progressSize="15dp"
             sc:notches="8"
             sc:notchesSize="2dp"
