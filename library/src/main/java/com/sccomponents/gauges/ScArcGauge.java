@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -110,8 +111,9 @@ public class ScArcGauge extends ScGauge {
         path.addArc(area, this.mAngleStart, this.mAngleSweep);
 
         // If the sweep angle if 360° must resolve a issue with addArc than lost the starting
-        // angle.
-        if (this.mAngleSweep == 360.0f || this.mAngleSweep == -360.0f) {
+        // angle. This issue happen only in version less than API 26.
+        if ((this.mAngleSweep == 360.0f || this.mAngleSweep == -360.0f) &&
+                android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             // Create a transform and rotate the path on the starting angle
             Matrix matrix = new Matrix();
             matrix.postRotate(this.mAngleStart);

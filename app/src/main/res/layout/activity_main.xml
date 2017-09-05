@@ -1,95 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:sc="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical|center_horizontal"
-    tools:context="com.sccomponents.gauges.demo.MainActivity">
+    android:background="#cccccc">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="#f5f5f5" >
 
         <com.sccomponents.gauges.ScArcGauge
+            xmlns:sc="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/gauge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_margin="5dp"
-            android:padding="30dp"
-            sc:angleStart="-90"
-            sc:notches="60"
-            sc:notchesColor="#1D5BB9"
-            sc:notchesLength="5dp"
-            sc:notchesPosition="inside"
-            sc:notchesSize="2dp"
-            sc:pathTouchable="true"
-            sc:pointerColor="#FDB806"
-            sc:pointerRadius="16dp"
-            sc:progressColor="#FDB806"
-            sc:progressSize="4dp"
-            sc:snapToNotches="true"
-            sc:strokeColor="#1D5BB9"
-            sc:strokeSize="4dp"
-            sc:textAlign="left"
-            sc:textColor="#1D5BB9"
-            sc:textPosition="inside"
-            sc:textSize="10sp"
-            sc:textTokens="00|05|10|15|20|25|30|35|40|45|50|55"
-            sc:textUnbend="true" />
+            android:padding="10dp"
+            sc:angleStart="-45"
+            sc:progressColor="#288636"
+            sc:progressSize="10dp"
+            sc:strokeColor="#585258"
+            sc:strokeSize="2dp" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0%"
+            android:textColor="#288636"
+            android:textSize="42dp"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-        </LinearLayout>
-
-    </ScrollView>
+    </FrameLayout>
 
 </LinearLayout>
+
