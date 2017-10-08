@@ -1,7 +1,7 @@
 # sc-gauges
 This is a library of gauges.<br />
-The 2.x version change completely the way to draw using the [ScDrawer](..\sc-drawer\ScDrawer.md) as base for create the [ScGauge](..\sc-gauge\ScGauge.md) and all classes inherited from it.
-This using a path to follow and applying some features to draw extra on the path.
+The 2.x version change completely the way to draw using the [ScDrawer](..\sc-drawer\ScDrawer.md) as base to create the [ScGauge](..\sc-gauge\ScGauge.md) and all classes inherited from it.
+This using a "path to follow" and apply features to draw on the path.
 This way to think leaves a lot of freedom to the users to create particular components limited only by his imagination. 
 
 > **IMPORTANT**<br />
