@@ -86,23 +86,44 @@ public class ScWriter extends ScFeature {
     // Private methods
 
     /**
+     * Divide the text in tokens (rows) by the carriage return "\n"
+     *
+     * @param text The passed value
+     * @return the tokens
+     */
+    private String[] getTextRows(String text) {
+        if (text == null || text.length() == 0)
+            return new String[] {};
+        else
+            return text.split("\\n");
+    }
+
+    /**
+     * In case of multiline get back the the number of rows.
+     * NOTE: the separator is "\n"
+     *
+     * @param text the passed text
+     * @return the number of rows
+     */
+    private int getTextRowsCount(String text) {
+        return this.getTextRows(text).length;
+    }
+
+    /**
      * Calculate the extra vertical offset by the text position respect to the path.
      *
      * @param info the token info
      * @return the extra vertical offset
      */
-    private float getVerticalOffsetByPosition(TokenInfo info) {
-        // Calc the text boundaries
-        Rect bounds = new Rect();
-        this.getPainter().getTextBounds(info.text, 0, info.text.length(), bounds);
-
-        // Return the calculated offset
+    private float getVerticalOffsetByPosition(TokenInfo info, Rect bounds) {
+        // Return the calculated offset considering the text rows number
+        int rows = this.getTextRowsCount(info.text);
         switch (info.position) {
             case MIDDLE:
-                return bounds.height() / 2;
+                return (bounds.height() / 2) - ((bounds.height() / 2) * (rows - 1));
 
-            case INSIDE:
-                return bounds.height();
+            case OUTSIDE:
+                return - bounds.height() * (rows - 1);
 
             default:
                 return 0.0f;
@@ -132,6 +153,7 @@ public class ScWriter extends ScFeature {
         }
     }
 
+
     // ***************************************************************************************
     // Draw methods
     //
@@ -152,22 +174,30 @@ public class ScWriter extends ScFeature {
         // Check for null value
         if (canvas == null) return;
 
+        // Calc the text boundaries
+        Rect bounds = new Rect();
+        this.mPaintClone.getTextBounds(info.text, 0, info.text.length(), bounds);
+
         // Fix the vertical offset considering the position of the text on the path and the
         // font metrics offset.
-        float extraVerticalOffset = this.getVerticalOffsetByPosition(info) -
+        float extraVerticalOffset = this.getVerticalOffsetByPosition(info, bounds) -
                 this.getVerticalOffsetByFontMetrics(info);
         ScFeature.translatePoint(info.point, 0.0f, extraVerticalOffset, originalAngle);
 
         // Save the canvas status and rotate by the calculated tangent angle
         canvas.save();
-
-        // Draw the straight text
         canvas.rotate(info.angle, info.point.x, info.point.y);
-        canvas.drawText(
-                info.text,
-                info.point.x + info.offset.x, info.point.y + info.offset.y,
-                this.mPaintClone
-        );
+
+        // Draw all text rows
+        String[] rows = this.getTextRows(info.text);
+        for (int row = 0; row < rows.length; row ++)
+            // Draw the single straight row text
+            canvas.drawText(
+                    rows[row],
+                    info.point.x + info.offset.x,
+                    info.point.y + info.offset.y + row * bounds.height(),
+                    this.mPaintClone
+            );
 
         // Restore the canvas status
         canvas.restore();
@@ -201,18 +231,26 @@ public class ScWriter extends ScFeature {
             segment.transform(matrix);
         }
 
+        // Calc the text boundaries
+        Rect bounds = new Rect();
+        this.mPaintClone.getTextBounds(info.text, 0, info.text.length(), bounds);
+
         // Fix the vertical offset considering the position of the text on the path and the
         // font metrics offset.
-        float extraVerticalOffset = this.getVerticalOffsetByPosition(info) -
+        float extraVerticalOffset = this.getVerticalOffsetByPosition(info, bounds) -
                 this.getVerticalOffsetByFontMetrics(info);
 
-        // Draw the text on the path
-        canvas.drawTextOnPath(
-                info.text,
-                segment,
-                info.offset.x, info.offset.y + extraVerticalOffset,
-                this.mPaint
-        );
+        // Draw all text rows
+        String[] rows = this.getTextRows(info.text);
+        for (int row = 0; row < rows.length; row ++)
+            // Draw the single text row on the path
+            canvas.drawTextOnPath(
+                    rows[row],
+                    segment,
+                    info.offset.x,
+                    info.offset.y + extraVerticalOffset + row * bounds.height(),
+                    this.mPaint
+            );
     }
 
     /**
