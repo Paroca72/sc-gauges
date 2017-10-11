@@ -689,17 +689,19 @@ public abstract class ScDrawer extends ScBase {
         List<ScFeature> founds = new ArrayList<>();
 
         // Check for empty value
-        if (this.mFeatures != null) {
+        if (this.mFeatures != null)
             // Cycle all features
             for (ScFeature feature : this.mFeatures) {
+                // Get the fixed tag
+                String currentTag = feature.getTag() == null ? "": feature.getTag();
                 // Check the instance or add all features if the class reference is null
                 if ((classRef == null || feature.getClass().isAssignableFrom(classRef)) &&
-                        tag == null || feature.getTag().equalsIgnoreCase(tag)) {
+                        (tag == null || currentTag.equalsIgnoreCase(tag))) {
                     // Add the feature to the list
                     founds.add(feature);
                 }
             }
-        }
+
         // Return the founds list
         return founds;
     }

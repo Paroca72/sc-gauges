@@ -20,5 +20,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
+        gauge.addFeature(ScWriter.class);
+
+        gauge.findFeature("TEST");
+        gauge.findFeature(ScGauge.class);
     }
 }

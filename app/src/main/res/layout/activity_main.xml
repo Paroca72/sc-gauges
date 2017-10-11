@@ -5,29 +5,27 @@
     android:layout_height="match_parent"
     android:background="#cccccc">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f5f5f5" >
+        android:background="#f5f5f5"
+        android:orientation="vertical">
 
         <com.sccomponents.gauges.ScArcGauge
+            android:id="@+id/gauge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="30dp"
             android:background="#f5f5f5"
+            android:padding="30dp"
             sc:angleStart="135"
             sc:angleSweep="270"
-            sc:strokeSize="6dp"
-            sc:progressSize="4dp"
-            sc:value="45"
-            sc:notches="8"
-            sc:notchesLength="10dp"
-            sc:textTokens="01\nTEST\n01|02|03|04|05|06|07|08"
             sc:pointerRadius="10dp"
+            sc:progressSize="4dp"
+            sc:strokeSize="6dp"
             sc:textPosition="middle"
-            />
+            sc:value="45" />
 
-    </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>
 
