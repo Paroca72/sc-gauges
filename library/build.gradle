@@ -5,12 +5,12 @@ group='com.github.Paroca72'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.1'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 315
-        versionName '2.6.6'
+        targetSdkVersion 26
+        versionCode 317
+        versionName '2.6.7'
     }
     buildTypes {
         release {

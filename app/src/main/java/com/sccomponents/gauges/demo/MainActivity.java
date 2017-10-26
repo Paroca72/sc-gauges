@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
         gauge.addFeature(ScWriter.class);
 
         // Set the features stroke cap style to rounded
-        gauge.findFeature(ScArcGauge.BASE_IDENTIFIER)
-                .getPainter().setStrokeCap(Paint.Cap.ROUND);
-        gauge.findFeature(ScArcGauge.PROGRESS_IDENTIFIER)
-                .getPainter().setStrokeCap(Paint.Cap.ROUND);
+        //gauge.findFeature(ScArcGauge.BASE_IDENTIFIER)
+        //        .getPainter().setStrokeCap(Paint.Cap.ROUND);
+        //gauge.findFeature(ScArcGauge.PROGRESS_IDENTIFIER)
+        //        .getPainter().setStrokeCap(Paint.Cap.ROUND);
     }
 }

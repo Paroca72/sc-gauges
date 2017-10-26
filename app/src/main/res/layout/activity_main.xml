@@ -18,7 +18,7 @@
             android:background="#f5f5f5"
             android:padding="30dp"
             sc:angleStart="135"
-            sc:angleSweep="180"
+            sc:angleSweep="270"
             sc:progressColors="#03A409|#FFF506|#EB0100"
             sc:progressSize="10dp"
             sc:strokeSize="10dp"

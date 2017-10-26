@@ -88,7 +88,7 @@ public class ScCopier extends ScFeature {
         paint.setStrokeCap(Paint.Cap.BUTT);
 
         // Calc the end distance considering the stroke width
-        float endDistance = this.mPathLength - paint.getStrokeWidth();
+        float endDistance = this.mPathLength - paint.getStrokeWidth() / 2;
 
         // Cycle all points of the path
         for (float distance = 0.0f; distance < endDistance; distance++) {
@@ -125,9 +125,8 @@ public class ScCopier extends ScFeature {
 
         // In case of rounded stroke adjust the limit
         if (this.mPaint.getStrokeCap() == Paint.Cap.ROUND) {
-            float halfStroke = this.mPaint.getStrokeWidth() / 2.0f;
-            startDistance += halfStroke;
-            endDistance -= halfStroke;
+            startDistance += this.mPaint.getStrokeWidth() / 2.0f;
+            endDistance -= this.mPaint.getStrokeWidth() / 2.0f;
         }
 
         // Extract the segment to draw
