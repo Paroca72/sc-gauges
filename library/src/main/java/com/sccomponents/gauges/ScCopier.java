@@ -57,40 +57,47 @@ public class ScCopier extends ScFeature {
     //
 
     /**
+     * Create an empty bitmap
+     *
+     * @return the bitmap
+     */
+    private Bitmap createBitmap() {
+        // Create the bitmap using the path boundaries
+        RectF bounds = this.mPathMeasure.getBounds();
+        return Bitmap.createBitmap(
+                (int) (bounds.right + this.mPaint.getStrokeWidth()),
+                (int) (bounds.bottom + this.mPaint.getStrokeWidth()),
+                Bitmap.Config.ARGB_8888
+        );
+    }
+
+    /**
      * Create a colored bitmap following the path.
      * Note that the bitmap will be created on the whole path and not on the extracted segment.
      * This bitmap is rough and must clipped before draw it on the destination canvas.
      *
      * @return the bitmap
      */
-    public Bitmap createColoredBitmap() {
+    public Bitmap createColoredBitmap(Paint paint) {
         // Create the bitmap using the path boundaries and retrieve the canvas where draw
-        RectF bounds = this.mPathMeasure.getBounds();
-        Bitmap bitmap = Bitmap.createBitmap(
-                (int) (bounds.right + this.mPaint.getStrokeWidth()),
-                (int) (bounds.bottom + this.mPaint.getStrokeWidth()),
-                Bitmap.Config.ARGB_8888
-        );
+        Bitmap bitmap = this.createBitmap();
         Canvas canvas = new Canvas(bitmap);
-
-        // Hold if a rounded stroke and the point holder
-        boolean isRoundedStroke = this.mPaint.getStrokeCap() == Paint.Cap.ROUND;
-        float halfStroke = this.mPaint.getStrokeWidth() / 2;
         float[] point;
 
+        // Fix the stroke cap
+        paint.setStrokeCap(Paint.Cap.BUTT);
+
+        // Calc the end distance considering the stroke width
+        float endDistance = this.mPathLength - paint.getStrokeWidth();
+
         // Cycle all points of the path
-        for (int distance = 0; distance < this.mPathLength; distance++) {
+        for (float distance = 0.0f; distance < endDistance; distance++) {
             // Get the point and adjust the for the stroke size
             point = this.mPathMeasure.getPosTan(distance);
 
-            // Trigger for index position and get the color
-            boolean isFirstOrLast = distance == 0 || distance == this.mPathLength - 1;
+            // Set the current painter color
             int color = this.getGradientColor(distance);
-
-            // Set the current painter color and stroke
-            this.mPaint.setColor(color);
-            this.mPaint.setStrokeCap(
-                    isRoundedStroke && isFirstOrLast ? Paint.Cap.ROUND : Paint.Cap.BUTT);
+            paint.setColor(color);
 
             // If the round stroke is not settled the point have a square shape.
             // This can create a visual issue when the path follow a curve.
@@ -98,13 +105,9 @@ public class ScCopier extends ScFeature {
             // before to write it on the canvas.
             canvas.save();
             canvas.rotate((float) Math.toDegrees(point[3]), point[0], point[1]);
-            canvas.drawPoint(point[0] + halfStroke, point[1], this.mPaint);
+            canvas.drawPoint(point[0], point[1], paint);
             canvas.restore();
         }
-
-        // Check for rounded stroke
-        if (isRoundedStroke)
-            this.mPaint.setStrokeCap(Paint.Cap.ROUND);
 
         // Return the new bitmap
         return bitmap;
@@ -119,6 +122,13 @@ public class ScCopier extends ScFeature {
         // Convert the percentage values in distance referred to the current path length.
         float startDistance = (this.mPathLength * this.mStartPercentage) / 100.0f;
         float endDistance = (this.mPathLength * this.mEndPercentage) / 100.0f;
+
+        // In case of rounded stroke adjust the limit
+        if (this.mPaint.getStrokeCap() == Paint.Cap.ROUND) {
+            float halfStroke = this.mPaint.getStrokeWidth() / 2.0f;
+            startDistance += halfStroke;
+            endDistance -= halfStroke;
+        }
 
         // Extract the segment to draw
         this.mSegment.reset();
@@ -186,8 +196,10 @@ public class ScCopier extends ScFeature {
             if (this.mForceCreateShader) {
                 // Create the bitmap
                 this.mForceCreateShader = false;
+                Paint clone = new Paint(this.mPaint);
+
                 this.mShader = new BitmapShader(
-                        this.createColoredBitmap(),
+                        this.createColoredBitmap(clone),
                         Shader.TileMode.CLAMP,
                         Shader.TileMode.CLAMP
                 );
