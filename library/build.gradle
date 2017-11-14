@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 320
-        versionName '2.6.8'
+        versionName '2.6.9'
     }
     buildTypes {
         release {
