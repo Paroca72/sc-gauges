@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven'
 
 group='com.github.Paroca72'
 
@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 320
-        versionName '2.6.9'
+        versionName '2.6.10'
     }
     buildTypes {
         release {
