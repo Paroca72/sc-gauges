@@ -12,7 +12,7 @@ import android.util.AttributeSet;
  * Draw a line
  *
  * @author Samuele Carassai
- * @version 1.1.0
+ * @version 3.0.0
  * @since 2016-08-16
  */
 @SuppressWarnings("unused")
@@ -35,7 +35,7 @@ public class ScLinearGauge extends ScGauge {
     // ***************************************************************************************
     // Private attributes
 
-    protected RectF mBounds;
+    private RectF mBounds;
 
 
     // ***************************************************************************************
@@ -80,7 +80,6 @@ public class ScLinearGauge extends ScGauge {
      * Init the component.
      * Retrieve all attributes with the default values if needed.
      * Check the values for internal use and create the painters.
-     *
      * @param context  the owner context
      * @param attrs    the attribute set
      * @param defStyle the style
@@ -91,13 +90,13 @@ public class ScLinearGauge extends ScGauge {
 
         // Get the attributes list
         final TypedArray attrArray = context
-                .obtainStyledAttributes(attrs, R.styleable.ScGauges, defStyle, 0);
+                .obtainStyledAttributes(attrs, R.styleable.ScGauge, defStyle, 0);
 
         // Read all attributes from xml and assign the value to linked variables
-        float left = attrArray.getFloat(R.styleable.ScGauges_left, 0.0f);
-        float top = attrArray.getFloat(R.styleable.ScGauges_top, 0.0f);
-        float right = attrArray.getFloat(R.styleable.ScGauges_right, 100.0f);
-        float bottom = attrArray.getFloat(R.styleable.ScGauges_bottom, 0.0f);
+        float left = attrArray.getFloat(R.styleable.ScGauge_left, 0.0f);
+        float top = attrArray.getFloat(R.styleable.ScGauge_top, 0.0f);
+        float right = attrArray.getFloat(R.styleable.ScGauge_right, 100.0f);
+        float bottom = attrArray.getFloat(R.styleable.ScGauge_bottom, 0.0f);
 
         // Check the value
         left = ScBase.valueRangeLimit(left, 0.0f, 100.0f);
@@ -110,7 +109,7 @@ public class ScLinearGauge extends ScGauge {
 
         // Predefined orientation
         int orientation = attrArray.getInt(
-                R.styleable.ScGauges_orientation, Orientation.CUSTOM.ordinal());
+                R.styleable.ScGauge_orientation, Orientation.CUSTOM.ordinal());
         this.internalSetOrientation(Orientation.values()[orientation]);
 
         // Recycle
@@ -124,7 +123,6 @@ public class ScLinearGauge extends ScGauge {
     /**
      * Create the path to draw.
      * This is fundamental to draw something on the canvas.
-     *
      * @return the path
      */
     @Override
@@ -150,8 +148,8 @@ public class ScLinearGauge extends ScGauge {
 
     /**
      * Save the current instance state
-     *
      * @return the state
+     * @hide
      */
     @Override
     protected Parcelable onSaveInstanceState() {
@@ -173,8 +171,8 @@ public class ScLinearGauge extends ScGauge {
 
     /**
      * Restore the current instance state
-     *
      * @param state the state
+     * @hide
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
@@ -197,18 +195,7 @@ public class ScLinearGauge extends ScGauge {
     // Public properties
 
     /**
-     * Return the left bounds in percentage
-     *
-     * @return the left bounds percentage
-     */
-    @SuppressWarnings("unused")
-    public float getLeftBounds() {
-        return this.mBounds.left;
-    }
-
-    /**
      * Set the left position in percentage
-     *
      * @param value of the left bounds in percentage
      */
     @SuppressWarnings("unused")
@@ -225,18 +212,17 @@ public class ScLinearGauge extends ScGauge {
     }
 
     /**
-     * Return the top bounds in percentage
-     *
-     * @return the top bounds percentage
+     * Get the left bounds in percentage
+     * @return the left bounds percentage
      */
     @SuppressWarnings("unused")
-    public float getTopBounds() {
-        return this.mBounds.top;
+    public float getLeftBounds() {
+        return this.mBounds.left;
     }
+
 
     /**
      * Set the top position in percentage
-     *
      * @param value of the top bounds in percentage
      */
     @SuppressWarnings("unused")
@@ -253,18 +239,17 @@ public class ScLinearGauge extends ScGauge {
     }
 
     /**
-     * Return the right bounds in percentage
-     *
-     * @return the right bounds percentage
+     * Get the top bounds in percentage
+     * @return the top bounds percentage
      */
     @SuppressWarnings("unused")
-    public float getRightBounds() {
-        return this.mBounds.right;
+    public float getTopBounds() {
+        return this.mBounds.top;
     }
+
 
     /**
      * Set the right position in percentage
-     *
      * @param value of the right bounds in percentage
      */
     @SuppressWarnings("unused")
@@ -281,18 +266,17 @@ public class ScLinearGauge extends ScGauge {
     }
 
     /**
-     * Return the bottom bounds in percentage
-     *
-     * @return the bottom bounds percentage
+     * Get the right bounds in percentage
+     * @return the right bounds percentage
      */
     @SuppressWarnings("unused")
-    public float getBottomBounds() {
-        return this.mBounds.bottom;
+    public float getRightBounds() {
+        return this.mBounds.right;
     }
+
 
     /**
      * Set the bottom position in percentage
-     *
      * @param value of the bottom bounds in percentage
      */
     @SuppressWarnings("unused")
@@ -309,26 +293,16 @@ public class ScLinearGauge extends ScGauge {
     }
 
     /**
-     * Return the current orientation
-     *
-     * @return the orientation
+     * Return the bottom bounds in percentage
+     * @return the bottom bounds percentage
      */
     @SuppressWarnings("unused")
-    public Orientation getOrientation() {
-        // Check for horizontal
-        if (this.mBounds.top == this.mBounds.bottom) return Orientation.HORIZONTAL;
-        // Check for vertical
-        if (this.mBounds.left == this.mBounds.right) return Orientation.VERTICAL;
-        // Custom
-        return Orientation.CUSTOM;
+    public float getBottomBounds() {
+        return this.mBounds.bottom;
     }
 
     /**
-     * Set the current orientation.
-     * Set the value to "horizontal" it the same to set top and bottom at the same value.
-     * Set the value to "vertical" it the same to set left and right at the same value.
-     * Set the value to "custom" no have visible effect.
-     *
+     * Set the current orientation
      * @param value of the bottom bounds in percentage
      */
     @SuppressWarnings("unused")
@@ -339,6 +313,20 @@ public class ScLinearGauge extends ScGauge {
             this.internalSetOrientation(value);
             this.requestLayout();
         }
+    }
+
+    /**
+     * Get the current orientation
+     * @return the orientation
+     */
+    @SuppressWarnings("unused")
+    public Orientation getOrientation() {
+        // Check for horizontal
+        if (this.mBounds.top == this.mBounds.bottom) return Orientation.HORIZONTAL;
+        // Check for vertical
+        if (this.mBounds.left == this.mBounds.right) return Orientation.VERTICAL;
+        // Custom
+        return Orientation.CUSTOM;
     }
 
 

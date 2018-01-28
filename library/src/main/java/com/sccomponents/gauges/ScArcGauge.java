@@ -12,10 +12,13 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 /**
- * Draw an arc
+ * Define a arc path and draw on it.
+ * <p>
+ * This class inherited from ScGauge and will give it the possibility to use some features
+ * predefined and use new features for draw on the path.
  *
  * @author Samuele Carassai
- * @version 2.0.0
+ * @version 3.0.0
  * @since 2016-05-26
  */
 public class ScArcGauge extends ScGauge {
@@ -24,16 +27,16 @@ public class ScArcGauge extends ScGauge {
      * Constants
      */
 
-    public static final float DEFAULT_ANGLE_START = 0.0f;
-    public static final float DEFAULT_ANGLE_SWEEP = 360.0f;
+    private static final float DEFAULT_ANGLE_START = 0.0f;
+    private static final float DEFAULT_ANGLE_SWEEP = 360.0f;
 
 
     /****************************************************************************************
      * Private attributes
      */
 
-    protected float mAngleStart;
-    protected float mAngleSweep;
+    private float mAngleStart;
+    private float mAngleSweep;
 
 
     // ***************************************************************************************
@@ -62,24 +65,20 @@ public class ScArcGauge extends ScGauge {
      * Init the component.
      * Retrieve all attributes with the default values if needed.
      * Check the values for internal use and create the painters.
-     *
-     * @param context  the owner context
-     * @param attrs    the attribute set
-     * @param defStyle the style
+     * @param context   the owner context
+     * @param attrs     the attribute set
+     * @param defStyle  the style
      */
     private void init(Context context, AttributeSet attrs, int defStyle) {
-        //--------------------------------------------------
-        // ATTRIBUTES
-
         // Get the attributes list
         final TypedArray attrArray = context
-                .obtainStyledAttributes(attrs, R.styleable.ScGauges, defStyle, 0);
+                .obtainStyledAttributes(attrs, R.styleable.ScGauge, defStyle, 0);
 
         // Read all attributes from xml and assign the value to linked variables
         this.mAngleStart = attrArray.getFloat(
-                R.styleable.ScGauges_angleStart, ScArcGauge.DEFAULT_ANGLE_START);
+                R.styleable.ScGauge_angleStart, ScArcGauge.DEFAULT_ANGLE_START);
         this.mAngleSweep = attrArray.getFloat(
-                R.styleable.ScGauges_angleSweep, ScArcGauge.DEFAULT_ANGLE_SWEEP);
+                R.styleable.ScGauge_angleSweep, ScArcGauge.DEFAULT_ANGLE_SWEEP);
 
         // Recycle
         attrArray.recycle();
@@ -90,10 +89,8 @@ public class ScArcGauge extends ScGauge {
     // Overrides
 
     /**
-     * Create the path to draw.
-     * This is fundamental to draw something on the canvas.
-     *
-     * @return the path
+     * Create the arc path to draw.
+     * @return  the path
      */
     @Override
     @SuppressWarnings("all")
@@ -130,8 +127,8 @@ public class ScArcGauge extends ScGauge {
 
     /**
      * Save the current instance state
-     *
      * @return the state
+     * @hide
      */
     @Override
     protected Parcelable onSaveInstanceState() {
@@ -151,8 +148,8 @@ public class ScArcGauge extends ScGauge {
 
     /**
      * Restore the current instance state
-     *
      * @param state the state
+     * @hide
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
@@ -173,10 +170,10 @@ public class ScArcGauge extends ScGauge {
     // Public methods
 
     /**
-     * Convert a percentage value in a angle (in degrees) value respect the start and sweep angles.
-     *
-     * @param percentage the starting value
-     * @return the angle value
+     * Convert a percentage value in a angle (in degrees) value respect the start and
+     * sweep angles.
+     * @param percentage    the starting value
+     * @return              the angle value
      */
     @SuppressWarnings("unused")
     public float percentageToAngle(float percentage) {
@@ -189,7 +186,6 @@ public class ScArcGauge extends ScGauge {
 
     /**
      * Return the start angle
-     *
      * @return the start angle in degrees
      */
     @SuppressWarnings("unused")
@@ -199,7 +195,6 @@ public class ScArcGauge extends ScGauge {
 
     /**
      * Set the start angle
-     *
      * @param value the start angle in degrees
      */
     @SuppressWarnings("unused")
@@ -214,7 +209,6 @@ public class ScArcGauge extends ScGauge {
 
     /**
      * Return the sweep angle
-     *
      * @return the sweep angle in degrees
      */
     @SuppressWarnings("unused")
@@ -224,7 +218,6 @@ public class ScArcGauge extends ScGauge {
 
     /**
      * Set the sweep angle
-     *
      * @param value the sweep angle in degrees
      */
     @SuppressWarnings("unused")

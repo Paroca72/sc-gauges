@@ -3,28 +3,51 @@
     xmlns:sc="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cccccc">
+    android:background="#ffffff"
+    android:gravity="center_vertical|center_horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:background="#f5f5f5"
-        android:orientation="vertical">
+        android:background="#f5f5f5" >
 
         <com.sccomponents.gauges.ScArcGauge
+            xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:id="@+id/gauge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#f5f5f5"
-            android:padding="30dp"
             sc:angleStart="135"
             sc:angleSweep="270"
-            sc:progressColors="#03A409|#FFF506|#EB0100"
-            sc:progressSize="10dp"
-            sc:strokeSize="10dp"
-            sc:value="50" />
+            sc:progressColor="#ffff00ff"
+            sc:progressPosition="middle"
+            sc:strokeColor="#009688"
+            sc:strokeWidths="1|20"
+            sc:strokePosition="inside"
+            android:paddingBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="20dp"/>
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingRight="10dp"
+            android:text="Percentage"
+            android:textColor="#009688"
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:paddingRight="10dp"
+            android:text="0%"
+            android:textColor="#009688"
+            android:textSize="38dp" />
+
+    </FrameLayout>
 
 </LinearLayout>
 

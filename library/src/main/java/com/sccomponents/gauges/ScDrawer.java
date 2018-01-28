@@ -19,11 +19,25 @@ import java.util.List;
 
 /**
  * Define the way to draw a path on a View's canvas
+ * <p>
+ * The duty of this class is divided in two main: define settings where draw the path and provide
+ * the possibility to add some "features" for drawing it.
+ * Whereas the "features" are independent from this class but are necessary to draw the path on
+ * the canvas.
+ * <p>
+ * There are two ways to settle the drawing area:
+ * <li>DRAW: will simply draw the path on the component canvas using the proper methods.</li>
+ * <li>STRETCH: before to draw the path stretch the canvas.</li>
+ * <p>
+ * Note that the stretch methods will stretch also the stroke creating a singular effect.
+ * Always you can decide witch dimensions to fill: none, both dimensions, vertical or horizontal.
+ * This for give to the user many possibilities to render the path on the drawing area.
  *
  * @author Samuele Carassai
- * @version 1.0.3
+ * @version 3.0.0
  * @since 2016-05-26
  */
+// TODO: improve description
 public abstract class ScDrawer extends ScBase {
 
     // ***************************************************************************************
@@ -53,13 +67,19 @@ public abstract class ScDrawer extends ScBase {
     // ***************************************************************************************
     // Private and protected attributes
 
+    // @hide
     protected Path mPath;
+    // @hide
     protected ScPathMeasure mPathMeasure;
 
+    // @hide
     protected RectF mDrawArea;
+    // @hide
     protected RectF mVirtualArea;
+    // @hide
     protected PointF mAreaScale;
 
+    // @hide
     protected List<ScFeature> mFeatures;
     private boolean mFeaturesMustBeRefresh;
 
@@ -105,15 +125,9 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Create the path to draw.
-     * This method need to draw something on the canvas. Note that the ScDrawer class not expose
-     * other methods or public properties to manage the path. To work on path you can use the
-     * protected properties: mPath and mPathMeasurer.
-     * When you create the path you should be not take care of the view padding because is already
-     * considered in the width and height params.
-     *
-     * @param width  the drawing area width
-     * @param height the drawing area height
-     * @return return the new path
+     * @param width     the drawing area width
+     * @param height    the drawing area height
+     * @return          return the new path
      */
     @SuppressWarnings("unused")
     protected abstract Path createPath(int width, int height);
@@ -135,35 +149,34 @@ public abstract class ScDrawer extends ScBase {
      * Init the component.
      * Retrieve all attributes with the default values if needed.
      * Check the values for internal use and create the painters.
-     *
-     * @param context  the owner context
-     * @param attrs    the attribute set
-     * @param defStyle the style
+     * @param context   the owner context
+     * @param attrs     the attribute set
+     * @param defStyle  the style
      */
     private void init(Context context, AttributeSet attrs, int defStyle) {
         //--------------------------------------------------
         // ATTRIBUTES
 
         // Get the attributes list
-        final TypedArray attrArray = context.obtainStyledAttributes(attrs, R.styleable.ScGauges, defStyle, 0);
+        final TypedArray attrArray = context.obtainStyledAttributes(attrs, R.styleable.ScGauge, defStyle, 0);
 
         // Read all attributes from xml and assign the value to linked variables
         this.mMaximumWidth = attrArray.getDimensionPixelSize(
-                R.styleable.ScGauges_maxWidth, Integer.MAX_VALUE);
+                R.styleable.ScGauge_maxWidth, Integer.MAX_VALUE);
         this.mMaximumHeight = attrArray.getDimensionPixelSize(
-                R.styleable.ScGauges_maxHeight, Integer.MAX_VALUE);
+                R.styleable.ScGauge_maxHeight, Integer.MAX_VALUE);
 
         int fillingArea = attrArray.getInt(
-                R.styleable.ScGauges_fillArea, FillingArea.BOTH.ordinal());
+                R.styleable.ScGauge_fillArea, FillingArea.BOTH.ordinal());
         this.mFillingArea = FillingArea.values()[fillingArea];
 
         int fillingMode = attrArray.getInt(
-                R.styleable.ScGauges_fillMode, FillingMode.DRAW.ordinal());
+                R.styleable.ScGauge_fillMode, FillingMode.DRAW.ordinal());
         this.mFillingMode = FillingMode.values()[fillingMode];
 
         // Input
         this.mRecognizePathTouch = attrArray.getBoolean(
-                R.styleable.ScGauges_pathTouchable, false);
+                R.styleable.ScGauge_pathTouchable, false);
 
         // Recycle
         attrArray.recycle();
@@ -179,10 +192,9 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Get the drawable area.
-     *
-     * @param width  the reference width
-     * @param height the reference height
-     * @return a rectangle that represent the area
+     * @param width     the reference width
+     * @param height    the reference height
+     * @return          the rectangle that represent the area
      */
     private RectF getDrawableArea(int width, int height) {
         // Create the area and transpose it by the component padding
@@ -196,10 +208,9 @@ public abstract class ScDrawer extends ScBase {
      * Calculate the virtual drawing area.
      * This area is calculated starting from the trimmed path area and expanded proportionally
      * by the stretch setting to cover the component drawing area.
-     *
-     * @param width  the reference width
-     * @param height the reference height
-     * @return a rectangle that represent the area
+     * @param width     the reference width
+     * @param height    the reference height
+     * @return          the rectangle that represent the area
      */
     private RectF getVirtualArea(int width, int height) {
         // Check for empty values
@@ -236,10 +247,9 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Given a source rectangle and a destination one calculate the scale.
-     *
-     * @param source      the source rectangle
-     * @param destination the destination rectangle
-     * @return the scale
+     * @param source        the source rectangle
+     * @param destination   the destination rectangle
+     * @return              the scale
      */
     private PointF getScale(RectF source, RectF destination) {
         // Check for empty values
@@ -255,10 +265,9 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Fix the scales of the path by filling mode settings.
-     *
-     * @param source the source path
-     * @param xScale the horizontal scale
-     * @param yScale the vertical scale
+     * @param source    the source path
+     * @param xScale    the horizontal scale
+     * @param yScale    the vertical scale
      */
     private void scalePath(Path source, float xScale, float yScale) {
         // Check for empty value
@@ -274,7 +283,6 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Calculate an threshold for convenience considering all the pointer on the path.
-     *
      * @return The auto calculate threshold
      */
     private float getAutoPathTouchThreshold() {
@@ -298,14 +306,13 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Draw all the features
-     *
      * @param canvas the canvas where draw
      */
     private void drawFeatures(Canvas canvas) {
         // Check for empty values
         if (this.mFeatures != null) {
             // Cycle all features
-            for (ScFeature feature : this.mFeatures) {
+            for (ScFeature feature : this.mFeatures)
                 // Check for empty value
                 if (feature != null) {
                     // Check if need to refresh
@@ -315,7 +322,7 @@ public abstract class ScDrawer extends ScBase {
                     //Call the draw methods.
                     feature.draw(canvas);
                 }
-            }
+
             // Trigger
             this.mFeaturesMustBeRefresh = false;
         }
@@ -323,10 +330,9 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Scale and transpose the path and after draw the features on the canvas
-     *
-     * @param canvas  the canvas where draw
-     * @param xOffset the horizontal offset
-     * @param yOffset the vertical offset
+     * @param canvas    the canvas where draw
+     * @param xOffset   the horizontal offset
+     * @param yOffset   the vertical offset
      */
     private void setForDraw(Canvas canvas, float xOffset, float yOffset) {
         // Create a copy of the original path because need to move the offset or scale the
@@ -344,7 +350,6 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Scale and transpose the canvas and after draw the features on the canvas
-     *
      * @param canvas the canvas where draw
      */
     private void setForStretch(Canvas canvas) {
@@ -376,10 +381,10 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * This method is used to calc the areas and filling it by call/set the right draw plan.
+     * <p>
      * Are to consider two type of draw:
-     * - DRAW: Scale and transpose the path and after draw it on canvas
-     * - STRETCH: Scale and transpose the canvas and after draw the path on it
-     *
+     * <li>DRAW: Scale and transpose the path and after draw it on canvas</li>
+     * <li>STRETCH: Scale and transpose the canvas and after draw the path on it</li>
      * @param canvas the view canvas
      */
     @Override
@@ -403,9 +408,9 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * On measure
-     *
-     * @param widthMeasureSpec  the reference width
-     * @param heightMeasureSpec the reference height
+     * @param widthMeasureSpec      the reference width
+     * @param heightMeasureSpec     the reference height
+     * @hide
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -452,9 +457,9 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * On touch management
-     *
-     * @param event the touch event
-     * @return Event propagation
+     * @param event     the touch event
+     * @return          Event propagation
+     * @hide
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -483,7 +488,7 @@ public abstract class ScDrawer extends ScBase {
         // from the path start. Note that if the path is already pressed the threshold will be
         // infinite.
         float threshold = this.mPathIsTouched ? Float.POSITIVE_INFINITY : this.mPathTouchThreshold;
-        float distance = this.mPathMeasure.getDistance(x, y, threshold);
+        float distance = this.getDistance(x, y, threshold);
 
         // Select case by action type
         switch (event.getAction()) {
@@ -500,7 +505,7 @@ public abstract class ScDrawer extends ScBase {
             // Release
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                // Trigger is released and call the methos
+                // Trigger is released and call the methods
                 this.mPathIsTouched = false;
                 this.onPathRelease();
                 break;
@@ -526,8 +531,8 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Save the current instance state
-     *
      * @return the state
+     * @hide
      */
     @Override
     protected Parcelable onSaveInstanceState() {
@@ -542,6 +547,8 @@ public abstract class ScDrawer extends ScBase {
         state.putInt("mMaximumHeight", this.mMaximumHeight);
         state.putInt("mFillingArea", this.mFillingArea.ordinal());
         state.putInt("mFillingMode", this.mFillingMode.ordinal());
+        state.putBoolean("mRecognizePathTouch", this.mRecognizePathTouch);
+        state.putFloat("mPathTouchThreshold", this.mPathTouchThreshold);
 
         // Return the new state
         return state;
@@ -549,8 +556,8 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Restore the current instance state
-     *
      * @param state the state
+     * @hide
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
@@ -566,20 +573,38 @@ public abstract class ScDrawer extends ScBase {
         this.mMaximumHeight = savedState.getInt("mMaximumHeight");
         this.mFillingArea = FillingArea.values()[savedState.getInt("mFillingArea")];
         this.mFillingMode = FillingMode.values()[savedState.getInt("mFillingMode")];
+        this.mRecognizePathTouch = savedState.getBoolean("mRecognizePathTouch");
+        this.mPathTouchThreshold = savedState.getFloat("mPathTouchThreshold");
     }
 
 
     // ***************************************************************************************
-    // Public
+    // Public & Protected
 
     /**
      * Return true is the path is touched.
-     *
      * @return the pressure status
      */
     @SuppressWarnings("unused")
     public boolean isPressed() {
         return this.mPathIsTouched;
+    }
+
+    /**
+     * This is the base method to find the distance of the point on the path nearest the point
+     * passed to the methods. The found point, if exists, will seek keep in consideration a user
+     * threshold.
+     * <p>
+     * NOTE that this default method is VERY expensive about performance because analyze all points
+     * on the original path. So is recommended to override this method for every specific inherited
+     * classes.
+     * @param x         the x point
+     * @param y         the y point
+     * @param threshold the threshold
+     * @return          the distance from the path start
+     */
+    protected float getDistance(float x, float y, float threshold) {
+        return this.mPathMeasure.getDistance(x, y, threshold);
     }
 
 
@@ -588,7 +613,6 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Add one feature to this drawer.
-     *
      * @param feature the new feature to add to the drawer
      */
     @SuppressWarnings("unused")
@@ -615,9 +639,8 @@ public abstract class ScDrawer extends ScBase {
      * Add one feature to this drawer.
      * This particular overload instantiate a new object from the class reference passed.
      * The passed class reference must implement the ScFeature interface.
-     *
-     * @param classRef the class reference to instantiate
-     * @return the new feature object
+     * @param classRef  the class reference to instantiate
+     * @return          the new feature object
      */
     @SuppressWarnings("unused")
     public ScFeature addFeature(Class<?> classRef) {
@@ -642,9 +665,8 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Remove a feature from this drawer.
-     *
-     * @param feature the feature to remove
-     * @return true if removed
+     * @param feature   the feature to remove
+     * @return          true if removed
      */
     @SuppressWarnings("unused")
     public boolean removeFeature(ScFeature feature) {
@@ -676,12 +698,11 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Find all features that corresponds to a class and tag reference.
-     * If the class reference is null the class will be not consider.
+     * If the class reference or tag is null the class will be not consider.
      * Same behavior for the tag param.
-     *
-     * @param classRef the class reference to compare
-     * @param tag      the tag reference to compare
-     * @return the features found
+     * @param classRef  the class reference to compare
+     * @param tag       the tag reference to compare
+     * @return          the features found
      */
     @SuppressWarnings("unused")
     public List<ScFeature> findFeatures(Class<?> classRef, String tag) {
@@ -710,9 +731,8 @@ public abstract class ScDrawer extends ScBase {
      * Find the feature searching by tag.
      * If found something return the first element found.
      * If the tag param is null return the first feature found avoid the comparison check.
-     *
-     * @param tag the tag reference
-     * @return the found feature
+     * @param tag   the tag reference
+     * @return      the found feature
      */
     @SuppressWarnings("unused")
     public ScFeature findFeature(String tag) {
@@ -726,9 +746,8 @@ public abstract class ScDrawer extends ScBase {
      * Find the feature searching by the class.
      * If found something return the first element found.
      * If the class param is null return the first feature found avoid the comparison check.
-     *
-     * @param classRef the class reference
-     * @return the found feature
+     * @param classRef  the class reference
+     * @return          the found feature
      */
     @SuppressWarnings("unused")
     public ScFeature findFeature(Class<?> classRef) {
@@ -741,7 +760,6 @@ public abstract class ScDrawer extends ScBase {
     /**
      * Find all feature tagged as param and move they at the end of the list so will draw for
      * last (on top).
-     *
      * @param tag the tag reference
      */
     @SuppressWarnings("unused")
@@ -760,7 +778,6 @@ public abstract class ScDrawer extends ScBase {
     /**
      * Find all feature that inherit from class param and move they at the end of the list so will
      * draw for last (on top).
-     *
      * @param classRef the class reference
      */
     @SuppressWarnings("unused")
@@ -778,7 +795,6 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Find the feature and move it at the end of the list so will draw for last (on top).
-     *
      * @param feature the feature
      */
     @SuppressWarnings("unused")
@@ -797,7 +813,6 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Called when the path is touched.
-     *
      * @param distance the distance from the path start
      */
     protected void onPathTouch(float distance) {
@@ -811,7 +826,7 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Called when the user release the touch after than he touched the path.
+     * Called when the user release the touch.
      */
     protected void onPathRelease() {
         // Enable the parent touch
@@ -824,8 +839,7 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Called when, after a path touch, the user move the finger on the component.
-     *
+     * Called when the user move the finger on the component.
      * @param distance the distance from the path start
      */
     protected void onPathSlide(float distance) {
@@ -840,24 +854,10 @@ public abstract class ScDrawer extends ScBase {
     // Public properties
 
     /**
-     * Return the current area filling type.
-     * This setting decide how the path will fit the drawing area.
-     * If the setting is different from FillingArea.NONE the path will stretched to fit the
-     * dimension specified.
-     *
-     * @return the filling area type
-     */
-    @SuppressWarnings("unused")
-    public FillingArea getFillingArea() {
-        return this.mFillingArea;
-    }
-
-    /**
      * Set the current area filling type.
      * This setting decide how the path will fit the drawing area.
      * If the setting is different from FillingArea.NONE the path will stretched to fit the
      * dimension specified.
-     *
      * @param value set filling area type
      */
     @SuppressWarnings("unused")
@@ -871,24 +871,24 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Get the current area filling mode.
-     * This setting tell to the class how drawing the path on canvas:
-     * - DRAW: Scale and transpose the path and after draw it on canvas
-     * - STRETCH: Scale and transpose the canvas and after draw the path on it.
-     *
-     * @return get the current filling mode
+     * Get the current area filling type.
+     * This setting decide how the path will fit the drawing area.
+     * If the setting is different from FillingArea.NONE the path will stretched to fit the
+     * dimension specified.
+     * @return the filling area type
      */
     @SuppressWarnings("unused")
-    public FillingMode getFillingMode() {
-        return this.mFillingMode;
+    public FillingArea getFillingArea() {
+        return this.mFillingArea;
     }
+
 
     /**
      * Set the current area filling mode.
+     * <p>
      * This setting tell to the class how drawing the path on canvas:
-     * - DRAW: Scale and transpose the path and after draw it on canvas
-     * - STRETCH: Scale and transpose the canvas and after draw the path on it.
-     *
+     * <li>DRAW: Scale and transpose the path and after draw it on canvas.</li>
+     * <li>STRETCH: Scale and transpose the canvas and after draw the path on it.</li>
      * @param value the new filling mode
      */
     @SuppressWarnings("unused")
@@ -902,18 +902,17 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Return the maximum width of the component
-     *
-     * @return the actual maximum value
+     * Get the current area filling mode.
+     * @return get the current filling mode
      */
     @SuppressWarnings("unused")
-    public int getMaximumWidth() {
-        return this.mMaximumWidth;
+    public FillingMode getFillingMode() {
+        return this.mFillingMode;
     }
+
 
     /**
      * Set the maximum width of the component
-     *
      * @param value the new maximum value in pixel
      */
     @SuppressWarnings("unused")
@@ -929,18 +928,17 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Return the maximum height of the component
-     *
-     * @return the new maximum value in pixel
+     * Get the maximum width of the component
+     * @return the actual maximum value
      */
     @SuppressWarnings("unused")
-    public int getMaximumHeight() {
-        return this.mMaximumHeight;
+    public int getMaximumWidth() {
+        return this.mMaximumWidth;
     }
+
 
     /**
      * Set the maximum height of the component
-     *
      * @param value the new maximum value in pixel
      */
     @SuppressWarnings("unused")
@@ -956,18 +954,17 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Return if the input is enabled.
-     *
-     * @return the current input status
+     * Get the maximum height of the component
+     * @return the new maximum value in pixel
      */
     @SuppressWarnings("unused")
-    public boolean getRecognizePathTouch() {
-        return this.mRecognizePathTouch;
+    public int getMaximumHeight() {
+        return this.mMaximumHeight;
     }
+
 
     /**
      * Set the input status
-     *
      * @param value the new input status
      */
     @SuppressWarnings("unused")
@@ -980,23 +977,31 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Return the recognize threshold for find the point on path.
-     *
-     * @return the threshold value
+     * Get the input status
+     * @return the current input status
      */
     @SuppressWarnings("unused")
-    public float getPathTouchThreshold() {
-        return this.mPathTouchThreshold;
+    public boolean getRecognizePathTouch() {
+        return this.mRecognizePathTouch;
     }
 
+
     /**
-     * Set the recognize threshold for find the point on path.
-     *
+     * Set the threshold width to find the point on path.
      * @param value the threshold value
      */
     @SuppressWarnings("unused")
     public void setPathTouchThreshold(float value) {
         this.mPathTouchThreshold = value;
+    }
+
+    /**
+     * Get the threshold width to find the point on path.
+     * @return the threshold value
+     */
+    @SuppressWarnings("unused")
+    public float getPathTouchThreshold() {
+        return this.mPathTouchThreshold;
     }
 
 
@@ -1011,7 +1016,6 @@ public abstract class ScDrawer extends ScBase {
 
         /**
          * Called when the path is touched.
-         *
          * @param distance the distance from the path start
          */
         void onTouch(float distance);
@@ -1024,7 +1028,6 @@ public abstract class ScDrawer extends ScBase {
         /**
          * Called when the user move the pressure on the screen.
          * This called only if before had a onTouch event.
-         *
          * @param distance the distance from the path start
          */
         void onSlide(float distance);
@@ -1032,7 +1035,6 @@ public abstract class ScDrawer extends ScBase {
 
     /**
      * Set the generic event listener
-     *
      * @param listener the listener
      */
     @SuppressWarnings("unused")

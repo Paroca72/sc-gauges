@@ -2,117 +2,166 @@
 <resources>
 
     <!-- Components -->
-    <declare-styleable name="ScGauges">
-        <attr name="strokeSize" format="dimension" />
-        <attr name="strokeColor" format="color" />
-        <attr name="strokeColors" format="string" />
-        <attr name="strokeColorsMode" />
-        <attr name="fillArea" />
-        <attr name="fillMode" />
-        <attr name="angleStart" format="float" />
-        <attr name="angleSweep" format="float" />
-        <attr name="progressSize" format="dimension" />
-        <attr name="progressColor" format="color" />
-        <attr name="progressColors" format="string" />
-        <attr name="progressColorsMode" />
-        <attr name="value" format="float" />
-        <attr name="pointerRadius" format="dimension" />
-        <attr name="pointerColor" format="color" />
-        <attr name="pointerColors" format="string" />
-        <attr name="pointerColorsMode" />
-        <attr name="pointerSelectMode" />
-        <attr name="haloSize" format="dimension" />
-        <attr name="notchesSize" format="dimension" />
-        <attr name="notchesColor" format="color" />
-        <attr name="notchesColors" format="string" />
-        <attr name="notchesColorsMode" />
-        <attr name="notches" format="integer" />
-        <attr name="notchesLength" format="dimension" />
-        <attr name="notchesPosition" />
+    <declare-styleable name="ScGauge">
+        <!-- BASE -->
+        <attr name="fillArea" format="enum">
+            <enum name="none" value="0" />
+            <enum name="both" value="1" />
+            <enum name="horizontal" value="2" />
+            <enum name="vertical" value="3" />
+        </attr>
+        <attr name="fillMode" format="enum">
+            <enum name="stretch" value="0" />
+            <enum name="draw" value="1" />
+        </attr>
         <attr name="snapToNotches" format="boolean" />
-        <attr name="textTokens" format="string" />
-        <attr name="textSize" format="dimension" />
-        <attr name="textColor" format="color" />
-        <attr name="textColors" format="string" />
-        <attr name="textColorsMode" />
-        <attr name="textPosition" />
-        <attr name="textAlign" />
-        <attr name="textUnbend" format="boolean" />
+        <attr name="pathTouchable" format="boolean" />
+
+        <!-- VALUES -->
+        <attr name="value" format="float" />
+        <attr name="highValue" format="float" />
+        <attr name="lowValue" format="float" />
+
+        <!-- DIMENSIONS -->
         <attr name="maxWidth" format="dimension" />
         <attr name="maxHeight" format="dimension" />
-        <attr name="pathTouchable" format="boolean" />
-        <attr name="roundedLine" format="boolean" />
-        <attr name="orientation" />
         <attr name="left" format="float" />
         <attr name="top" format="float" />
         <attr name="bottom" format="float" />
         <attr name="right" format="float" />
+
+        <!-- ARC -->
+        <attr name="angleStart" format="float" />
+        <attr name="angleSweep" format="float" />
+
+        <!-- STROKE -->
+        <attr name="strokeSize" format="dimension" />
+        <attr name="strokeColor" format="color" />
+        <attr name="strokeColors" format="string" />
+        <attr name="strokeColorsMode" format="enum">
+            <enum name="solid" value="0" />
+            <enum name="gradient" value="1" />
+        </attr>
+        <attr name="strokeWidths" format="string" />
+        <attr name="strokeWidthsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="strokePosition" format="enum">
+            <enum name="inside" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="outside" value="2" />
+        </attr>
+        <attr name="strokeRoundedCap" format="boolean" />
+
+        <!-- PROGRESS -->
+        <attr name="progressSize" format="dimension" />
+        <attr name="progressColor" format="color" />
+        <attr name="progressColors" format="string" />
+        <attr name="progressColorsMode" format="enum">
+            <enum name="solid" value="0" />
+            <enum name="gradient" value="1" />
+        </attr>
+        <attr name="progressWidths" format="string" />
+        <attr name="progressWidthsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="progressPosition" format="enum">
+            <enum name="inside" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="outside" value="2" />
+        </attr>
+        <attr name="progressRoundedCap" format="boolean" />
+
+        <!-- POINTER -->
+        <attr name="pointerSize" format="dimension" />
+        <attr name="pointerRadius" format="dimension" />
+        <attr name="pointerColor" format="color" />
+        <attr name="pointerColors" format="string" />
+        <attr name="pointerColorsMode" format="enum">
+            <enum name="solid" value="0" />
+            <enum name="gradient" value="1" />
+        </attr>
+        <attr name="pointerSelectMode" format="enum">
+            <enum name="nearest" value="0" />
+            <enum name="over" value="1" />
+        </attr>
+        <attr name="pointerWidths" format="string" />
+        <attr name="pointerWidthsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="pointerHaloSize" format="dimension" />
+        <attr name="pointerHaloAlpha" format="float" />
+        <attr name="pointerPosition" format="enum">
+            <enum name="inside" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="outside" value="2" />
+        </attr>
+        <attr name="pointerRoundedCap" format="boolean" />
+
+        <!-- NOTCHES -->
+        <attr name="notchesSize" format="dimension" />
+        <attr name="notchesColor" format="color" />
+        <attr name="notchesColors" format="string" />
+        <attr name="notchesColorsMode" format="enum">
+            <enum name="solid" value="0" />
+            <enum name="gradient" value="1" />
+        </attr>
+        <attr name="notches" format="integer" />
+        <attr name="notchesLength" format="dimension" />
+        <attr name="notchesLengths" format="string" />
+        <attr name="notchesLengthsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="notchesPosition" format="enum">
+            <enum name="inside" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="outside" value="2" />
+        </attr>
+        <attr name="notchesWidths" format="string" />
+        <attr name="notchesWidthsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="notchesRoundedCap" format="boolean" />
+
+        <!-- TEXT -->
+        <attr name="textTokens" format="string" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color" />
+        <attr name="textColors" format="string" />
+        <attr name="textColorsMode" format="enum">
+            <enum name="solid" value="0" />
+            <enum name="gradient" value="1" />
+        </attr>
+        <attr name="textWidths" format="string" />
+        <attr name="textWidthsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="textPosition" format="enum">
+            <enum name="inside" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="outside" value="2" />
+        </attr>
+        <attr name="textAlign" format="enum">
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+        <attr name="textBending" format="boolean" />
+        <attr name="textRoundedCap" format="boolean" />
+
+        <!-- LINE -->
+        <attr name="orientation" format="enum">
+            <enum name="custom" value="0" />
+            <enum name="horizontal" value="1" />
+            <enum name="vertical" value="2" />
+        </attr>
+
     </declare-styleable>
-
-    <attr name="fillArea" format="enum">
-        <enum name="none" value="0" />
-        <enum name="both" value="1" />
-        <enum name="horizontal" value="2" />
-        <enum name="vertical" value="3" />
-    </attr>
-
-    <attr name="fillMode" format="enum">
-        <enum name="stretch" value="0" />
-        <enum name="draw" value="1" />
-    </attr>
-
-    <attr name="strokeColorsMode" format="enum">
-        <enum name="solid" value="0" />
-        <enum name="gradient" value="1" />
-    </attr>
-
-    <attr name="progressColorsMode" format="enum">
-        <enum name="solid" value="0" />
-        <enum name="gradient" value="1" />
-    </attr>
-
-    <attr name="notchesColorsMode" format="enum">
-        <enum name="solid" value="0" />
-        <enum name="gradient" value="1" />
-    </attr>
-
-    <attr name="pointerColorsMode" format="enum">
-        <enum name="solid" value="0" />
-        <enum name="gradient" value="1" />
-    </attr>
-
-    <attr name="pointerSelectMode" format="enum">
-        <enum name="nearest" value="0" />
-        <enum name="over" value="1" />
-    </attr>
-
-    <attr name="textColorsMode" format="enum">
-        <enum name="solid" value="0" />
-        <enum name="gradient" value="1" />
-    </attr>
-
-    <attr name="notchesPosition" format="enum">
-        <enum name="inside" value="0" />
-        <enum name="middle" value="1" />
-        <enum name="outside" value="2" />
-    </attr>
-
-    <attr name="textPosition" format="enum">
-        <enum name="inside" value="0" />
-        <enum name="middle" value="1" />
-        <enum name="outside" value="2" />
-    </attr>
-
-    <attr name="textAlign" format="enum">
-        <enum name="left" value="0" />
-        <enum name="center" value="1" />
-        <enum name="right" value="2" />
-    </attr>
-
-    <attr name="orientation" format="enum">
-        <enum name="custom" value="0" />
-        <enum name="horizontal" value="1" />
-        <enum name="vertical" value="2" />
-    </attr>
 
 </resources>

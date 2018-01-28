@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 320
-        versionName '2.6.10'
+        versionCode 400
+        versionName '3.0.0'
     }
     buildTypes {
         release {
@@ -22,6 +22,21 @@ android {
     }
 }
 
+configurations {
+    doclava
+}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    doclava 'com.google.doclava:doclava:1.0.6'
+}
+
+task generateJavadoc(type: Javadoc, dependsOn: project.configurations.doclava) {
+    failOnError = true
+    title = ""
+    source = android.sourceSets.main.java.srcDirs
+    options.doclet = "com.google.doclava.Doclava"
+    options.docletpath = configurations.doclava.files.asType(List)
+    options.quiet()
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    destinationDir = file("../library/docs/")
 }

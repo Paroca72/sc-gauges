@@ -1,61 +1,34 @@
 package com.sccomponents.gauges;
 
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.graphics.Rect;
+
+import java.util.Arrays;
 
 
 /**
  * Write some token texts on the linked path.
- *
+ * TODO: improve this description
+ * -----------------------------------------------------------------------------------------------
  * @author Samuele Carassai
- * @version 1.0.1
+ * @version 3.0.0
  * @since 2016-05-26
+ * -----------------------------------------------------------------------------------------------
  */
-public class ScWriter extends ScFeature {
-
-    // ***************************************************************************************
-    // Enumerators
-
-    /**
-     * Define the text position respect path
-     */
-    @SuppressWarnings("unused")
-    public enum TokenPositions {
-        INSIDE,
-        MIDDLE,
-        OUTSIDE
-    }
-
-    /**
-     * Define the text alignment respect the owner path segment
-     */
-    @SuppressWarnings("unused")
-    public enum TokenAlignments {
-        CENTER,
-        LEFT,
-        RIGHT
-    }
-
+public class ScWriter extends ScRepetitions {
 
     // ***************************************************************************************
     // Private variables
 
-    private Paint mPaintClone;
-
     private String[] mTokens;
-    private TokenPositions mTokenPosition;
-    private PointF mTokenOffset;
-
-    private boolean mUnbend;
+    private boolean mBending;
     private boolean mConsiderFontMetrics;
-    private boolean mLastTokenOnEnd;
 
-    private ScPathMeasure mSegmentMeasure;
-    private OnDrawListener mOnDrawListener;
+    private float[] mGenericPoint;
+    private Rect mGenericRect;
+    private ScWriter.DrawingInfo mGenericInfo;
 
 
     /****************************************************************************************
@@ -69,16 +42,17 @@ public class ScWriter extends ScFeature {
 
         // Init
         this.mConsiderFontMetrics = true;
-        this.mTokenPosition = TokenPositions.OUTSIDE;
-        this.mTokenOffset = new PointF();
-        this.mSegmentMeasure = new ScPathMeasure();
+        this.mBending = false;
+
+        this.mGenericPoint = new float[2];
+        this.mGenericRect = new Rect();
+        this.mGenericInfo = new ScWriter.DrawingInfo();
 
         // Update the painter
-        this.mPaint.setStrokeWidth(0.0f);
-        this.mPaint.setTextSize(16.0f);
-        this.mPaint.setStyle(Paint.Style.FILL);
-
-        this.mPaintClone = new Paint(this.mPaint);
+        Paint painter = this.getPainter();
+        painter.setStrokeWidth(0.0f);
+        painter.setTextSize(30.0f);
+        painter.setStyle(Paint.Style.FILL);
     }
 
 
@@ -86,8 +60,38 @@ public class ScWriter extends ScFeature {
     // Private methods
 
     /**
+     * Get the text boundaries.
+     * As we can have a multiline string we must find the max boundaries calculated on all
+     * the rows in the string.
+     * @param text the text to check
+     * @return the bounds in rect
+     */
+    private Rect getBounds(String text) {
+        // Holder
+        String[] rows = this.getTextRows(text);
+        Paint painter = this.getPainter();
+
+        int width = 0;
+        int height = 0;
+
+        // Cycle each rows within the string
+        for (String row : rows) {
+            // Get the current row dimensions
+            painter.getTextBounds(row, 0, row.length(), this.mGenericRect);
+
+            // Fix the current values
+            if (width < this.mGenericRect.width())
+                width = this.mGenericRect.width();
+            height += this.mGenericRect.height();
+        }
+
+        // Fix the new values and return
+        this.mGenericRect.set(0, 0, width, height);
+        return this.mGenericRect;
+    }
+
+    /**
      * Divide the text in tokens (rows) by the carriage return "\n"
-     *
      * @param text The passed value
      * @return the tokens
      */
@@ -101,7 +105,6 @@ public class ScWriter extends ScFeature {
     /**
      * In case of multiline get back the the number of rows.
      * NOTE: the separator is "\n"
-     *
      * @param text the passed text
      * @return the number of rows
      */
@@ -111,247 +114,211 @@ public class ScWriter extends ScFeature {
 
     /**
      * Calculate the extra vertical offset by the text position respect to the path.
-     *
+     * This method consider multiline text also.
      * @param info the token info
      * @return the extra vertical offset
      */
-    private float getVerticalOffsetByPosition(TokenInfo info, Rect bounds) {
+    private float getVerticalOffset(ScWriter.DrawingInfo info) {
         // Return the calculated offset considering the text rows number
         int rows = this.getTextRowsCount(info.text);
-        switch (info.position) {
-            case MIDDLE:
-                return (bounds.height() / 2) - ((bounds.height() / 2) * (rows - 1));
+        Rect bounds = this.getBounds(info.text);
+        int singleRowHeight = bounds.height() / rows;
 
-            case OUTSIDE:
-                return - bounds.height() * (rows - 1);
+        if (info.position == Positions.MIDDLE)
+            return singleRowHeight - bounds.height() / 2;
 
-            default:
-                return 0.0f;
-        }
+        if (info.position == Positions.OUTSIDE)
+            return singleRowHeight - bounds.height();
+
+        return 0.0f;
     }
 
     /**
      * Calculate the extra vertical offset by the font metrics dimension.
-     *
      * @param info the token info
      * @return the extra vertical offset
      */
-    private float getVerticalOffsetByFontMetrics(TokenInfo info) {
+    private float getFontMetricsOffset(ScWriter.DrawingInfo info) {
         // Check if need to calculate the offset
-        if (!this.mConsiderFontMetrics) return 0.0f;
+        if (!this.mConsiderFontMetrics)
+            return 0.0f;
 
         // Return the calculated offset
-        switch (info.position) {
-            case OUTSIDE:
-                return this.mPaintClone.getFontMetrics().bottom;
+        Paint painter = this.getPainter();
+        if (info.position == Positions.OUTSIDE)
+            return painter.getFontMetrics().bottom;
 
-            case INSIDE:
-                return this.mPaintClone.getFontMetrics().top;
+        if (info.position == Positions.INSIDE)
+            return painter.getFontMetrics().top;
 
-            default:
-                return 0.0f;
+        return 0.0f;
+    }
+
+    /**
+     * Get the text with using the current painter
+     * @param text the source
+     * @param start the position to start
+     * @param end the position where finish
+     * @return the width
+     */
+    private int getTextWidth(String text, int start, int end) {
+        // Holders
+        Paint paint = this.getPainter();
+        Rect rect = this.mGenericRect;
+
+        // Get the measure of the text
+        paint.getTextBounds(text, start, end, rect);
+        return rect.width();
+    }
+
+    private int getTextWidth(String text) {
+        return this.getTextWidth(text, 0, text.length());
+    }
+
+    /**
+     * Get the horizontal offset where start to draw the text considering the current
+     * painter alignment.
+     * @param text the source text
+     * @return the start position
+     */
+    private float getHorizontalOffset(String text) {
+        // Calculate the start position considering the painter text align
+        switch (this.getPainter().getTextAlign()) {
+            case CENTER:
+                return - this.getTextWidth(text) / 2.0f;
+
+            case RIGHT:
+                return - this.getTextWidth(text);
         }
+        return 0.0f;
     }
 
 
     // ***************************************************************************************
     // Draw methods
-    //
-    // ATTENTION!
-    // In these methods I used to instantiate new objects and is preferable NOT do it for improve
-    // the performance of the component drawing.
-    // In case of low performance the first solution must be to move the new object creation in
-    // the global scope for do it once.
-    //
 
     /**
-     * Draw a single unbend string token.
-     *
+     * Draw some text on the passed path.
+     * Can draw on multi contours and before and after the path. If before of after it will
+     * follow a straight line along the angle of the related first or last point of the path.
+     * This method draw each characters of the string one by one and this will have effect on
+     * the method performance.
      * @param canvas where to draw
-     * @param info   the token info
+     * @param token the text to draw
+     * @param distance the start distance
+     * @param angle the start angle
+     * @param offsetY the vertical offset
      */
-    private void drawUnbend(Canvas canvas, TokenInfo info, float originalAngle) {
-        // Check for null value
-        if (canvas == null) return;
+    private void drawTextOnPath(Canvas canvas, String token,
+                                float distance, float angle, float offsetY) {
+        // The text align must fixed to left and restore at the end of this procedure
+        Paint painter = this.getPainter();
+        Paint.Align oldAlign = painter.getTextAlign();
+        painter.setTextAlign(Paint.Align.LEFT);
 
-        // Calc the text boundaries
-        Rect bounds = new Rect();
-        this.mPaintClone.getTextBounds(info.text, 0, info.text.length(), bounds);
+        // Holders
+        float currentPos = distance;
+        float letterSpacing = 3.0f;
 
-        // Fix the vertical offset considering the position of the text on the path and the
-        // font metrics offset.
-        float extraVerticalOffset = this.getVerticalOffsetByPosition(info, bounds) -
-                this.getVerticalOffsetByFontMetrics(info);
-        ScFeature.translatePoint(info.point, 0.0f, extraVerticalOffset, originalAngle);
+        // Get the last point info of the whole path
+        float[] lastPoint = new float[2];
+        float pathLength = this.getMeasure().getLength();
+        float lastPointAngle = this.getPointAndAngle(pathLength, lastPoint);
 
-        // Save the canvas status and rotate by the calculated tangent angle
-        canvas.save();
-        canvas.rotate(info.angle, info.point.x, info.point.y);
+        // Draw chars per chars
+        for (int index = 0, len = token.length(); index < len; index ++) {
+            // Draw before the paths
+            if (currentPos < 0) {
+                //float offsetX = (this.getTextWidth(toFill) / (toFill.length() * 2));
+                canvas.drawText(
+                        token,
+                        index,
+                        index + 1,
+                        this.mGenericPoint[0] + currentPos,
+                        this.mGenericPoint[1] + offsetY,
+                        painter
+                );
 
-        // Draw all text rows
-        String[] rows = this.getTextRows(info.text);
-        for (int row = 0; row < rows.length; row ++)
-            // Draw the single straight row text
-            canvas.drawText(
-                    rows[row],
-                    info.point.x + info.offset.x,
-                    info.point.y + info.offset.y + row * bounds.height(),
-                    this.mPaintClone
-            );
+            } else {
+                // Reset the canvas rotation
+                canvas.save();
+                canvas.rotate(-angle, this.mGenericPoint[0], this.mGenericPoint[1]);
 
-        // Restore the canvas status
-        canvas.restore();
-    }
+                // Draw on path
+                Path path = this.getMeasure().getPath(currentPos);
+                if (path != null) {
+                    float offsetX = this.getMeasure().getContourDistance(currentPos);
+                    canvas.drawTextOnPath(
+                            "" + token.charAt(index),
+                            path,
+                            offsetX,
+                            offsetY,
+                            painter);
+                } else {
+                    // Draw after path
+                    canvas.rotate(lastPointAngle, lastPoint[0], lastPoint[1]);
+                    canvas.drawText(
+                            token,
+                            index,
+                            index + 1,
+                            lastPoint[0] + currentPos - pathLength,
+                            lastPoint[1] + offsetY,
+                            painter
+                    );
 
-    /**
-     * Draw the bend token on canvas following a segment extracted from the original path.
-     *
-     * @param canvas where to draw
-     * @param info   the token info
-     * @param step   the length of segment
-     */
-    private void drawBend(Canvas canvas, TokenInfo info, float step) {
-        // Check for null value
-        if (canvas == null) return;
+                }
 
-        // Holder
-        Path segment = new Path();
+                // Restore the previous canvas state
+                canvas.restore();
+            }
 
-        // Extract the path segment
-        this.mSegmentMeasure.setPath(this.mPath, false);
-        this.mSegmentMeasure
-                .getSegment(info.distance, info.distance + step, segment, true);
-
-        // Check for the angle
-        if (info.angle != 0) {
-            // Get the matrix and rotate it
-            Matrix matrix = new Matrix();
-            matrix.postRotate(info.angle);
-            // Apply the new matrix to the segment
-            segment.transform(matrix);
+            // Increase the current position
+            currentPos += this.getTextWidth(token, index, index + 1) + letterSpacing;
         }
 
-        // Calc the text boundaries
-        Rect bounds = new Rect();
-        this.mPaintClone.getTextBounds(info.text, 0, info.text.length(), bounds);
-
-        // Fix the vertical offset considering the position of the text on the path and the
-        // font metrics offset.
-        float extraVerticalOffset = this.getVerticalOffsetByPosition(info, bounds) -
-                this.getVerticalOffsetByFontMetrics(info);
-
-        // Draw all text rows
-        String[] rows = this.getTextRows(info.text);
-        for (int row = 0; row < rows.length; row ++)
-            // Draw the single text row on the path
-            canvas.drawTextOnPath(
-                    rows[row],
-                    segment,
-                    info.offset.x,
-                    info.offset.y + extraVerticalOffset + row * bounds.height(),
-                    this.mPaint
-            );
+        // Restore the alignment
+        painter.setTextAlign(oldAlign);
     }
 
     /**
      * Draw the single token on canvas.
-     *
      * @param canvas the canvas where draw
      * @param info   the token info
      */
-    private void drawToken(Canvas canvas, TokenInfo info, float step) {
-        // Define the point holder
-        float[] point;
+    private void drawToken(Canvas canvas, ScWriter.DrawingInfo info) {
+        // Get the current point and save the current canvas status
+        this.getPoint(info.distance, this.mGenericPoint);
 
-        // Check if the last token must be on the last path point
-        if (this.mLastTokenOnEnd && info.index == this.mTokens.length - 1) {
-            // Get the last point on the original path
-            point = this.mPathMeasure.getPosTan(this.mPathLength);
+        // Holders
+        String[] rows = this.getTextRows(info.text);
+        float singleRowHeight = this.getBounds(info.text).height() / rows.length;
+        float offsetY = this.getVerticalOffset(info) - this.getFontMetricsOffset(info);
 
-        } else {
-            // Local distance
-            float local = info.distance;
+        // Draw one line per time
+        for (String token : rows) {
+            // Draw
+            if (info.bending) {
+                // Bending
+                float distance = info.distance + this.getHorizontalOffset(token);
+                this.drawTextOnPath(
+                        canvas,
+                        token,
+                        distance,
+                        info.angle,
+                        offsetY
+                );
+            }
+            else
+                // Unbending
+                canvas.drawText(
+                        token,
+                        this.mGenericPoint[0],
+                        this.mGenericPoint[1] + offsetY,
+                        this.getPainter()
+                );
 
-            // Check the alignment
-            if (this.mPaint.getTextAlign() == Paint.Align.CENTER) local += step / 2;
-            if (this.mPaint.getTextAlign() == Paint.Align.RIGHT) local += step;
-
-            // Get the point on the path by the current distance
-            point = this.mPathMeasure.getPosTan(local);
-        }
-
-        // Check for empty values
-        if (point == null) return;
-
-        // Define the properties.
-        info.angle = this.mUnbend ? (float) Math.toDegrees(point[3]) : 0.0f;
-        info.point = ScWriter.toPoint(point);
-
-        // Check if have a liked listener
-        if (this.mOnDrawListener != null) {
-            this.mOnDrawListener.onBeforeDrawToken(info);
-        }
-
-        // Check for empty values
-        if (!info.visible || info.point == null || info.offset == null || info.text == null)
-            return;
-
-        // Apply the current settings to the painter
-        this.mPaintClone.set(this.mPaint);
-        this.mPaintClone.setColor(info.color);
-
-        // Draw by the case
-        if (info.unbend) {
-            // Unbend
-            this.drawUnbend(canvas, info, (float) Math.toDegrees(point[3]));
-
-        } else {
-            // Bend
-            this.drawBend(canvas, info, step);
-        }
-    }
-
-    /**
-     * Draw all string token on the path.
-     *
-     * @param canvas where to draw
-     */
-    private void drawTokens(Canvas canvas) {
-        // Check for empty value
-        if (this.mTokens == null || this.mPath == null) return;
-
-        // Get the step distance to cover all path
-        int count = this.mTokens.length + (this.mLastTokenOnEnd ? -1 : 0);
-        float step = this.mPathLength / (count > 0 ? count : 1);
-
-        // Define the token info.
-        // I use to create the object here for avoid to create they n times after.
-        // Always inside the draw method is better not instantiate too much classes.
-        TokenInfo info = new TokenInfo();
-        info.source = this;
-
-        // Convert the limits from percentages in distances
-        float startLimit = (this.mPathLength * this.mStartPercentage) / 100.0f;
-        float endLimit = (this.mPathLength * this.mEndPercentage) / 100.0f;
-
-        // Cycle all token.
-        for (int index = 0; index < this.mTokens.length; index++) {
-            // Helper for last position
-            boolean isLast = index == this.mTokens.length - 1;
-
-            // Define the notch info structure and fill with the local settings
-            info.point = null;
-            info.offset = new PointF(this.mTokenOffset.x, this.mTokenOffset.y);
-            info.position = this.mTokenPosition;
-            info.unbend = this.mUnbend;
-            info.text = this.mTokens[index];
-            info.index = index;
-            info.distance = isLast && this.mLastTokenOnEnd ? this.mPathLength : index * step;
-            info.visible = info.distance >= startLimit && info.distance <= endLimit;
-            info.color = this.getGradientColor(info.distance);
-
-            // Draw the single token
-            this.drawToken(canvas, info, step);
+            // Adjust vertical offset
+            offsetY += singleRowHeight;
         }
     }
 
@@ -360,52 +327,77 @@ public class ScWriter extends ScFeature {
     // Overrides
 
     /**
+     * Prepare the info object to send before drawing.
+     * Need to override this method if you want have a custom info.
+     * @param contour the current contour
+     * @param repetition the current repetition
+     * @return the drawing info
+     */
+    @Override
+    protected ScWriter.DrawingInfo setDrawingInfo(int contour, int repetition) {
+        // Reset and fill with the base values
+        this.mGenericInfo.reset(this, contour, repetition);
+
+        // Fill the missing data
+        this.mGenericInfo.bending = this.mBending;
+        if (repetition > 0 && repetition < this.mTokens.length)
+            this.mGenericInfo.text = this.mTokens[repetition - 1];
+
+        // Return
+        return this.mGenericInfo;
+    }
+
+    /**
      * Draw method
-     *
      * @param canvas where to draw
      */
     @Override
-    public void onDraw(Canvas canvas) {
-        // Internal drawing
-        this.drawTokens(canvas);
+    public void onDraw(Canvas canvas, ScRepetitions.DrawingInfo info) {
+        // Check if have something to draw
+        ScWriter.DrawingInfo tokenInfo = (ScWriter.DrawingInfo) info;
+        String text = tokenInfo.text;
+
+        if (text != null && text.length() > 0)
+            this.drawToken(canvas, tokenInfo);
+    }
+
+    /**
+     * Hide this property use to the user.
+     * @param value the repetitions number
+     */
+    @SuppressWarnings("unused")
+    @Override
+    public void setRepetitions(int value) {
     }
 
 
     // ***************************************************************************************
-    // Public classes and methods
+    // Public methods
 
     /**
-     * This is a structure to hold the token information before draw it
-     * Note that the "point" represent the point from will start to draw.
-     * Note that the "distance" is the distance from the path starting.
-     * Note that the "angle" is in degrees.
-     */
-    public class TokenInfo {
-
-        public ScWriter source;
-        public PointF point;
-        public int index;
-        public String text;
-        public float distance;
-        public float angle;
-        public boolean unbend;
-        public int color;
-        public boolean visible;
-        public PointF offset;
-        public TokenPositions position;
-
-    }
-
-    /**
-     * Set the global tokens offset.
-     *
-     * @param horizontal the horizontal offset
-     * @param vertical   the vertical offset
+     * Implement a copy of this object
+     * @param destination the destination object
      */
     @SuppressWarnings("unused")
-    public void setTokenOffset(float horizontal, float vertical) {
-        this.mTokenOffset.x = horizontal;
-        this.mTokenOffset.y = vertical;
+    public void copy(ScWriter destination) {
+        // Super
+        super.copy(destination);
+
+        // This object
+        if (this.mTokens != null)
+            destination.setTokens(this.mTokens.clone());
+
+        destination.setBending(this.mBending);
+        destination.setConsiderFontMetrics(this.mConsiderFontMetrics);
+    }
+
+    @SuppressWarnings("unused")
+    @Override
+    public void copy(ScRepetitions destination) {
+        if (destination instanceof ScWriter)
+            this.copy((ScWriter) destination);
+        else
+            super.copy(destination);
     }
 
 
@@ -414,7 +406,6 @@ public class ScWriter extends ScFeature {
 
     /**
      * Return the string tokens.
-     *
      * @return the tokens list
      */
     @SuppressWarnings("unused")
@@ -424,57 +415,42 @@ public class ScWriter extends ScFeature {
 
     /**
      * Set the string tokens to draw on path.
-     *
-     * @param value the tokens list
+     * @param values the tokens list
      */
     @SuppressWarnings("unused")
-    public void setTokens(String... value) {
-        this.mTokens = value;
+    public void setTokens(String... values) {
+        if (!Arrays.equals(this.mTokens, values)) {
+            this.mTokens = values;
+            if (this.mTokens != null)
+                super.setRepetitions(this.mTokens.length);
+            else
+                this.onPropertyChange("tokens", values);
+        }
     }
 
     /**
-     * Return the string tokens alignment respect the path.
-     *
-     * @return the notches alignment
+     * Return true if the text is bending.
+     * @return the bending status
      */
     @SuppressWarnings("unused")
-    public TokenPositions getPosition() {
-        return this.mTokenPosition;
+    public boolean getBending() {
+        return this.mBending;
     }
 
     /**
-     * Set the string tokens alignment respect the path.
-     *
-     * @param value the notches alignment
+     * Set true to have a bending text.
+     * @param value the bending status
      */
     @SuppressWarnings("unused")
-    public void setPosition(TokenPositions value) {
-        this.mTokenPosition = value;
-    }
-
-    /**
-     * Return true if the text is unbend.
-     *
-     * @return the unbend status
-     */
-    @SuppressWarnings("unused")
-    public boolean getUnbend() {
-        return this.mUnbend;
-    }
-
-    /**
-     * Set true to have a unbend text.
-     *
-     * @param value the unbend status
-     */
-    @SuppressWarnings("unused")
-    public void setUnbend(boolean value) {
-        this.mUnbend = value;
+    public void setBending(boolean value) {
+        if (this.mBending != value) {
+            this.mBending = value;
+            this.onPropertyChange("bending", value);
+        }
     }
 
     /**
      * Return true if the offset calculation consider the font metrics too.
-     *
      * @return the current status
      */
     @SuppressWarnings("unused")
@@ -484,64 +460,28 @@ public class ScWriter extends ScFeature {
 
     /**
      * Set true if want that the offset calculation consider the font metrics too.
-     *
      * @param value the current status
      */
     @SuppressWarnings("unused")
     public void setConsiderFontMetrics(boolean value) {
-        this.mConsiderFontMetrics = value;
-    }
-
-    /**
-     * Return true if force to draw the last token on the end of the path.
-     *
-     * @return the current status
-     */
-    @SuppressWarnings("unused")
-    public boolean getLastTokenOnEnd() {
-        return this.mLastTokenOnEnd;
-    }
-
-    /**
-     * Set true if want that the last token is forced to draw to the end of the path.
-     * Note that the last token on the last point of path cannot work proper with the bending text
-     * enable. So, if value is true, this method will forced to disable the bending.
-     *
-     * @param value the current status
-     */
-    @SuppressWarnings("unused")
-    public void setLastTokenOnEnd(boolean value) {
-        this.mLastTokenOnEnd = value;
-        if (value) this.mUnbend = true;
+        if (this.mConsiderFontMetrics != value) {
+            this.mConsiderFontMetrics = value;
+            this.onPropertyChange("considerFontMetrics", value);
+        }
     }
 
 
     // ***************************************************************************************
-    // Listeners and Interfaces
+    // Public classes and methods
 
     /**
-     * Define the draw listener interface
+     * This is a structure to hold the feature information before draw it
      */
-    @SuppressWarnings("unused")
-    public interface OnDrawListener {
+    public class DrawingInfo extends ScRepetitions.DrawingInfo {
 
-        /**
-         * Called before draw the single token
-         *
-         * @param info the token info
-         */
-        void onBeforeDrawToken(TokenInfo info);
+        public String text;
+        public boolean bending;
 
-    }
-
-    /**
-     * Set the draw listener to call
-     *
-     * @param listener the linked method to call
-     */
-    @SuppressWarnings("unused")
-    public void setOnDrawListener(OnDrawListener listener) {
-        this.mOnDrawListener = listener;
     }
 
 }

@@ -1,23 +1,22 @@
 package com.sccomponents.gauges;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
-import android.graphics.RectF;
-import android.graphics.Shader;
 
 import java.util.Arrays;
 
 /**
- * Create a copy of the path.
- * The most important of this feature is that can decide the path segment to draw.
+ * Create a custom drawn copy of a given path.
+ * <p>
+ * This class draw a series of points on the given path with colors and dimensions taken by the
+ * class settings on a bitmap and will print this bitmap on the given canvas.
+ * The bitmap will redraw every time of a properties will changed so can be very expensive for
+ * the global application performance.
  *
  * @author Samuele Carassai
- * @version 1.0.2
+ * @version 3.0.0
  * @since 2016-05-26
  */
 public class ScCopier extends ScFeature {
@@ -25,11 +24,12 @@ public class ScCopier extends ScFeature {
     // ***************************************************************************************
     // Private and protected variables
 
-    private Path mSegment;
-    private BitmapShader mShader;
-    private boolean mForceCreateShader;
+    private Bitmap mBitmap;
 
-    private OnDrawListener mOnDrawListener;
+    private Paint mGenericPaint;
+    private Canvas mGenericCanvas;
+    private float[] mGenericPoint;
+    private ScCopier.DrawingInfo mGenericInfo;
 
 
     // ***************************************************************************************
@@ -41,71 +41,102 @@ public class ScCopier extends ScFeature {
         super(path);
 
         // Init
-        this.mSegment = new Path();
-        this.mForceCreateShader = true;
+        this.mBitmap = null;
+
+        this.mGenericPaint = new Paint();
+        this.mGenericCanvas = new Canvas();
+        this.mGenericPoint = new float[2];
+        this.mGenericInfo = new ScCopier.DrawingInfo();
     }
 
 
     // ***************************************************************************************
-    // Draw methods
-    //
-    // ATTENTION!
-    // In these methods I used to instantiate new objects and is preferable NOT do it for improve
-    // the performance of the component drawing.
-    // In case of low performance the first solution must be to move the new object creation in
-    // the global scope for do it once.
-    //
+    // Private methods
 
     /**
-     * Create an empty bitmap
-     *
-     * @return the bitmap
+     * Retrieve the first width.
+     * If no have widths return the painter stroke width.
+     * @return the first width
      */
-    private Bitmap createBitmap() {
-        // Create the bitmap using the path boundaries
-        RectF bounds = this.mPathMeasure.getBounds();
-        return Bitmap.createBitmap(
-                (int) (bounds.right + this.mPaint.getStrokeWidth()),
-                (int) (bounds.bottom + this.mPaint.getStrokeWidth()),
-                Bitmap.Config.ARGB_8888
-        );
+    private float getFirstWidth() {
+        // If empty return the painter stroke width
+        if (this.getWidths() == null || this.getWidths().length == 0)
+            return this.getPainter().getStrokeWidth();
+
+        // Else find the max
+        return this.getWidths()[0];
+    }
+
+    /**
+     * Retrieve the last width.
+     * If no have widths return the painter stroke width.
+     * @return the first width
+     */
+    private float getLastWidth() {
+        // If empty return the painter stroke width
+        if (this.getWidths() == null || this.getWidths().length == 0)
+            return this.getPainter().getStrokeWidth();
+
+        // Else find the max
+        return this.getWidths()[this.getWidths().length - 1];
     }
 
     /**
      * Create a colored bitmap following the path.
-     * Note that the bitmap will be created on the whole path and not on the extracted segment.
-     * This bitmap is rough and must clipped before draw it on the destination canvas.
-     *
-     * @return the bitmap
+     * @param canvasWidth   the width
+     * @param canvasHeight  the height
+     * @return              the bitmap
      */
-    public Bitmap createColoredBitmap(Paint paint) {
+    private Bitmap createBitmap(int canvasWidth, int canvasHeight) {
         // Create the bitmap using the path boundaries and retrieve the canvas where draw
-        Bitmap bitmap = this.createBitmap();
-        Canvas canvas = new Canvas(bitmap);
-        float[] point;
+        Bitmap bitmap = Bitmap.createBitmap(canvasWidth, canvasHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = this.mGenericCanvas;
+        canvas.setBitmap(bitmap);
 
-        // Fix the stroke cap
-        paint.setStrokeCap(Paint.Cap.BUTT);
+        // Set a clone of the original painter
+        Paint painter = this.mGenericPaint;
+        painter.set(this.getPainter());
 
-        // Calc the end distance considering the stroke width
-        float endDistance = this.mPathLength - paint.getStrokeWidth() / 2;
+        // Fix the start and end
+        float startFrom = this.getStartAtDistance();
+        float endTo = this.getEndToDistance();
+
+        if (painter.getStrokeCap() == Paint.Cap.BUTT || this.getMeasure().isClosed()) {
+            startFrom += this.getFirstWidth();
+            endTo -= this.getLastWidth();
+        }
 
         // Cycle all points of the path
-        for (float distance = 0.0f; distance < endDistance; distance++) {
-            // Get the point and adjust the for the stroke size
-            point = this.mPathMeasure.getPosTan(distance);
+        for (float distance = startFrom; distance < endTo; distance++) {
+            // Get and check the width for empty values
+            float width = this.getWidth(distance);
+            if (width <= 0) continue;
 
-            // Set the current painter color
+            // Get the point and the angle
+            float angle = this.getPointAndAngle(distance, this.mGenericPoint);
             int color = this.getGradientColor(distance);
-            paint.setColor(color);
+
+            // Set the current painter
+            painter.setColor(color);
+            painter.setStrokeWidth(width);
+
+            // Adjust the point
+            float x = this.mGenericPoint[0];
+            float y = this.mGenericPoint[1];
+
+            float adjustY = y;
+            switch (this.getPosition()) {
+                case INSIDE: adjustY += width / 2; break;
+                case OUTSIDE: adjustY -= width / 2; break;
+            }
 
             // If the round stroke is not settled the point have a square shape.
             // This can create a visual issue when the path follow a curve.
             // To avoid this issue the point (square) will be rotate of the tangent angle
             // before to write it on the canvas.
             canvas.save();
-            canvas.rotate((float) Math.toDegrees(point[3]), point[0], point[1]);
-            canvas.drawPoint(point[0], point[1], paint);
+            canvas.rotate(angle, x, y);
+            canvas.drawPoint(x, adjustY, painter);
             canvas.restore();
         }
 
@@ -115,63 +146,15 @@ public class ScCopier extends ScFeature {
 
     /**
      * Draw a copy of the source path on the canvas.
-     *
      * @param canvas the destination canvas
      */
-    private void drawCopy(Canvas canvas) {
-        // Convert the percentage values in distance referred to the current path length.
-        float startDistance = (this.mPathLength * this.mStartPercentage) / 100.0f;
-        float endDistance = (this.mPathLength * this.mEndPercentage) / 100.0f;
+    private void drawCopy(Canvas canvas, DrawingInfo info) {
+        // Check if needs to redraw the bitmap
+        if (this.mBitmap == null)
+            this.mBitmap = this.createBitmap(canvas.getWidth(), canvas.getHeight());
 
-        // In case of rounded stroke adjust the limit
-        if (this.mPaint.getStrokeCap() == Paint.Cap.ROUND) {
-            startDistance += this.mPaint.getStrokeWidth() / 2.0f;
-            endDistance -= this.mPaint.getStrokeWidth() / 2.0f;
-        }
-
-        // Extract the segment to draw
-        this.mSegment.reset();
-        this.mPathMeasure.getSegment(startDistance, endDistance, this.mSegment, true);
-
-        // Check the listener
-        if (this.mOnDrawListener != null) {
-            // Define the copy info
-            CopyInfo info = new CopyInfo();
-            info.source = this;
-            info.scale = new PointF(1.0f, 1.0f);
-            info.offset = new PointF(0.0f, 0.0f);
-
-            // Call the listener method
-            this.mOnDrawListener.onBeforeDrawCopy(info);
-
-            // Find the center
-            float xCenter = this.mPathMeasure.getBounds().centerX();
-            float yCenter = this.mPathMeasure.getBounds().centerY();
-
-            // Define the matrix to transform the path and the shader
-            Matrix matrix = new Matrix();
-            matrix.postScale(info.scale.x, info.scale.y);
-            matrix.postTranslate(info.offset.x, info.offset.y);
-            matrix.postRotate(info.rotate, xCenter, yCenter);
-
-            // Apply the matrix on the shader
-            if (this.mShader != null)
-                this.mShader.setLocalMatrix(matrix);
-
-            // Apply the matrix on the segment
-            this.mSegment.transform(matrix);
-        }
-
-        // Draw only a path segment if the canvas is not null and the painter allow to draw
-        if (canvas != null && this.mPaint != null &&
-                (this.mPaint.getStyle() != Paint.Style.STROKE || this.mPaint.getStrokeWidth() > 0)) {
-            // Create a paint clone and set the shader
-            Paint clone = new Paint(this.mPaint);
-            clone.setShader(this.mShader);
-
-            // Draw the segment on the canvas
-            canvas.drawPath(this.mSegment, clone);
-        }
+        // Draw the bitmap on the canvas
+        canvas.drawBitmap(this.mBitmap, 0, 0, this.getPainter());
     }
 
 
@@ -179,123 +162,70 @@ public class ScCopier extends ScFeature {
     // Overrides
 
     /**
+     * Prepare the info object to send before drawing.
+     * Need to override this method if you want have a custom info.
+     * @param contour   the current contour
+     * @return          the drawing info
+     * @hide
+     */
+    @Override
+    protected ScCopier.DrawingInfo setDrawingInfo(int contour) {
+        // Reset and fill with the base values
+        this.mGenericInfo.reset(this, contour);
+        this.mGenericInfo.source = this;
+
+        // Return
+        return this.mGenericInfo;
+    }
+
+    /**
      * Draw method
-     *
      * @param canvas where draw
+     * @hide
      */
     @Override
-    protected void onDraw(Canvas canvas) {
-        //Check the domain
-        if (this.mPath == null || this.mStartPercentage == this.mEndPercentage)
-            return;
-
-        // Check the number of colors for create the shader if requested
-        if (this.mColors != null && this.mColors.length > 1) {
-            // Check if need to create the shader bitmap
-            if (this.mForceCreateShader) {
-                // Create the bitmap
-                this.mForceCreateShader = false;
-                Paint clone = new Paint(this.mPaint);
-
-                this.mShader = new BitmapShader(
-                        this.createColoredBitmap(clone),
-                        Shader.TileMode.CLAMP,
-                        Shader.TileMode.CLAMP
-                );
-            }
-
-        } else
-            // Reset the shader
-            this.mShader = null;
-
+    protected void onDraw(Canvas canvas, ScFeature.DrawingInfo info) {
         // Draw a copy
-        this.drawCopy(canvas);
-    }
-
-
-    /**
-     * Refresh the feature measure.
-     */
-    @Override
-    public void refresh() {
-        super.refresh();
-        this.mForceCreateShader = true;
+        this.drawCopy(canvas, (ScCopier.DrawingInfo) info);
     }
 
     /**
-     * Set the current stroke colors
-     *
-     * @param value the new stroke colors
+     * Implement a copy of this object
+     * @param destination the destination object
+     * @hide
      */
-    @Override
-    public void setColors(int... value) {
-        // Check if value is changed
-        if (!Arrays.equals(this.mColors, value)) {
-            this.mForceCreateShader = true;
-            super.setColors(value);
-        }
+    @SuppressWarnings("unused")
+    public void copy(ScCopier destination) {
+        // Super
+        super.copy(destination);
     }
 
     /**
-     * Set the colors filling mode.
-     * You can have to way for draw the colors of the path: SOLID or GRADIENT.
-     *
-     * @param value the new color filling mode
+     * For every changes force to redraw the bitmap.
+     * If no have changes the class will use the last bitmap calculated.
+     * @param name      the property name
+     * @param value     the property value
+     * @hide
      */
     @Override
-    public void setColorsMode(ColorsMode value) {
-        // Check if value is changed
-        if (this.mColorsMode != value) {
-            this.mForceCreateShader = true;
-            super.setColorsMode(value);
-        }
+    protected void onPropertyChange(String name, Object value) {
+        this.mBitmap = null;
+        super.onPropertyChange(name, value);
     }
+
 
 
     // ***************************************************************************************
     // Public classes and methods
 
     /**
-     * This is a structure to hold the notch information before draw it.
-     * Note that the "rotate" angle is in degrees.
+     * This is a structure to hold the feature information before draw it
      */
     @SuppressWarnings("unused")
-    public class CopyInfo {
+    public class DrawingInfo extends ScFeature.DrawingInfo {
 
-        public ScCopier source;
-        public PointF scale;
-        public PointF offset;
-        public float rotate;
+        public ScCopier source = null;
 
-    }
-
-
-    // ***************************************************************************************
-    // Listeners and Interfaces
-
-    /**
-     * Define the draw listener interface
-     */
-    @SuppressWarnings("unused")
-    public interface OnDrawListener {
-
-        /**
-         * Called before draw the path copy.
-         *
-         * @param info the copier info
-         */
-        void onBeforeDrawCopy(CopyInfo info);
-
-    }
-
-    /**
-     * Set the draw listener to call.
-     *
-     * @param listener the linked method to call
-     */
-    @SuppressWarnings("unused")
-    public void setOnDrawListener(OnDrawListener listener) {
-        this.mOnDrawListener = listener;
     }
 
 }
