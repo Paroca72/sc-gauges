@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.Paroca72'
 
@@ -38,5 +38,5 @@ task generateJavadoc(type: Javadoc, dependsOn: project.configurations.doclava) {
     options.docletpath = configurations.doclava.files.asType(List)
     options.quiet()
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    destinationDir = file("../library/docs/")
+    destinationDir = file("../docs/")
 }
