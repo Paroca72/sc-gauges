@@ -427,8 +427,8 @@ public class ScNotches extends ScRepetitions {
     public class DrawingInfo extends ScRepetitions.DrawingInfo {
 
         public ScNotches source = null;
-        float length = 0.0f;
-        NotchTypes type = NotchTypes.LINE;
+        public float length = 0.0f;
+        public NotchTypes type = NotchTypes.LINE;
 
     }
 
