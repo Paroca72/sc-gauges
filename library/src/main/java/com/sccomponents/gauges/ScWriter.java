@@ -340,7 +340,7 @@ public class ScWriter extends ScRepetitions {
 
         // Fill the missing data
         this.mGenericInfo.bending = this.mBending;
-        if (repetition > 0 && repetition < this.mTokens.length)
+        if (repetition > 0 && repetition <= this.mTokens.length)
             this.mGenericInfo.text = this.mTokens[repetition - 1];
 
         // Return

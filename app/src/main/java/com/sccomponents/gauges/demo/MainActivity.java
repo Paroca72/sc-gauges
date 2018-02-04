@@ -1,6 +1,7 @@
 package com.sccomponents.gauges.demo;
 
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,27 +26,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Find the components
-        final TextView counter = (TextView) MainActivity.this.findViewById(R.id.counter);
-        ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
+// Find the components
+        final ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
+        assert gauge != null;
 
-        // Set the features stroke cap style to rounded
-        gauge.findFeature(ScArcGauge.BASE_IDENTIFIER)
-                .getPainter().setStrokeCap(Paint.Cap.ROUND);
-        gauge.findFeature(ScArcGauge.PROGRESS_IDENTIFIER)
-                .getPainter().setStrokeCap(Paint.Cap.ROUND);
+        // Set the values.
+        gauge.setHighValue(55);
 
-        // If you set the value from the xml that not produce an event so I will change the
-        // value from code.
-        gauge.setHighValue(60);
+        // Set the filter of the base
+        ScFeature base = gauge.findFeature(ScGauge.BASE_IDENTIFIER);
+        BlurMaskFilter filter = new BlurMaskFilter(10, BlurMaskFilter.Blur.INNER);
+        base.getPainter().setMaskFilter(filter);
 
-        // Each time I will change the value I must write it inside the counter text.
-        gauge.setOnEventListener(new ScGauge.OnEventListener() {
-            @Override
-            public void onValueChange(float lowValue, float highValue) {
-                counter.setText((int) highValue + "%");
-            }
-        });
+        // Writer
+        String[] tokens = new String[10];
+        for (int index = 0; index < 10; index++) {
+            tokens[index] = Integer.toString((index + 1) * 10);
+        }
+
+        ScWriter writer = gauge.getWriter();
+        writer.setTokens(tokens);
+
     }
 
 }
