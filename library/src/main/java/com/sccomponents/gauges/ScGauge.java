@@ -33,8 +33,7 @@ import java.util.List;
  * -----------------------------------------------------------------------------------------------
  */
 public abstract class ScGauge extends ScDrawer implements
-        ValueAnimator.AnimatorUpdateListener,
-        ScFeature.OnDrawListener {
+        ValueAnimator.AnimatorUpdateListener {
 
     // ***************************************************************************************
     // Constants
@@ -92,6 +91,29 @@ public abstract class ScGauge extends ScDrawer implements
 
     private OnEventListener mOnEventListener;
     private OnDrawListener mOnDrawListener;
+
+    // Events proxies
+    private ScFeature.OnDrawListener proxyFeatureDrawListener =
+            new ScFeature.OnDrawListener() {
+                @Override
+                public void onDrawContour(ScFeature.ContourInfo info) {
+                    callOnDrawContourEvent(info);
+                }
+            };
+
+    // Events proxies
+    private ScRepetitions.OnDrawListener proxyRepetitionsDrawListener =
+            new ScRepetitions.OnDrawListener() {
+                @Override
+                public void onDrawContour(ScFeature.ContourInfo info) {
+                    callOnDrawContourEvent(info);
+                }
+
+                @Override
+                public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
+                    callOnDrawRepetitionEvent(info);
+                }
+            };
 
 
     // ***************************************************************************************
@@ -156,7 +178,7 @@ public abstract class ScGauge extends ScDrawer implements
                 .splitToWidths(attrArray.getString(this.getAttributeId(prefix, "Widths")));
         if (widths == null) {
             float width = attrArray.getDimension(
-                    this.getAttributeId(prefix, "Size"),
+                    this.getAttributeId(prefix, "Width"),
                     0.0f
             );
 
@@ -255,25 +277,25 @@ public abstract class ScGauge extends ScDrawer implements
                 this.getAttributeId("", "notches"), 0);
         feature.setRepetitions(count);
 
-        // Find the length
-        float[] lengths = this
-                .splitToWidths(attrArray.getString(R.styleable.ScGauge_notchesLengths));
-        if (lengths == null) {
+        // Find the height
+        float[] heights = this
+                .splitToWidths(attrArray.getString(R.styleable.ScGauge_notchesHeights));
+        if (heights == null) {
             float length = attrArray.getDimension(
-                    R.styleable.ScGauge_notchesLength,
+                    R.styleable.ScGauge_notchesHeight,
                     this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE)
             );
-            lengths = new float[] { length };
+            heights = new float[] { length };
         }
-        feature.setLengths(lengths);
+        feature.setHeights(heights);
 
-        ScNotches.LengthsMode lengthsMode = ScNotches.LengthsMode.values()[
+        ScNotches.HeightsMode heightsMode = ScNotches.HeightsMode.values()[
             attrArray.getInt(
-                    R.styleable.ScGauge_notchesLengthsMode,
-                    ScNotches.LengthsMode.SMOOTH.ordinal()
+                    R.styleable.ScGauge_notchesHeightsMode,
+                    ScNotches.HeightsMode.SMOOTH.ordinal()
             )
         ];
-        feature.setLengthsMode(lengthsMode);
+        feature.setHeightsMode(heightsMode);
     }
 
     /**
@@ -315,9 +337,23 @@ public abstract class ScGauge extends ScDrawer implements
         // Apply the default attributes
         this.applyDefaultAttribute(attrArray, feature, "pointer");
 
-        // Radius
-        float radius = attrArray.getDimension(
-                R.styleable.ScGauge_pointerRadius, 0.0f);
+        // Find the height
+        float[] heights = this
+                .splitToWidths(attrArray.getString(R.styleable.ScGauge_notchesHeights));
+        if (heights == null) {
+            float length = attrArray.getDimension(
+                    R.styleable.ScGauge_notchesHeight,
+                    this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE)
+            );
+            heights = new float[] { length };
+        }
+
+        ScNotches.HeightsMode heightsMode = ScNotches.HeightsMode.values()[
+                attrArray.getInt(
+                        R.styleable.ScGauge_notchesHeightsMode,
+                        ScNotches.HeightsMode.SMOOTH.ordinal()
+                )
+                ];
 
         // Halo
         float haloWidth= attrArray.getDimension(
@@ -330,9 +366,10 @@ public abstract class ScGauge extends ScDrawer implements
         );
 
         // Assign
-        feature.setRadius(radius);
         feature.setHaloWidth(haloWidth);
         feature.setHaloAlpha(haloAlpha);
+        feature.setHeights(heights);
+        feature.setHeightsMode(heightsMode);
     }
 
     /**
@@ -375,7 +412,6 @@ public abstract class ScGauge extends ScDrawer implements
         this.mLowPointer = (ScPointer) this.addFeature(ScPointer.class);
         this.mLowPointer.setTag(ScGauge.LOW_POINTER_IDENTIFIER);
         this.mLowPointer.setVisible(false);
-        this.mLowPointer.setOnDrawListener(this);
 
         // Common
         this.mHighValue = attrArray.getFloat(
@@ -436,20 +472,19 @@ public abstract class ScGauge extends ScDrawer implements
      * Define the threshold for the touch on path recognize.
      */
     private void fixTouchOnPathThreshold() {
-        // Check
-        if (this.mHighPointer == null || this.mLowPointer == null)
-            return ;
-
-        // Fix the max
-        float radius = this.mHighPointer.getRadius() > this.mLowPointer.getRadius() ?
-                this.mHighPointer.getRadius() : this.mLowPointer.getRadius();
-        float halo = this.mHighPointer.getHaloWidth() > this.mLowPointer.getHaloWidth() ?
-                this.mHighPointer.getHaloWidth() : this.mLowPointer.getHaloWidth();
+        // Find the max comparing every pointers
+        float max = 0.0f;
+        List<ScFeature> pointers = this.findFeatures(ScPointer.class, null);
+        for (ScFeature pointer : pointers)
+            if (pointer.getVisible()){
+                float current = ((ScPointer) pointer).getMaxDimension();
+                if (max < current)
+                    max = current;
+            }
 
         // Define the touch threshold
-        float sum = radius + halo;
-        if (sum > 0)
-            this.setPathTouchThreshold(sum);
+        if (max > 0)
+            this.setPathTouchThreshold(max);
     }
 
     /**
@@ -562,11 +597,11 @@ public abstract class ScGauge extends ScDrawer implements
         for (ScFeature pointer : pointers) {
             // Cast to current pointer
             ScPointer current = (ScPointer) pointer;
-            if (!current.getVisible() || current.getRadius() == 0.0f) continue;
+            if (!current.getVisible()) continue;
 
             // Find the distance from the current pointer and the pressed point
-            float normalDistance = Math.abs(percentage - current.getPointer());
-            float inverseDistance = Math.abs(100 - percentage + current.getPointer());
+            float normalDistance = Math.abs(percentage - current.getValue());
+            float inverseDistance = Math.abs(100 - percentage + current.getValue());
 
             // Check in the normal way
             if (normalDistance < nearestValue) {
@@ -601,20 +636,21 @@ public abstract class ScGauge extends ScDrawer implements
             if (!current.getVisible()) continue;
 
             // Transform a distance of the current pointer from percentage to pixel
-            float percentage = current.getPointer();
+            float percentage = current.getValue();
             float currentDistance = ScGauge
                     .percentageToValue(percentage, 0, this.mPathMeasure.getLength());
 
             // If the nearest is null assign the first pointer to it
-            if (currentDistance >= distance - current.getRadius() &&
-                    currentDistance <= distance + current.getRadius())
+            float dimension = current.getMaxDimension();
+            if (currentDistance >= distance - dimension &&
+                    currentDistance <= distance + dimension)
                 return current;
 
             // If the path is closed try to search in negative
             if (this.mPathMeasure.isClosed()) {
                 float negative = distance - this.mPathMeasure.getLength();
-                if (currentDistance >= negative - current.getRadius() &&
-                        currentDistance <= negative + current.getRadius())
+                if (currentDistance >= negative - dimension &&
+                        currentDistance <= negative + dimension)
                     return current;
             }
         }
@@ -652,7 +688,7 @@ public abstract class ScGauge extends ScDrawer implements
 
         // If here mean that the pointer is untagged.
         // I will move the pointer to the new position but I will not change no values.
-        pointer.setPointer(value);
+        pointer.setValue(value);
         this.invalidate();
     }
 
@@ -662,8 +698,30 @@ public abstract class ScGauge extends ScDrawer implements
      */
     private void attachFeatureToListener(ScFeature feature) {
         // Attach the listener by the class type
+        if (feature instanceof ScRepetitions) {
+            ScRepetitions repetitions = (ScRepetitions) feature;
+            repetitions.setOnDrawListener(this.proxyRepetitionsDrawListener);
+        } else {
+            feature.setOnDrawListener(this.proxyFeatureDrawListener);
+        }
+    }
+
+    /**
+     * Call the before draw contour event
+     * @param info the contour info
+     */
+    private void callOnDrawContourEvent(ScFeature.ContourInfo info) {
         if (this.mOnDrawListener != null)
-            feature.setOnDrawListener(this);
+            this.mOnDrawListener.onDrawContour(info);
+    }
+
+    /**
+     * Call the before draw repetition event
+     * @param info the repetition info
+     */
+    private void callOnDrawRepetitionEvent(ScRepetitions.RepetitionInfo info) {
+        if (this.mOnDrawListener != null)
+            this.mOnDrawListener.onDrawRepetition(info);
     }
 
 
@@ -746,11 +804,11 @@ public abstract class ScGauge extends ScDrawer implements
             // Select
             switch (pointer.getTag()) {
                 case ScGauge.HIGH_POINTER_IDENTIFIER:
-                    casted.setPointer(this.mHighValue);
+                    casted.setValue(this.mHighValue);
                     break;
 
                 case ScGauge.LOW_POINTER_IDENTIFIER:
-                    casted.setPointer(this.mLowValue);
+                    casted.setValue(this.mLowValue);
                     break;
             }
         }
@@ -861,29 +919,6 @@ public abstract class ScGauge extends ScDrawer implements
         super.onPathSlide(distance);
     }
 
-    /**
-     * Called before draw a feature.
-     * @param info the copier info
-     */
-    @Override
-    public void onBeforeDraw(ScFeature.DrawingInfo info) {
-        // Forward the calling on local listener
-        if (this.mOnDrawListener != null) {
-            // Call the right event
-            if (info instanceof ScCopier.DrawingInfo)
-                this.mOnDrawListener.onBeforeDrawCopy((ScCopier.DrawingInfo) info);
-
-            if (info instanceof ScNotches.DrawingInfo)
-                this.mOnDrawListener.onBeforeDrawNotch((ScNotches.DrawingInfo) info);
-
-            if (info instanceof ScPointer.DrawingInfo)
-                this.mOnDrawListener.onBeforeDrawPointer((ScPointer.DrawingInfo) info);
-
-            if (info instanceof ScWriter.DrawingInfo)
-                this.mOnDrawListener.onBeforeDrawToken((ScWriter.DrawingInfo) info);
-        }
-    }
-
 
     // ***************************************************************************************
     // Public methods
@@ -915,7 +950,7 @@ public abstract class ScGauge extends ScDrawer implements
      * @param endValue      the range ending value
      * @return              the value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("all")
     public static float percentageToValue(float percentage, float startValue, float endValue) {
         // Calculate the delta range
         float min = Math.min(startValue, endValue);
@@ -1171,31 +1206,16 @@ public abstract class ScGauge extends ScDrawer implements
     public interface OnDrawListener {
 
         /**
-         * Called before draw the path copy.
-         * @param info the copier info
+         * Called before draw the contour.
+         * @param info the feature info
          */
-        void onBeforeDrawCopy(ScCopier.DrawingInfo info);
-
-
-        /**
-         * Called before draw the single notch.
-         * @param info the notch info
-         */
-        void onBeforeDrawNotch(ScNotches.DrawingInfo info);
+        void onDrawContour(ScFeature.ContourInfo info);
 
         /**
-         * Called before draw the pointer.
-         * If the method set the bitmap inside the info object the default drawing will be bypassed
-         * and the new bitmap will be draw on the canvas following the other setting.
-         * @param info the pointer info
+         * Called before draw the repetition.
+         * @param info the feature info
          */
-        void onBeforeDrawPointer(ScPointer.DrawingInfo info);
-
-        /**
-         * Called before draw the single token
-         * @param info the token info
-         */
-        void onBeforeDrawToken(ScWriter.DrawingInfo info);
+        void onDrawRepetition(ScRepetitions.RepetitionInfo info);
 
     }
 

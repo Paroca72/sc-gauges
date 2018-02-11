@@ -7,26 +7,14 @@
     android:gravity="center_vertical|center_horizontal">
 
     <FrameLayout
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#f5f5f5">
 
-        <com.sccomponents.gauges.ScArcGauge
-            android:id="@+id/gauge"
-            xmlns:sc="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="50dp"
-            sc:angleStart="180"
-            sc:angleSweep="180"
-            sc:strokeSize="40dp"
-            sc:strokeColors="#03A409|#FFF506|#EB0100"
-            sc:notches="10"
-            sc:notchesSize="1dp"
-            sc:notchesLength="20dp"
-            sc:notchesColor="#4e4e4e"
-            sc:textAlign="center"/>
+            android:id="@+id/image" />
 
     </FrameLayout>
 

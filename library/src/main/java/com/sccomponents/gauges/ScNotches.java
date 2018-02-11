@@ -1,15 +1,21 @@
 package com.sccomponents.gauges;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 
 import java.util.Arrays;
 
 
 /**
  * Create a series of notches that follow a path.
-
+ * <p>
+ * You can choose between some predefined shape (line, rectangle and oval) or by drawing a
+ * passed bitmap.
+ * All the notch are customizable before drawing it using the proper event.
+ *
  * @author Samuele Carassai
  * @version 3.0.0
  * @since 2016-05-30
@@ -24,18 +30,19 @@ public class ScNotches extends ScRepetitions {
      */
     @SuppressWarnings("unused")
     public enum NotchTypes {
+        BITMAP,
         LINE,
-        CIRCLE,
-        CIRCLE_FILLED,
-        SQUARE,
-        SQUARE_FILLED,
+        OVAL,
+        OVAL_FILLED,
+        RECTANGLE,
+        RECTANGLE_FILLED,
     }
 
     /**
-     * The mode to calculate the current length.
+     * The mode to calculate the current height.
      */
     @SuppressWarnings("unuse")
-    public enum LengthsMode {
+    public enum HeightsMode {
         ROUGH,
         SMOOTH
     }
@@ -44,15 +51,18 @@ public class ScNotches extends ScRepetitions {
     // ***************************************************************************************
     // Private and protected variables
 
-    private float[] mLengths;
-    private LengthsMode mLengthsMode;
+    private float[] mHeights;
+    private HeightsMode mHeightsMode;
     private NotchTypes mType;
-    private Positions mEdges;
+    private Bitmap mBitmap;
 
     private float[] mFirstPoint;
     private float[] mSecondPoint;
-    private ScNotches.DrawingInfo mGenericInfo;
-    private OnCustomDrawListener mOnCustomDrawListener;
+    private RectF mGenericRect;
+    private NotchInfo mGenericInfo;
+
+    // Listener
+    protected OnDrawListener mOnDrawListener;
 
 
     // ***************************************************************************************
@@ -64,15 +74,15 @@ public class ScNotches extends ScRepetitions {
         super(path);
 
         // Init
-        this.mLengths = new float[] { 0.0f };
-        this.mLengthsMode = LengthsMode.SMOOTH;
+        this.mHeights = new float[]{0.0f};
+        this.mHeightsMode = HeightsMode.SMOOTH;
         this.mType = NotchTypes.LINE;
-        this.mEdges = Positions.MIDDLE;
 
         this.mFirstPoint = new float[2];
         this.mSecondPoint = new float[2];
 
-        this.mGenericInfo = new ScNotches.DrawingInfo();
+        this.mGenericRect = new RectF();
+        this.mGenericInfo = new NotchInfo();
     }
 
 
@@ -80,17 +90,47 @@ public class ScNotches extends ScRepetitions {
     // Private methods
 
     /**
+     * Draw on canvas a bitmap centered in the passed point.
+     * @param canvas where to draw
+     * @param info   the pointer info
+     */
+    private void drawBitmap(Canvas canvas, NotchInfo info) {
+        // Check for empty values
+        if (info.bitmap == null)
+            return;
+
+        // Adjust the first point
+        this.mFirstPoint[0] -= info.bitmap.getWidth() / 2;
+        this.mFirstPoint[1] -= info.bitmap.getHeight() / 2;
+
+        // Scale the original bitmap
+        Bitmap scaled = info.bitmap;
+        if (info.width != 0 && info.height != 0)
+            scaled = Bitmap.createScaledBitmap(
+                    info.bitmap,
+                    (int) info.width,
+                    (int) info.height,
+                    false);
+
+        // Print the bitmap centered respect the point
+        canvas.drawBitmap(scaled, this.mFirstPoint[0], this.mFirstPoint[1], null);
+    }
+
+    /**
      * Draw a line.
      * @param canvas the canvas to draw
      * @param info   the notch info
      */
-    private void drawLine(Canvas canvas, ScNotches.DrawingInfo info) {
+    protected void drawLine(Canvas canvas, NotchInfo info, Paint paint) {
+        // Set the stroke width
+        paint.setStrokeWidth(info.width);
+
         // Adjust the first point
-        this.mFirstPoint[1] -= info.length / 2;
+        this.mFirstPoint[1] -= info.height / 2;
 
         // Find the second point
         this.clonePoint(this.mFirstPoint, this.mSecondPoint);
-        this.mSecondPoint[1] += info.length;
+        this.mSecondPoint[1] += info.height;
 
         // Draw the line from the first to second point
         canvas.drawLine(
@@ -101,45 +141,53 @@ public class ScNotches extends ScRepetitions {
     }
 
     /**
-     * Draw a square.
+     * Draw a rectangle.
      * @param canvas the canvas to draw
      * @param info   the notch info
      */
-    private void drawSquare(Canvas canvas, ScNotches.DrawingInfo info) {
+    protected void drawRectangle(Canvas canvas, NotchInfo info, Paint paint) {
         // Holder
-        float half = info.length / 2;
-        float left = this.mFirstPoint[0] - half;
-        float top = this.mFirstPoint[1] - half;
-        float right = this.mFirstPoint[0] + half;
-        float bottom = this.mFirstPoint[1] + half;
+        float halfWidth = info.width / 2;
+        float left = this.mFirstPoint[0] - halfWidth;
+        float right = this.mFirstPoint[0] + halfWidth;
+
+        float halfHeight = info.height / 2;
+        float top = this.mFirstPoint[1] - halfHeight;
+        float bottom = this.mFirstPoint[1] + halfHeight;
 
         // Draw
-        canvas.drawRect(left, top, right, bottom, this.getPainter());
+        canvas.drawRect(left, top, right, bottom, paint);
     }
 
     /**
-     * Draw a circle.
+     * Draw a oval.
      * @param canvas the canvas to draw
      * @param info   the notch info
      */
-    private void drawCircle(Canvas canvas, ScNotches.DrawingInfo info) {
-        canvas.drawCircle(
-                this.mFirstPoint[0],
-                this.mFirstPoint[1],
-                info.length / 2,
-                this.getPainter()
-        );
+    protected void drawOval(Canvas canvas, NotchInfo info, Paint paint) {
+        // Holder
+        float halfWidth = info.width / 2;
+        float left = this.mFirstPoint[0] - halfWidth;
+        float right = this.mFirstPoint[0] + halfWidth;
+
+        float halfHeight = info.height / 2;
+        float top = this.mFirstPoint[1] - halfHeight;
+        float bottom = this.mFirstPoint[1] + halfHeight;
+
+        // Draw
+        this.mGenericRect.set(left, top, right, bottom);
+        canvas.drawOval(this.mGenericRect, paint);
     }
 
     /**
      * Adjust the point based on the edges management
-     * @param point the point to adjust
+     * @param point    the point to adjust
      * @param distance the distance of the point from the path start
      */
     private void adjustPointByEdges(float[] point, float distance) {
         // Check for domain
-        if (this.mEdges == Positions.MIDDLE)
-            return ;
+        if (this.getEdges() == Positions.MIDDLE)
+            return;
 
         // If in the middle skip
         float middle = this.getMeasure().getLength() / 2;
@@ -157,9 +205,13 @@ public class ScNotches extends ScRepetitions {
 
             // Calculate the increment and add to the x point coordinate
             float increment = halfWidth * multiplier;
-            switch (this.mEdges) {
-                case INSIDE: point[0] += increment; break;
-                case OUTSIDE: point[0] -= increment; break;
+            switch (this.getEdges()) {
+                case INSIDE:
+                    point[0] += increment;
+                    break;
+                case OUTSIDE:
+                    point[0] -= increment;
+                    break;
             }
         }
     }
@@ -169,15 +221,15 @@ public class ScNotches extends ScRepetitions {
      * @param canvas where to draw
      * @param info   the notch info
      */
-    private void drawNotch(Canvas canvas, ScNotches.DrawingInfo info) {
+    private void drawNotch(Canvas canvas, NotchInfo info) {
         // Apply the current info settings to the painter
         boolean isFilled =
-                info.type == NotchTypes.CIRCLE_FILLED ||
-                info.type == NotchTypes.SQUARE_FILLED;
+                info.type == NotchTypes.OVAL_FILLED ||
+                        info.type == NotchTypes.RECTANGLE_FILLED;
 
         Paint painter = this.getPainter();
         painter.setStyle(
-                 isFilled ? Paint.Style.FILL_AND_STROKE : Paint.Style.STROKE);
+                isFilled ? Paint.Style.FILL : Paint.Style.STROKE);
 
         // Get the point by the distance
         this.getPoint(info.distance, this.mFirstPoint);
@@ -185,33 +237,36 @@ public class ScNotches extends ScRepetitions {
 
         // Get and fix the y point position
         switch (this.getPosition()) {
-            case INSIDE: this.mFirstPoint[1] += info.length / 2; break;
-            case OUTSIDE: this.mFirstPoint[1] -= info.length / 2; break;
-        }
-
-        // Custom draw
-        if (this.mOnCustomDrawListener != null) {
-            this.mOnCustomDrawListener.onCustomDraw(canvas, info);
-            return;
+            case INSIDE:
+                this.mFirstPoint[1] += info.height / 2;
+                break;
+            case OUTSIDE:
+                this.mFirstPoint[1] -= info.height / 2;
+                break;
         }
 
         // Draw the notches by the case
         switch (info.type) {
+            // Draw a bitmap
+            case BITMAP:
+                this.drawBitmap(canvas, info);
+                break;
+
             // Draw a line
             case LINE:
-                this.drawLine(canvas, info);
+                this.drawLine(canvas, info, this.getPainter());
                 break;
 
             // Draw a circle
-            case CIRCLE:
-            case CIRCLE_FILLED:
-                this.drawCircle(canvas, info);
+            case OVAL:
+            case OVAL_FILLED:
+                this.drawOval(canvas, info, this.getPainter());
                 break;
 
             // Draw a square
-            case SQUARE:
-            case SQUARE_FILLED:
-                this.drawSquare(canvas, info);
+            case RECTANGLE:
+            case RECTANGLE_FILLED:
+                this.drawRectangle(canvas, info, this.getPainter());
                 break;
         }
     }
@@ -229,14 +284,15 @@ public class ScNotches extends ScRepetitions {
      * @hide
      */
     @Override
-    protected ScNotches.DrawingInfo setDrawingInfo(int contour, int repetition) {
+    protected NotchInfo setDrawingInfo(int contour, int repetition) {
         // Reset and fill with the base values
         this.mGenericInfo.reset(this, contour, repetition);
 
         // Fill the missing data
         this.mGenericInfo.source = this;
-        this.mGenericInfo.length = this.getLength(mGenericInfo.distance);
+        this.mGenericInfo.height = this.getHeight(mGenericInfo.distance);
         this.mGenericInfo.type = this.mType;
+        this.mGenericInfo.bitmap = this.getBitmap();
 
         // Return
         return this.mGenericInfo;
@@ -248,9 +304,9 @@ public class ScNotches extends ScRepetitions {
      * @hide
      */
     @Override
-    protected void onDraw(Canvas canvas, ScRepetitions.DrawingInfo info) {
+    protected void onDraw(Canvas canvas, RepetitionInfo info) {
         // Draw the notch
-        this.drawNotch(canvas, (ScNotches.DrawingInfo) info);
+        this.drawNotch(canvas, (NotchInfo) info);
     }
 
 
@@ -258,15 +314,15 @@ public class ScNotches extends ScRepetitions {
     // Public Methods
 
     /**
-     * Get the notches length gived a distance from the path start.
+     * Get the notches height given a distance from the path start.
      * @param distance  the distance
-     * @return          the length
+     * @return          the height
      */
-    public float getLength(float distance) {
+    public float getHeight(float distance) {
         return this.getValue(
-                this.mLengths,
+                this.mHeights,
                 distance / this.getMeasure().getLength(),
-                this.mLengthsMode == LengthsMode.SMOOTH,
+                this.mHeightsMode == HeightsMode.SMOOTH,
                 0.0f
         );
     }
@@ -281,12 +337,12 @@ public class ScNotches extends ScRepetitions {
         super.copy(destination);
 
         // This object
-        if (this.mLengths != null)
-            destination.setLengths(this.mLengths.clone());
+        if (this.mHeights != null)
+            destination.setHeights(this.mHeights.clone());
 
-        destination.setLengthsMode(this.mLengthsMode);
+        destination.setHeightsMode(this.mHeightsMode);
         destination.setType(this.mType);
-        destination.setEdges(this.mEdges);
+        destination.setBitmap(this.mBitmap);
     }
 
     /**
@@ -308,9 +364,29 @@ public class ScNotches extends ScRepetitions {
     // Public properties
 
     /**
+     * Set the current bitmap.
+     * @param value the new bitmap
+     */
+    @SuppressWarnings("unused")
+    public void setBitmap(Bitmap value) {
+        this.mBitmap = value;
+        this.onPropertyChange("bitmap", value);
+    }
+
+    /**
+     * Get the current bitmap
+     * @return the current bitmap
+     */
+    @SuppressWarnings("unused")
+    public Bitmap getBitmap() {
+        return this.mBitmap;
+    }
+
+
+    /**
      * Set the notches count.
      * @param value the notches count
-     * @deprecated  use setRepetition instead.
+     * @deprecated use setRepetition instead.
      */
     @SuppressWarnings("unused")
     @Deprecated
@@ -320,8 +396,8 @@ public class ScNotches extends ScRepetitions {
 
     /**
      * Get the notches count.
-     * @return      the notches count
-     * @deprecated  use getRepetition instead.
+     * @return the notches count
+     * @deprecated use getRepetition instead.
      */
     @SuppressWarnings("unused")
     @Deprecated
@@ -331,46 +407,46 @@ public class ScNotches extends ScRepetitions {
 
 
     /**
-     * Set the notches length.
-     * @param values the notches length
+     * Set the notches height.
+     * @param values the notches height
      */
     @SuppressWarnings("unused")
-    public void setLengths(float... values) {
-        if (!Arrays.equals(this.mLengths, values)) {
-            this.mLengths = values;
+    public void setHeights(float... values) {
+        if (!Arrays.equals(this.mHeights, values)) {
+            this.mHeights = values;
             this.onPropertyChange("lengths", values);
         }
     }
 
     /**
-     * @return the notches length
+     * @return the notches height
      */
     @SuppressWarnings("unused")
-    public float[] getLengths() {
-        return this.mLengths;
+    public float[] getHeights() {
+        return this.mHeights;
     }
 
 
     /**
      * Set the lengths calculation mode.
      * You can have two way for calculate the lengths of the path: SMOOTH or ROUGH.
-     * @param value the new length calculation mode
+     * @param value the new height calculation mode
      */
     @SuppressWarnings("unused")
-    public void setLengthsMode(LengthsMode value) {
-        if (this.mLengthsMode != value) {
-            this.mLengthsMode = value;
+    public void setHeightsMode(HeightsMode value) {
+        if (this.mHeightsMode != value) {
+            this.mHeightsMode = value;
             this.onPropertyChange("lengthMode", value);
         }
     }
 
     /**
      * Get the lengths calculation mode.
-     * @return the length calculation mode
+     * @return the height calculation mode
      */
     @SuppressWarnings("unused")
-    public LengthsMode getLengthsMode() {
-        return this.mLengthsMode;
+    public HeightsMode getHeightsMode() {
+        return this.mHeightsMode;
     }
 
 
@@ -396,27 +472,6 @@ public class ScNotches extends ScRepetitions {
     }
 
 
-    /**
-     * Set the edges type.
-     * Can be: INSIDE, MIDDLE and OUTSIDE.
-     * @param value the edges type
-     */
-    @SuppressWarnings("unused")
-    public void setEdges(Positions value) {
-        if (this.mEdges != value) {
-            this.mEdges = value;
-            this.onPropertyChange("edges", value);
-        }
-    }
-
-    /**
-     * Get the edges type.
-     * @return the edges type
-     */
-    @SuppressWarnings("unused")
-    public Positions getEdges() { return this.mEdges; }
-
-
     // ***************************************************************************************
     // Public classes and methods
 
@@ -424,11 +479,12 @@ public class ScNotches extends ScRepetitions {
      * This is a structure to hold the feature information before draw it
      */
     @SuppressWarnings("unused")
-    public class DrawingInfo extends ScRepetitions.DrawingInfo {
+    public class NotchInfo extends RepetitionInfo {
 
         public ScNotches source = null;
-        public float length = 0.0f;
+        public float height = 0.0f;
         public NotchTypes type = NotchTypes.LINE;
+        public Bitmap bitmap;
 
     }
 
@@ -440,13 +496,19 @@ public class ScNotches extends ScRepetitions {
      * Define the draw listener interface
      */
     @SuppressWarnings("unused")
-    public interface OnCustomDrawListener {
+    public interface OnDrawListener {
+
+        /**
+         * Called before draw the contour.
+         * @param info the feature info
+         */
+        void onDrawContour(ContourInfo info);
 
         /**
          * Called before draw the path copy.
          * @param info the copier info
          */
-        void onCustomDraw(Canvas canvas, DrawingInfo info);
+        void onBeforeDraw(Canvas canvas, NotchInfo info);
 
     }
 
@@ -455,8 +517,8 @@ public class ScNotches extends ScRepetitions {
      * @param listener the linked method to call
      */
     @SuppressWarnings("unused")
-    public void setOnDrawListener(OnCustomDrawListener listener) {
-        this.mOnCustomDrawListener = listener;
+    public void setOnDrawListener(OnDrawListener listener) {
+        this.mOnDrawListener = listener;
     }
 
 }

@@ -37,7 +37,6 @@ import java.util.List;
  * @version 3.0.0
  * @since 2016-05-26
  */
-// TODO: improve description
 public abstract class ScDrawer extends ScBase {
 
     // ***************************************************************************************
@@ -153,6 +152,7 @@ public abstract class ScDrawer extends ScBase {
      * @param attrs     the attribute set
      * @param defStyle  the style
      */
+    @SuppressWarnings("all")
     private void init(Context context, AttributeSet attrs, int defStyle) {
         //--------------------------------------------------
         // ATTRIBUTES
@@ -293,9 +293,9 @@ public abstract class ScDrawer extends ScBase {
         // Cycle all the pointer and get the max radius
         for (ScFeature pointer : pointers) {
             // Get the current radius and compare
-            float radius = ((ScPointer) pointer).getRadius();
-            if (radius > threshold)
-                threshold = radius;
+            float dimension = ((ScPointer) pointer).getMaxDimension();
+            if (dimension > threshold)
+                threshold = dimension;
         }
         return threshold;
     }
@@ -471,7 +471,6 @@ public abstract class ScDrawer extends ScBase {
         }
 
         // Adjust the point
-        // TODO: on stretch wrong the point
         float x = 0;
         float y = 0;
 

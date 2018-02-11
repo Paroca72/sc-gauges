@@ -1,11 +1,11 @@
 package com.sccomponents.gauges;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-
-import java.util.Arrays;
+import android.graphics.Shader;
 
 /**
  * Create a custom drawn copy of a given path.
@@ -24,12 +24,15 @@ public class ScCopier extends ScFeature {
     // ***************************************************************************************
     // Private and protected variables
 
-    private Bitmap mBitmap;
+    private BitmapShader mShader;
+    private Path mAreaPath;
 
     private Paint mGenericPaint;
     private Canvas mGenericCanvas;
-    private float[] mGenericPoint;
-    private ScCopier.DrawingInfo mGenericInfo;
+
+    private float[] mFirstPoint;
+    private float[] mSecondPoint;
+    private float[] mThirdPoint;
 
 
     // ***************************************************************************************
@@ -41,12 +44,18 @@ public class ScCopier extends ScFeature {
         super(path);
 
         // Init
-        this.mBitmap = null;
+        this.setEdges(this.getMeasure().isClosed() ? Positions.INSIDE: Positions.OUTSIDE);
+        this.getPainter().setStyle(Paint.Style.FILL);
+
+        this.mShader = null;
+        this.mAreaPath = new Path();
 
         this.mGenericPaint = new Paint();
         this.mGenericCanvas = new Canvas();
-        this.mGenericPoint = new float[2];
-        this.mGenericInfo = new ScCopier.DrawingInfo();
+
+        this.mFirstPoint = new float[2];
+        this.mSecondPoint = new float[2];
+        this.mThirdPoint = new float[2];
     }
 
 
@@ -54,38 +63,149 @@ public class ScCopier extends ScFeature {
     // Private methods
 
     /**
-     * Retrieve the first width.
-     * If no have widths return the painter stroke width.
-     * @return the first width
+     * Move a point considering an angle
+     * @param point    the point to move
+     * @param distance the distance
+     * @param angle    the angle
      */
-    private float getFirstWidth() {
-        // If empty return the painter stroke width
-        if (this.getWidths() == null || this.getWidths().length == 0)
-            return this.getPainter().getStrokeWidth();
-
-        // Else find the max
-        return this.getWidths()[0];
+    private void movePoint(float[] point, float distance, float angle) {
+        double radiant = Math.toRadians(angle);
+        point[0] += distance * Math.cos(radiant);
+        point[1] += distance * Math.sin(radiant);
     }
 
     /**
-     * Retrieve the last width.
-     * If no have widths return the painter stroke width.
-     * @return the first width
+     * Connection the path point with an arc.
+     * @param source   the path
+     * @param isReturn the direction
      */
-    private float getLastWidth() {
-        // If empty return the painter stroke width
-        if (this.getWidths() == null || this.getWidths().length == 0)
-            return this.getPainter().getStrokeWidth();
+    private void addArcToPath(Path source, boolean isReturn,
+                              float startDistance, float endDistance) {
+        // Holders
+        float distance = isReturn ? startDistance : endDistance;
+        float angle = this.getAngle(distance) + (isReturn ? 180 : 0);
+        float halfWidth = this.getWidth(distance) / 2;
 
-        // Else find the max
-        return this.getWidths()[this.getWidths().length - 1];
+        // Get the points
+        this.calcPoint(this.mFirstPoint, distance, isReturn);
+        this.calcPoint(this.mSecondPoint, distance, !isReturn);
+        this.clonePoint(mSecondPoint, this.mThirdPoint);
+
+        this.movePoint(this.mFirstPoint, halfWidth, angle);
+        this.movePoint(this.mSecondPoint, halfWidth, angle);
+
+        // Draw
+        source.quadTo(
+                this.mFirstPoint[0],
+                this.mFirstPoint[1],
+                (this.mSecondPoint[0] + this.mFirstPoint[0]) / 2,
+                (this.mSecondPoint[1] + this.mFirstPoint[1]) / 2
+        );
+        source.quadTo(
+                this.mSecondPoint[0], this.mSecondPoint[1],
+                this.mThirdPoint[0], this.mThirdPoint[1]
+        );
+    }
+
+    /**
+     * Calculate the point on path considering the direction and the position respect the path.
+     * @param distance from path start
+     * @param isReturn the direction
+     */
+    private void calcPoint(float[] point, float distance, boolean isReturn) {
+        // Adjust the point
+        float halfWidth = this.getWidth(distance) / 2;
+        float toMove = 0.0f;
+
+        switch (this.getPosition()) {
+            case INSIDE:
+                toMove = (isReturn ? 2 : 0) * halfWidth;
+                break;
+            case MIDDLE:
+                toMove = (isReturn ? -1 : 1) * halfWidth;
+                break;
+            case OUTSIDE:
+                toMove = -(isReturn ? 2 : 0) * halfWidth;
+                break;
+        }
+
+        float angle = this.getPointAndAngle(distance, point);
+        this.movePoint(point, toMove, angle + 90);
+    }
+
+    /**
+     * Clone a path creating a series of point and translate the path by the related point width.
+     * The method consider the direction to calculate the offset.
+     * @param path      the destination path
+     * @param startFrom start distance
+     * @param endTo     end distance
+     */
+    private void cloneSourcePath(Path path, float startFrom, float endTo) {
+        // Holders
+        boolean isReturn = startFrom > endTo;
+
+        // Find the limits
+        float fixedStart = startFrom < endTo ? startFrom : endTo;
+        float fixedEnd = endTo > startFrom ? endTo : startFrom;
+
+        // Adjust the limits
+        switch (this.getEdges()) {
+            case INSIDE:
+                fixedStart += this.getWidth(fixedStart) / 2;
+                fixedEnd -= this.getWidth(fixedEnd) / 2;
+                break;
+            case MIDDLE:
+                fixedStart += this.getWidth(fixedStart) / 4;
+                fixedEnd -= this.getWidth(fixedEnd) / 4;
+        }
+
+        // Clone the source path adjusting the y position
+        for (float distance = fixedStart; distance < fixedEnd; distance++) {
+            // Fix the distance as the return way check is different and
+            // calculate the right point position on the path.
+            float fixedDistance = isReturn ? startFrom - distance : distance;
+            this.calcPoint(this.mFirstPoint, fixedDistance, isReturn);
+
+            // Check if empty
+            if (path.isEmpty())
+                // Just move the pointer on the first point
+                path.moveTo(this.mFirstPoint[0], this.mFirstPoint[1]);
+            else
+                // Draw a line
+                path.lineTo(this.mFirstPoint[0], this.mFirstPoint[1]);
+        }
+
+        // Conjunction with arc
+        boolean isRounded = this.getPainter().getStrokeCap() == Paint.Cap.ROUND;
+        if (isRounded)
+            this.addArcToPath(path, isReturn, fixedStart, fixedEnd);
+    }
+
+    /**
+     * Create a cloned path to cover the drawing area.
+     * @return the area
+     */
+    private Path coverDrawingArea() {
+        // Holders
+        this.mAreaPath.reset();
+
+        // Get the start and end
+        float startFrom = this.getStartAtDistance();
+        float endTo = this.getEndToDistance();
+
+        // Create the path area
+        this.cloneSourcePath(this.mAreaPath, startFrom, endTo);
+        this.cloneSourcePath(this.mAreaPath, endTo, startFrom);
+
+        // Return the path
+        return mAreaPath;
     }
 
     /**
      * Create a colored bitmap following the path.
-     * @param canvasWidth   the width
-     * @param canvasHeight  the height
-     * @return              the bitmap
+     * @param canvasWidth  the width
+     * @param canvasHeight the height
+     * @return the bitmap
      */
     private Bitmap createBitmap(int canvasWidth, int canvasHeight) {
         // Create the bitmap using the path boundaries and retrieve the canvas where draw
@@ -96,24 +216,20 @@ public class ScCopier extends ScFeature {
         // Set a clone of the original painter
         Paint painter = this.mGenericPaint;
         painter.set(this.getPainter());
+        painter.setStrokeCap(Paint.Cap.SQUARE);
 
         // Fix the start and end
-        float startFrom = this.getStartAtDistance();
-        float endTo = this.getEndToDistance();
-
-        if (painter.getStrokeCap() == Paint.Cap.BUTT || this.getMeasure().isClosed()) {
-            startFrom += this.getFirstWidth();
-            endTo -= this.getLastWidth();
-        }
+        float length = this.getMeasure().getLength();
 
         // Cycle all points of the path
-        for (float distance = startFrom; distance < endTo; distance++) {
+        for (float distance = 0; distance < length; distance++) {
             // Get and check the width for empty values
             float width = this.getWidth(distance);
-            if (width <= 0) continue;
+            if (width <= 0)
+                continue;
 
             // Get the point and the angle
-            float angle = this.getPointAndAngle(distance, this.mGenericPoint);
+            float angle = this.getPointAndAngle(distance, this.mFirstPoint);
             int color = this.getGradientColor(distance);
 
             // Set the current painter
@@ -121,13 +237,18 @@ public class ScCopier extends ScFeature {
             painter.setStrokeWidth(width);
 
             // Adjust the point
-            float x = this.mGenericPoint[0];
-            float y = this.mGenericPoint[1];
+            float halfWidth = width / 2;
+            float adjustX = this.mFirstPoint[0] + halfWidth;
+            float adjustY = this.mFirstPoint[1];
 
-            float adjustY = y;
+            // Adjust the y
             switch (this.getPosition()) {
-                case INSIDE: adjustY += width / 2; break;
-                case OUTSIDE: adjustY -= width / 2; break;
+                case INSIDE:
+                    adjustY = this.mFirstPoint[1] + halfWidth;
+                    break;
+                case OUTSIDE:
+                    adjustY = this.mFirstPoint[1] - halfWidth;
+                    break;
             }
 
             // If the round stroke is not settled the point have a square shape.
@@ -135,8 +256,17 @@ public class ScCopier extends ScFeature {
             // To avoid this issue the point (square) will be rotate of the tangent angle
             // before to write it on the canvas.
             canvas.save();
-            canvas.rotate(angle, x, y);
-            canvas.drawPoint(x, adjustY, painter);
+            canvas.rotate(angle, this.mFirstPoint[0], this.mFirstPoint[1]);
+
+            // if is first
+            if (distance == 0)
+                // Draw a point in front of the path
+                canvas.drawPoint(adjustX - halfWidth * 2, adjustY, painter);
+
+            // Draw the common point
+            canvas.drawPoint(adjustX, adjustY, painter);
+
+            // Restore the canvas status as previous
             canvas.restore();
         }
 
@@ -148,13 +278,25 @@ public class ScCopier extends ScFeature {
      * Draw a copy of the source path on the canvas.
      * @param canvas the destination canvas
      */
-    private void drawCopy(Canvas canvas, DrawingInfo info) {
+    @SuppressWarnings("all")
+    private void drawCopy(Canvas canvas, ContourInfo info) {
         // Check if needs to redraw the bitmap
-        if (this.mBitmap == null)
-            this.mBitmap = this.createBitmap(canvas.getWidth(), canvas.getHeight());
+        if (this.mShader == null || this.getConsiderContours()) {
+            Bitmap bitmap = this.createBitmap(canvas.getWidth(), canvas.getHeight());
+            this.mShader = new BitmapShader(
+                    bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        }
 
-        // Draw the bitmap on the canvas
-        canvas.drawBitmap(this.mBitmap, 0, 0, this.getPainter());
+        // Set the shader
+        Paint paint = this.getPainter();
+        paint.setShader(this.mShader);
+
+        // Check the area path
+        if (this.mAreaPath.isEmpty() || this.getConsiderContours())
+            this.mAreaPath = this.coverDrawingArea();
+
+        // Draw
+        canvas.drawPath(this.mAreaPath, paint);
     }
 
 
@@ -162,31 +304,13 @@ public class ScCopier extends ScFeature {
     // Overrides
 
     /**
-     * Prepare the info object to send before drawing.
-     * Need to override this method if you want have a custom info.
-     * @param contour   the current contour
-     * @return          the drawing info
-     * @hide
-     */
-    @Override
-    protected ScCopier.DrawingInfo setDrawingInfo(int contour) {
-        // Reset and fill with the base values
-        this.mGenericInfo.reset(this, contour);
-        this.mGenericInfo.source = this;
-
-        // Return
-        return this.mGenericInfo;
-    }
-
-    /**
-     * Draw method
+     * The draw method to override in the inherited classes.
      * @param canvas where draw
-     * @hide
+     * @param info   the contour info
      */
     @Override
-    protected void onDraw(Canvas canvas, ScFeature.DrawingInfo info) {
-        // Draw a copy
-        this.drawCopy(canvas, (ScCopier.DrawingInfo) info);
+    protected void onDraw(Canvas canvas, ContourInfo info) {
+        this.drawCopy(canvas, info);
     }
 
     /**
@@ -203,29 +327,15 @@ public class ScCopier extends ScFeature {
     /**
      * For every changes force to redraw the bitmap.
      * If no have changes the class will use the last bitmap calculated.
-     * @param name      the property name
-     * @param value     the property value
+     * @param name  the property name
+     * @param value the property value
      * @hide
      */
     @Override
     protected void onPropertyChange(String name, Object value) {
-        this.mBitmap = null;
+        this.mShader = null;
+        if (this.mAreaPath != null) this.mAreaPath.reset();
         super.onPropertyChange(name, value);
-    }
-
-
-
-    // ***************************************************************************************
-    // Public classes and methods
-
-    /**
-     * This is a structure to hold the feature information before draw it
-     */
-    @SuppressWarnings("unused")
-    public class DrawingInfo extends ScFeature.DrawingInfo {
-
-        public ScCopier source = null;
-
     }
 
 }

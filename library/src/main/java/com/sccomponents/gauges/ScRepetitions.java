@@ -21,8 +21,10 @@ public abstract class ScRepetitions extends ScFeature {
     private boolean mLastRepetitionOnPathEnd;
     private int mRepetitions;
     private float mSpaceBetween;
+    private RepetitionInfo mGenericInfo;
 
-    private DrawingInfo mGenericInfo;
+    // Listener
+    protected OnDrawListener mOnDrawListener;
 
 
     /****************************************************************************************
@@ -40,7 +42,7 @@ public abstract class ScRepetitions extends ScFeature {
         this.mLastRepetitionOnPathEnd = true;
 
         // Generic
-        this.mGenericInfo = new DrawingInfo();
+        this.mGenericInfo = new RepetitionInfo();
     }
 
 
@@ -56,7 +58,7 @@ public abstract class ScRepetitions extends ScFeature {
      * @hide
      */
     @SuppressWarnings("unused")
-    protected DrawingInfo setDrawingInfo(int contour, int repetition) {
+    protected RepetitionInfo setDrawingInfo(int contour, int repetition) {
         // Reset and Return
         this.mGenericInfo.reset(this, contour, repetition);
         return this.mGenericInfo;
@@ -64,11 +66,21 @@ public abstract class ScRepetitions extends ScFeature {
 
     /**
      * The draw method to override in the inherited classes.
-     * @param canvas where draw
+     * @param canvas    where draw
+     * @param info      the contour info
      * @hide
      */
+    @Override
+    protected void onDraw(Canvas canvas, ContourInfo info) {
+        // Do nothing
+    }
+
+    /**
+     * The draw method to override in the inherited classes.
+     * @param canvas where draw
+     */
     @SuppressWarnings("unused")
-    protected abstract void onDraw(Canvas canvas, DrawingInfo info);
+    protected abstract void onDraw(Canvas canvas, RepetitionInfo info);
 
 
     // ***************************************************************************************
@@ -77,6 +89,7 @@ public abstract class ScRepetitions extends ScFeature {
     /**
      * Calculate the number of repetition considering the space between them.
      * @return the repetitions
+     * @hide
      */
     protected float[] calculateRepetitions() {
         // If no value return the default value
@@ -112,13 +125,25 @@ public abstract class ScRepetitions extends ScFeature {
     }
 
     /**
-     * Override the super method to draw all the repetitions too.
-     * @param canvas where to draw
-     * @param contour the current contour index
+     * Draw a single repetition.
+     * This method is implemented just for give the possibility to override it for some
+     * future application.
+     * @param canvas    where to draw
+     * @param info      the current repetition info
      * @hide
      */
-    @Override
-    protected void drawContour(Canvas canvas, int contour) {
+    protected void drawRepetition(Canvas canvas, RepetitionInfo info) {
+        // Draw
+        this.onDraw(canvas, info);
+    }
+
+    /**
+     * Draw all the repetitions
+     * @param canvas    where to draw
+     * @param contour   the current contour index
+     * @hide
+     */
+    protected void drawRepetitions(Canvas canvas, int contour) {
         // Check for auto-calculate the repetitions number
         if (this.mSpaceBetween > 0) {
             float[] repetitions = this.calculateRepetitions();
@@ -127,25 +152,44 @@ public abstract class ScRepetitions extends ScFeature {
 
         // Cycle all repetition
         for (int repetition = 1; repetition <= this.mRepetitions; repetition++) {
-            // Prepare the info objects
-            DrawingInfo info = this.setDrawingInfo(contour, repetition);
-            this.draw(canvas, info);
+            // Get the drawing info
+            RepetitionInfo info = this.setDrawingInfo(contour, repetition);
+
+            // Call the base listener
+            if (this.mOnDrawListener != null)
+                this.mOnDrawListener.onDrawRepetition(info);
+
+            // Check for visibility
+            if (!info.isVisible)
+                continue;
+
+            // Rotate, translate and scale
+            canvas.save();
+            canvas.rotate(info.tangent, info.point[0], info.point[1]);
+            canvas.translate(info.offset[0], info.offset[1]);
+            canvas.rotate(info.angle, info.point[0], info.point[1]);
+            canvas.scale(info.scale[0], info.scale[1], info.point[0], info.point[1]);
+
+            // Call the draw for the single repetition
+            this.drawRepetition(canvas, info);
+            canvas.restore();
         }
+    }
+
+    /**
+     * Override the super method to draw all the repetitions too.
+     * @param canvas    where to draw
+     * @param info      the current contour info
+     * @hide
+     */
+    @Override
+    protected void drawContour(Canvas canvas, ScFeature.ContourInfo info) {
+        this.drawRepetitions(canvas, info.contour);
     }
 
 
     // ***************************************************************************************
     // Public and static methods
-
-    /**
-     * Draw method
-     * @param canvas where to draw
-     */
-    @Override
-    protected void onDraw(Canvas canvas, ScFeature.DrawingInfo info) {
-        // Draw the notch
-        this.onDraw(canvas, (ScRepetitions.DrawingInfo) info);
-    }
 
     /**
      * Draw method
@@ -282,7 +326,7 @@ public abstract class ScRepetitions extends ScFeature {
 
 
     /**
-     * If true the last repetition distance from path start will be equal to the path length.
+     * If true the last repetition distance from path start will be equal to the path height.
      * @param value the new setting
      */
     @SuppressWarnings("unused")
@@ -294,7 +338,7 @@ public abstract class ScRepetitions extends ScFeature {
     }
 
     /**
-     * If true the last repetition distance from path start will be equal to the path length.
+     * If true the last repetition distance from path start will be equal to the path height.
      * @return true if the last repetition is on the path end
      */
     @SuppressWarnings("unused")
@@ -328,58 +372,109 @@ public abstract class ScRepetitions extends ScFeature {
 
 
     // ***************************************************************************************
+    // Listeners and Interfaces
+
+    /**
+     * Define the draw listener interface
+     */
+    @SuppressWarnings("unused")
+    public interface OnDrawListener {
+
+        /**
+         * Called before draw the contour.
+         * @param info the feature info
+         */
+        void onDrawContour(ContourInfo info);
+
+        /**
+         * Called before draw the repetition.
+         * @param info the feature info
+         */
+        void onDrawRepetition(RepetitionInfo info);
+
+    }
+
+    /**
+     * Set the draw listener to call.
+     * @param listener the linked method to call
+     */
+    @SuppressWarnings("unused")
+    public void setOnDrawListener(OnDrawListener listener) {
+        this.mOnDrawListener = listener;
+    }
+
+
+    // ***************************************************************************************
     // Drawing info class
 
     /**
      * This is a structure to hold the feature information before draw it
      */
     @SuppressWarnings("unused")
-    public class DrawingInfo extends ScFeature.DrawingInfo {
+    public class RepetitionInfo {
 
         // ***************************************************************************************
         // Properties
 
-        public ScRepetitions source = null;
         private float[] mGenericPoint;
-        public int repetition = 0;
-        public float distance = 0.0f;
 
+        public ScRepetitions source;
+        public int repetition;
 
+        public float distance;
+        public float angle;
+        public float tangent;
+        public float width;
+        public int color;
+        public ScFeature.Positions position;
+        private boolean isVisible;
+
+        public float[] offset;
+        public float[] point;
+        public float[] scale;
+
+        // ***************************************************************************************
         // Constructor
-        public DrawingInfo() {
-            this.mGenericPoint = new float[2];
-        }
 
+        public RepetitionInfo() {
+            this.mGenericPoint = new float[2];
+            this.offset = new float[2];
+            this.point = new float[2];
+            this.scale = new float[2];
+        }
 
         // ***************************************************************************************
         // Public methods
 
         public void reset(ScRepetitions feature, int contour, int repetition) {
-            // Super
-            super.reset(feature, contour);
-
             // Holder
             this.source = feature;
 
             float distance = feature.getDistance(repetition);
-            float angle = feature.getAngle(distance);
+            float angle = feature.getPointAndAngle(distance, this.mGenericPoint);
             int color = feature.getGradientColor(distance);
             float width = feature.getWidth(distance);
             boolean isOverLimits = feature.isOverLimits(repetition);
 
             // Find the center as the point on path
-            feature.getPoint(distance, this.mGenericPoint);
-            this.centerX = this.mGenericPoint[0];
-            this.centerY = this.mGenericPoint[1];
+            this.point[0] = this.mGenericPoint[0];
+            this.point[1] = this.mGenericPoint[1];
 
-            // Set the drawing info
+            // Reset the offset and the scale
+            this.offset[0] = 0.0f;
+            this.offset[1] = 0.0f;
+
+            this.scale[0] = 1.0f;
+            this.scale[1] = 1.0f;
+
+            // Reset the drawing info
             this.repetition = repetition;
             this.distance = distance;
-
             this.width = width;
-            this.angle = angle;
+            this.tangent = angle;
+            this.angle = 0.0f;
+            this.position = ScFeature.Positions.MIDDLE;
             this.color = color;
-
             this.isVisible = !isOverLimits;
         }
 

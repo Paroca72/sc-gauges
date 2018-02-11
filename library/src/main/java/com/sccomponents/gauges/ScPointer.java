@@ -1,6 +1,5 @@
 package com.sccomponents.gauges;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -12,7 +11,7 @@ import android.graphics.Path;
  * @version 3.0.0
  * @since 2016-05-26
  */
-public class ScPointer extends ScFeature {
+public class ScPointer extends ScNotches {
 
     // ***************************************************************************************
     // Constants
@@ -25,18 +24,14 @@ public class ScPointer extends ScFeature {
      * Private variables
      */
 
-    private float mPointerRadius;
-    private float mPointerPosition;
+    private float mValue;
     private boolean mPressed;
-    private Bitmap mBitmap;
 
     private float mHaloWidth;
     private int mHaloAlpha;
     private Paint mHaloPaint;
 
-    private float[] mGenericPoint;
-    private ScPointer.DrawingInfo mGenericInfo;
-    private OnCustomDrawListener mOnCustomDrawListener;
+    private PointerInfo mGenericInfo;
 
 
     /****************************************************************************************
@@ -49,73 +44,15 @@ public class ScPointer extends ScFeature {
         super(path);
 
         // Init
-        this.setTransformCanvas(false);
+        this.setRepetitions(1);
+        this.setLastRepetitionOnPathEnd(false);
 
-        this.mPointerRadius = 0.0f;
         this.mHaloWidth = ScPointer.DEFAULT_HALO_WIDTH;
         this.mHaloAlpha = ScPointer.DEFAULT_HALO_ALPHA;
 
-        this.mGenericPoint = new float[2];
-        this.mGenericInfo = new ScPointer.DrawingInfo();
-
-        // Painters
-        Paint paint = this.getPainter();
-        paint.setStrokeWidth(1.0f);
-        paint.setStyle(Paint.Style.FILL);
-
+        this.mGenericInfo = new PointerInfo();
         this.mHaloPaint = new Paint();
-    }
-
-
-    // ***************************************************************************************
-    // Draw methods
-
-    /**
-     * Default drawing the circles that representing the pointer.
-     * Note when draw a circle the angle not take effect on the final drawing.
-     * @param canvas where to draw
-     * @param info   the pointer info
-     */
-    private void drawCircles(Canvas canvas, ScPointer.DrawingInfo info) {
-        // Set the halo painter
-        Paint painter = this.getPainter();
-        this.mHaloPaint.set(painter);
-        this.mHaloPaint.setAlpha(info.pressed ? 255 : this.mHaloAlpha);
         this.mHaloPaint.setStyle(Paint.Style.STROKE);
-        this.mHaloPaint.setStrokeWidth(this.mHaloWidth);
-
-        // Check the pointer radius
-        if (this.mPointerRadius > 0) {
-            // Draw the halo and the pointer
-            canvas.drawCircle(
-                    this.mGenericPoint[0], this.mGenericPoint[1],
-                    this.mPointerRadius, this.mHaloPaint);
-            canvas.drawCircle(
-                    this.mGenericPoint[0], this.mGenericPoint[1],
-                    this.mPointerRadius, painter);
-        }
-    }
-
-    /**
-     * Draw on canvas a bitmap centered in the passed point.
-     * @param canvas where to draw
-     * @param info   the pointer info
-     */
-    private void drawBitmap(Canvas canvas, ScPointer.DrawingInfo info) {
-        // Apply the transformation as the default is off
-        canvas.save();
-        canvas.rotate(info.angle, this.mGenericPoint[0], this.mGenericPoint[1]);
-        canvas.translate(info.offsetX, info.offsetY);
-        canvas.scale(info.scaleX, info.scaleY);
-
-        // Print the bitmap centered respect the point
-        canvas.drawBitmap(
-                info.bitmap,
-                this.mGenericPoint[0] - info.bitmap.getWidth() / 2,
-                this.mGenericPoint[1] - info.bitmap.getHeight() / 2,
-                null
-        );
-        canvas.restore();
     }
 
 
@@ -130,71 +67,66 @@ public class ScPointer extends ScFeature {
      * @hide
      */
     @Override
-    protected ScPointer.DrawingInfo setDrawingInfo(int contour) {
+    protected PointerInfo setDrawingInfo(int contour, int repetition) {
         // Reset and fill with the base values
-        this.mGenericInfo.reset(this, contour);
+        this.mGenericInfo.reset(this, contour, repetition);
 
         // Fill the missing data
-        this.mGenericInfo.angle = this.getAngle(this.getPointer());
-        this.mGenericInfo.bitmap = this.mBitmap;
         this.mGenericInfo.pressed = this.mPressed;
+        this.mGenericInfo.distance = this.mValue;
 
         // Return
         return this.mGenericInfo;
     }
 
     /**
-     * Draw the pointer on the canvas.
-     * @param canvas the canvas where draw
+     * Draw a line.
+     * @param canvas the canvas to draw
+     * @param info   the notch info
+     */
+    @Override
+    protected void drawLine(Canvas canvas, NotchInfo info, Paint paint) {
+        super.drawLine(canvas, info, paint);
+        super.drawLine(canvas, info, this.mHaloPaint);
+    }
+
+    /**
+     * Draw a rectangle.
+     * @param canvas the canvas to draw
+     * @param info   the notch info
+     */
+    protected void drawRectangle(Canvas canvas, NotchInfo info, Paint paint) {
+        super.drawRectangle(canvas, info, paint);
+        super.drawRectangle(canvas, info, this.mHaloPaint);
+    }
+
+    /**
+     * Draw a oval.
+     * @param canvas the canvas to draw
+     * @param info   the notch info
+     */
+    protected void drawOval(Canvas canvas, NotchInfo info, Paint paint) {
+        super.drawOval(canvas, info, paint);
+        super.drawOval(canvas, info, this.mHaloPaint);
+    }
+
+    /**
+     * Draw method
+     * @param canvas where to draw
      * @hide
      */
     @Override
-    protected void onDraw(Canvas canvas, ScFeature.DrawingInfo info) {
-        // Set the pointer painter
-        ScPointer.DrawingInfo pointerInfo = (ScPointer.DrawingInfo) info;
-        this.getPainter()
-                .setAlpha(pointerInfo.pressed ? this.mHaloAlpha : 255);
+    protected void onDraw(Canvas canvas, RepetitionInfo info) {
+        // Set the painters
+        PointerInfo pointerInfo = (PointerInfo) info;
+        this.mHaloPaint.setAlpha(pointerInfo.pressed ? 255: this.mHaloAlpha);
+        this.mHaloPaint.setStrokeWidth(this.mHaloWidth);
 
-        // Custom draw
-        if (this.mOnCustomDrawListener != null) {
-            this.mOnCustomDrawListener.onCustomDraw(canvas, pointerInfo);
-            return;
-        }
+        Paint paint = this.getPainter();
+        paint.setAlpha(pointerInfo.pressed ? this.mHaloAlpha: 255);
 
-        // Find the point on the path
-        float distance = this.getDistance(this.mPointerPosition);
-        this.getPoint(distance, this.mGenericPoint);
-
-        // Check if the bitmap is not null
-        if (pointerInfo.bitmap != null)
-            // Draw a bitmap
-            this.drawBitmap(canvas, pointerInfo);
-        else
-            // Draw the circles
-            this.drawCircles(canvas, pointerInfo);
-    }
-
-
-    // ***************************************************************************************
-    // Public methods
-
-    /**
-     * Implement a copy of this object
-     * @param destination the destination object
-     */
-    @SuppressWarnings("unused")
-    public void copy(ScPointer destination) {
-        // Super
-        super.copy(destination);
-
-        // Set
-        destination.setRadius(this.mPointerRadius);
-        destination.setPointer(this.mPointerPosition);
-        destination.setPressed(this.mPressed);
-        destination.setBitmap(this.mBitmap);
-
-        destination.setHaloAlpha(this.mHaloAlpha);
-        destination.setHaloWidth(this.mHaloWidth);
+        // Call the super method
+        super.onDraw(canvas, info);
     }
 
     /**
@@ -211,57 +143,104 @@ public class ScPointer extends ScFeature {
             super.copy(destination);
     }
 
+    /**
+     * Disable this method.
+     * @param value the repetitions number
+     * @hide
+     */
+    @SuppressWarnings("unused")
+    @Override
+    public void setRepetitions(int value) {
+        // Do nothing
+    }
+
+    /**
+     * Disable this method.
+     * @param value the new setting
+     * @hide
+     */
+    @SuppressWarnings("unused")
+    @Override
+    public void setLastRepetitionOnPathEnd(boolean value) {
+        // Do nothing
+    }
+
+    /**
+     * Disable this method.
+     * @param value the new space between repetition value
+     * @hide
+     */
+    @SuppressWarnings("unused")
+    @Override
+    public void setSpaceBetweenRepetitions(float value) {
+        // Do nothing
+    }
+
+
+    // ***************************************************************************************
+    // Public methods
+
+    /**
+     * Implement a copy of this object
+     * @param destination the destination object
+     */
+    @SuppressWarnings("unused")
+    public void copy(ScPointer destination) {
+        // Super
+        super.copy(destination);
+
+        // Set
+        destination.setValue(this.mValue);
+        destination.setPressed(this.mPressed);
+
+        destination.setHaloAlpha(this.mHaloAlpha);
+        destination.setHaloWidth(this.mHaloWidth);
+    }
+
+    /**
+     * Get the pointer mac dimension.
+     * Note than this could be depend on the current position on the path.
+     * @return   the max dimension
+     */
+    @SuppressWarnings("unused")
+    public float getMaxDimension() {
+        // Find the max dimension
+        float width = this.getWidth(this.mValue);
+        float height = this.getHeight(this.mValue);
+        float max = width > height ? width: height;
+
+        // Add the halo dimension
+        return max + this.mHaloWidth;
+    }
+
 
     // ***************************************************************************************
     // Public properties
 
     /**
-     * Set the position of pointer in percentage respect to the path length.
+     * Set the position of pointer in percentage respect to the path height.
      * @param value the position in percentage
      */
     @SuppressWarnings("unused")
-    public void setPointer(float value) {
+    public void setValue(float value) {
         // Check the limits
         if (value < 0.0f) value = 0.0f;
         if (value > 100.0f) value = 100.0f;
 
         // Store the value
-        if (this.mPointerPosition != value) {
-            this.mPointerPosition = value;
+        if (this.mValue != value) {
+            this.mValue = value;
             this.onPropertyChange("pointer", value);
         }
     }
 
     /**
-     * Get the position of pointer in percentage respect to the path length.
+     * Get the position of pointer in percentage respect to the path height.
      * @return the position in percentage
      */
     @SuppressWarnings("unused")
-    public float getPointer() {
-        return this.mPointerPosition;
-    }
-
-
-    /**
-     * Set the pointer radius in pixel.
-     * @param value the radius
-     */
-    @SuppressWarnings("unused")
-    public void setRadius(float value) {
-        value = value < 0.0f ? 0.0f : value;
-        if (this.mPointerRadius != value) {
-            this.mPointerRadius = value;
-            this.onPropertyChange("radius", value);
-        }
-    }
-
-    /**
-     * Get the pointer radius in pixel.
-     * @return the radius
-     */
-    @SuppressWarnings("unused")
-    public float getRadius() {
-        return this.mPointerRadius;
+    public float getValue() {
+        return this.mValue;
     }
 
 
@@ -337,27 +316,6 @@ public class ScPointer extends ScFeature {
     }
 
 
-    /**
-     * Set the current bitmap.
-     * @param value the new bitmap
-     */
-    @SuppressWarnings("unused")
-    public void setBitmap(Bitmap value) {
-        this.mBitmap = value;
-        this.onPropertyChange("bitmap", value);
-    }
-
-    /**
-     * Get the current bitmap
-     * @return the current bitmap
-     */
-    @SuppressWarnings("unused")
-    public Bitmap getBitmap() {
-        return this.mBitmap;
-    }
-
-
-
     // ***************************************************************************************
     // Public classes and methods
 
@@ -365,38 +323,10 @@ public class ScPointer extends ScFeature {
      * This is a structure to hold the feature information before draw it
      */
     @SuppressWarnings("unused")
-    public class DrawingInfo extends ScFeature.DrawingInfo {
+    public class PointerInfo extends NotchInfo {
 
-        public Bitmap bitmap;
         public boolean pressed;
 
-    }
-
-
-    // ***************************************************************************************
-    // Listeners and Interfaces
-
-    /**
-     * Define the draw listener interface
-     */
-    @SuppressWarnings("unused")
-    public interface OnCustomDrawListener {
-
-        /**
-         * Called before draw the path copy.
-         * @param info the copier info
-         */
-        void onCustomDraw(Canvas canvas, DrawingInfo info);
-
-    }
-
-    /**
-     * Set the draw listener to call.
-     * @param listener the linked method to call
-     */
-    @SuppressWarnings("unused")
-    public void setOnDrawListener(OnCustomDrawListener listener) {
-        this.mOnCustomDrawListener = listener;
     }
 
 }

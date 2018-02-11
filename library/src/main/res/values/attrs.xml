@@ -35,13 +35,13 @@
         <attr name="angleSweep" format="float" />
 
         <!-- STROKE -->
-        <attr name="strokeSize" format="dimension" />
         <attr name="strokeColor" format="color" />
         <attr name="strokeColors" format="string" />
         <attr name="strokeColorsMode" format="enum">
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
+        <attr name="strokeWidth" format="dimension" />
         <attr name="strokeWidths" format="string" />
         <attr name="strokeWidthsMode" format="enum">
             <enum name="rough" value="0" />
@@ -62,6 +62,7 @@
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
+        <attr name="progressWidth" format="dimension" />
         <attr name="progressWidths" format="string" />
         <attr name="progressWidthsMode" format="enum">
             <enum name="rough" value="0" />
@@ -87,8 +88,15 @@
             <enum name="nearest" value="0" />
             <enum name="over" value="1" />
         </attr>
+        <attr name="pointerWidth" format="dimension" />
         <attr name="pointerWidths" format="string" />
         <attr name="pointerWidthsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="pointerHeight" format="dimension" />
+        <attr name="pointerHeights" format="string" />
+        <attr name="pointerHeightsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
@@ -102,7 +110,6 @@
         <attr name="pointerRoundedCap" format="boolean" />
 
         <!-- NOTCHES -->
-        <attr name="notchesSize" format="dimension" />
         <attr name="notchesColor" format="color" />
         <attr name="notchesColors" format="string" />
         <attr name="notchesColorsMode" format="enum">
@@ -110,9 +117,9 @@
             <enum name="gradient" value="1" />
         </attr>
         <attr name="notches" format="integer" />
-        <attr name="notchesLength" format="dimension" />
-        <attr name="notchesLengths" format="string" />
-        <attr name="notchesLengthsMode" format="enum">
+        <attr name="notchesHeight" format="dimension" />
+        <attr name="notchesHeights" format="string" />
+        <attr name="notchesHeightsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
@@ -121,6 +128,7 @@
             <enum name="middle" value="1" />
             <enum name="outside" value="2" />
         </attr>
+        <attr name="notchesWidth" format="dimension" />
         <attr name="notchesWidths" format="string" />
         <attr name="notchesWidthsMode" format="enum">
             <enum name="rough" value="0" />
@@ -137,6 +145,7 @@
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
+        <attr name="textWidth" format="dimension" />
         <attr name="textWidths" format="string" />
         <attr name="textWidthsMode" format="enum">
             <enum name="rough" value="0" />

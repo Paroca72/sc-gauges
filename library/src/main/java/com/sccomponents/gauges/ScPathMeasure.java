@@ -85,10 +85,10 @@ public class ScPathMeasure extends PathMeasure {
 
         // Cycle all paths
         do {
-            // Find the length of the path
+            // Find the height of the path
             float len = this.mGenericMeasure.getLength();
 
-            // Consider only the path with length major of zero
+            // Consider only the path with height major of zero
             if (len > 0.0f) {
                 // Extract the current path segment and store it in list
                 Path segment = new Path();
@@ -124,11 +124,11 @@ public class ScPathMeasure extends PathMeasure {
 
         // Cycle all paths
         do {
-            // Find the length of the path
+            // Find the height of the path
             float len = this.mGenericMeasure.getLength();
             int distance = 0;
 
-            // Add the current length to the global length
+            // Add the current height to the global height
             this.mLength += len;
 
             // Cycle all the point of the path using an arbitrary increment
@@ -175,9 +175,9 @@ public class ScPathMeasure extends PathMeasure {
     }
 
     /**
-     * Get the length of a path considering all the contours.
+     * Get the height of a path considering all the contours.
      * If the path changed you must recall a setPath to update this value.
-     * @return the path length
+     * @return the path height
      */
     @Override
     public float getLength() {
@@ -185,8 +185,8 @@ public class ScPathMeasure extends PathMeasure {
     }
 
     /**
-     * Pins distance to 0 <= distance <= getLength(), and then computes the corresponding position
-     * and tangent. Returns false if there is no path, or a zero-length path was specified, in
+     * Pins distance to 0 <= distance <= getHeight(), and then computes the corresponding position
+     * and tangent. Returns false if there is no path, or a zero-height path was specified, in
      * which case position and tangent are unchanged.
      * Noted that this override method consider all contours.
      *
@@ -207,7 +207,7 @@ public class ScPathMeasure extends PathMeasure {
 
         // Cycle all contours
         do {
-            // add the current contour length to the current distance
+            // add the current contour height to the current distance
             currentDistance += this.mGenericMeasure.getLength();
 
             // Check if are on the right contour
@@ -229,8 +229,8 @@ public class ScPathMeasure extends PathMeasure {
 
     /**
      * Given a start and stop distance, return in dst the intervening segment(s).
-     * If the segment is zero-length, return false, else return true.
-     * startD and stopD are pinned to legal values (0..getLength()).
+     * If the segment is zero-height, return false, else return true.
+     * startD and stopD are pinned to legal values (0..getHeight()).
      * If startD <= stopD then return false (and leave dst untouched).
      * Begin the segment with a moveTo if startWithMoveTo is true.
      * On {@link Build.VERSION_CODES#KITKAT} and earlier
@@ -329,8 +329,8 @@ public class ScPathMeasure extends PathMeasure {
         if (distance < 0.0f)
             return null;
 
-        // Cycle all the paths (contours) summing the length.
-        // When the global length is over return the current path.
+        // Cycle all the paths (contours) summing the height.
+        // When the global height is over return the current path.
         float global = 0.0f;
         for (Path path : this.mPaths) {
             // Get the path measure
@@ -353,8 +353,8 @@ public class ScPathMeasure extends PathMeasure {
      */
     @SuppressWarnings("unused")
     public float getContourDistance(float distance) {
-        // Cycle all the paths (contours) summing the length.
-        // When the global length is over return the current path.
+        // Cycle all the paths (contours) summing the height.
+        // When the global height is over return the current path.
         float global = 0.0f;
         for (Path path : this.mPaths) {
             // Get the path measure
@@ -422,7 +422,7 @@ public class ScPathMeasure extends PathMeasure {
 
         // Cycle all contours
         do {
-            // Get the current contour length
+            // Get the current contour height
             double len = Math.ceil(this.mGenericMeasure.getLength());
 
             // Cycle all the point of the path using an arbitrary increment

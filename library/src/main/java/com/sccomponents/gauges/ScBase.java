@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -47,9 +48,13 @@ public abstract class ScBase extends View {
     private DisplayMetrics getDisplayMetrics(Context context) {
         // Get the window manager from the window service
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        assert wm != null;
+
         // Create the variable holder and inject the values
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        Display display = wm.getDefaultDisplay();
+        display.getMetrics(displayMetrics);
+
         // Return
         return displayMetrics;
     }
@@ -100,7 +105,7 @@ public abstract class ScBase extends View {
      * @param endValue      the end value
      * @return              the normalized value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("all")
     public static int valueRangeLimit(int value, int startValue, int endValue) {
         return (int) ScBase.valueRangeLimit((float) value, (float) startValue, (float) endValue);
     }
@@ -146,7 +151,7 @@ public abstract class ScBase extends View {
      * @param holdOrigin    if false reset the rectangle on its origin
      * @return              the new inflated rectangle
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("all")
     public static RectF inflateRect(RectF source, float value, boolean holdOrigin) {
         // Create a copy of the rect
         RectF dest = new RectF(source);

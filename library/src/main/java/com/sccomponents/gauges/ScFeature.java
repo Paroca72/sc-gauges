@@ -24,7 +24,6 @@ import java.util.Arrays;
  * enable to consider the contours the method onDraw will called for each contour within the path.
  * Also many method (eg: getPointAndAngle) will related to the current contour (and not the
  * global path) when called inside the drawing period.
- *
  * @author Samuele Carassai
  * @version 3.0.0
  * @since 2016-05-26
@@ -80,10 +79,10 @@ public abstract class ScFeature {
     private float[] mWidths;
 
     private Positions mPosition;
+    private Positions mEdges;
     private ColorsMode mColorsMode;
     private WidthsMode mWidthsMode;
     private boolean mConsiderContours;
-    private boolean mTransformCanvas;
 
     private boolean mVisible;
     private float mStartPercentage;
@@ -99,7 +98,7 @@ public abstract class ScFeature {
     // Generic holder
     private ScPathMeasure[] mContoursMeasurer;
     private float[] mGenericTangent;
-    private DrawingInfo mGenericInfo;
+    private ContourInfo mGenericInfo;
 
 
     /****************************************************************************************
@@ -112,15 +111,15 @@ public abstract class ScFeature {
         this.mColorsMode = ColorsMode.GRADIENT;
         this.mWidthsMode = WidthsMode.SMOOTH;
         this.mPosition = Positions.MIDDLE;
+        this.mEdges = Positions.MIDDLE;
 
         this.mVisible = true;
         this.mIsDrawing = false;
-        this.mTransformCanvas = true;
         this.mStartPercentage = 0.0f;
         this.mEndPercentage = 100.0f;
 
         this.mGenericTangent = new float[2];
-        this.mGenericInfo = new DrawingInfo();
+        this.mGenericInfo = new ContourInfo();
 
         // Path
         this.mPath = path;
@@ -133,7 +132,6 @@ public abstract class ScFeature {
         // Create the painter
         this.mPaint = new Paint();
         this.mPaint.setStrokeCap(Paint.Cap.BUTT);
-        this.mPaint.setStrokeWidth(0.0f);
         this.mPaint.setStyle(Paint.Style.STROKE);
         this.mPaint.setColor(Color.BLACK);
         this.mPaint.setAntiAlias(true);
@@ -146,11 +144,11 @@ public abstract class ScFeature {
     /**
      * Prepare the info object to send before drawing.
      * Need to override this method if you want have a custom info.
-     * @param contour   the current contour
-     * @return          the drawing info
+     * @param contour the current contour
+     * @return the drawing info
      */
     @SuppressWarnings("unused")
-    protected DrawingInfo setDrawingInfo(int contour) {
+    protected ContourInfo setDrawingInfo(int contour) {
         // Reset and Return
         this.mGenericInfo.reset(this, contour);
         return this.mGenericInfo;
@@ -158,58 +156,46 @@ public abstract class ScFeature {
 
     /**
      * The draw method to override in the inherited classes.
-     * @param canvas where draw
+     * @param canvas    where draw
+     * @param info      the contour info
      */
     @SuppressWarnings("unused")
-    protected abstract void onDraw(Canvas canvas, DrawingInfo info);
+    protected abstract void onDraw(Canvas canvas, ContourInfo info);
 
 
     // ***************************************************************************************
     // Private methods
 
     /**
+     * Check if two strings are equal considering the null too.
+     * @param a first
+     * @param b second
+     * @return  true is equals
+     */
+    protected boolean equals(String a, String b) {
+        if (a == null) return b == null;
+        return a.equals(b);
+    }
+
+    /**
      * Limit the value within the passed range of percentage value range.
      * Note that if the start value is over the end one will swapped in the right order.
-     * @param value     the value to limit
-     * @return          the limited value
+     * @param value the value to limit
+     * @return the limited value
      */
     protected float range(float value) {
         // Check the limit
-        if (value < 0.0f) return 0.0f;
-        if (value > 100.0f) return 100.0f;
+        if (value < 0.0f)
+            return 0.0f;
+        if (value > 100.0f)
+            return 100.0f;
         return value;
     }
 
     /**
-     * Set the generic matrix property based on the info settings.
-     * @param canvas    where to draw
-     * @param info      the drawing info
-     */
-    private void applyTransformCanvas(Canvas canvas, DrawingInfo info) {
-        // Adjust the offset if needs
-        float xOffset = info.offsetX;
-        float yOffset = info.offsetY;
-
-        switch (info.position) {
-            case INSIDE:
-            case MIDDLE:
-                break;
-
-            case OUTSIDE:
-                yOffset *= -1;
-                break;
-        }
-
-        // Define the matrix to transform the path and the shader
-        canvas.rotate(info.angle, info.centerX, info.centerY);
-        canvas.translate(xOffset, yOffset);
-        canvas.scale(info.scaleX, info.scaleY, info.centerX, info.centerY);
-    }
-
-    /**
      * Create a clone of a point
-     * @param source        the source point to clone
-     * @param destination   the destination point
+     * @param source      the source point to clone
+     * @param destination the destination point
      */
     @SuppressWarnings("unused")
     protected void clonePoint(float[] source, float[] destination) {
@@ -220,18 +206,20 @@ public abstract class ScFeature {
     /**
      * Given an array of colors calculate the right color by a ratio.
      * The color can be smooth or rough.
-     * @param colors    the source
-     * @param ratio     the ratio
-     * @param isSmooth  the type of calculation
-     * @return          the color
+     * @param colors   the source
+     * @param ratio    the ratio
+     * @param isSmooth the type of calculation
+     * @return the color
      */
     protected int getColor(int[] colors, float ratio, boolean isSmooth) {
         // Check
         if (colors == null)
             return this.getPainter().getColor();
 
-        if (ratio <= 0 || colors.length == 1) return colors[0];
-        if (ratio >= 1) return colors[colors.length - 1];
+        if (ratio <= 0 || colors.length == 1)
+            return colors[0];
+        if (ratio >= 1)
+            return colors[colors.length - 1];
 
         // Smooth value
         if (isSmooth) {
@@ -262,19 +250,22 @@ public abstract class ScFeature {
     /**
      * Given an array of values calculate the right value by a ratio.
      * The value can be smooth or rough.
-     * @param values        the source
-     * @param ratio         the ratio
-     * @param isSmooth      the type of calculation
-     * @param defaultValue  the default value
-     * @return              the value
+     * @param values       the source
+     * @param ratio        the ratio
+     * @param isSmooth     the type of calculation
+     * @param defaultValue the default value
+     * @return the value
      */
+    @SuppressWarnings("all")
     protected float getValue(float[] values, float ratio, boolean isSmooth, float defaultValue) {
         // Check
         if (values == null)
             return defaultValue;
 
-        if (ratio <= 0 || values.length == 1) return values[0];
-        if (ratio >= 1) return values[values.length - 1];
+        if (ratio <= 0 || values.length == 1)
+            return values[0];
+        if (ratio >= 1)
+            return values[values.length - 1];
 
         // Smooth value
         if (isSmooth) {
@@ -298,59 +289,24 @@ public abstract class ScFeature {
     }
 
     /**
-     * Setting the canvas and call the drawing methods
+     * Draw a single contour.
+     * This method is implemented just for give the possibility to override it for some
+     * future application.
      * @param canvas    where to draw
-     * @param info      the drawing info
+     * @param info      the current contour info
      * @hide
      */
-    protected void draw(Canvas canvas, DrawingInfo info) {
-        // Call the base listener
-        if (this.mOnDrawListener != null)
-            this.mOnDrawListener.onBeforeDraw(info);
-
-        // Check for visibility
-        if (!info.isVisible)
-            return;
-
-        // Apply the changes to the painter
-        if (this.mPaint != null) {
-            this.mPaint.setColor(info.color);
-            this.mPaint.setStrokeWidth(info.width);
-        }
-
-        // Apply the info to the matrix and the canvas and save the canvas status
-        if (this.mTransformCanvas) {
-            canvas.save();
-            this.applyTransformCanvas(canvas, info);
-        }
-
-        // Call
+    protected void drawContour(Canvas canvas, ContourInfo info) {
+        // Draw
         this.onDraw(canvas, info);
-
-        // Restore the initial canvas status
-        if (this.mTransformCanvas)
-            canvas.restore();
-    }
-
-    /**
-     * Draw a single contour
-     * @param canvas    where to draw
-     * @param contour   the current contour index
-     * @hide
-     */
-    protected void drawContour(Canvas canvas, int contour) {
-        // Prepare the info objects
-        DrawingInfo info = this.setDrawingInfo(contour);
-        this.draw(canvas, info);
     }
 
     /**
      * Draw all contours.
-     * @param canvas    where to draw
-     * @param contours  the contours list
-     * @hide
+     * @param canvas   where to draw
+     * @param contours the contours list
      */
-    protected void drawContours(Canvas canvas, Path[] contours) {
+    private void drawContours(Canvas canvas, Path[] contours) {
         // Cycle all contours
         for (int contour = 1; contour <= contours.length; contour++) {
             // Save the current contour index as I need to have it globally.
@@ -358,8 +314,27 @@ public abstract class ScFeature {
             // the path in separate contours.
             this.mContourIndex = contour;
 
+            // Prepare the info objects
+            ContourInfo info = this.setDrawingInfo(contour);
+            RectF bounds = this.getMeasure().getBounds();
+
+            // Call the base listener
+            if (this.mOnDrawListener != null)
+                this.mOnDrawListener.onDrawContour(info);
+
+            // Check for visibility
+            if (!info.isVisible)
+                continue;
+
+            // Rotate, translate and scale
+            canvas.save();
+            canvas.rotate(info.angle, bounds.centerX(), bounds.centerY());
+            canvas.translate(info.offset[0], info.offset[1]);
+            canvas.scale(info.scale[0], info.scale[1], bounds.centerX(), bounds.centerY());
+
             // Call the draw for the single contour
-            this.drawContour(canvas, contour);
+            this.drawContour(canvas, info);
+            canvas.restore();
         }
 
         // Reset the contour index
@@ -389,7 +364,7 @@ public abstract class ScFeature {
     public void copy(ScFeature destination) {
         // Check for empty values
         if (destination == null)
-            return ;
+            return;
 
         // Set
         destination.setTag(this.mTag);
@@ -401,10 +376,10 @@ public abstract class ScFeature {
             destination.setWidths(this.mWidths.clone());
 
         destination.setPosition(this.mPosition);
+        destination.setEdges(this.mEdges);
         destination.setColorsMode(this.mColorsMode);
         destination.setWidthsMode(this.mWidthsMode);
         destination.setConsiderContours(this.mConsiderContours);
-        destination.setTransformCanvas(this.mTransformCanvas);
         destination.setVisible(this.mVisible);
         destination.setStartAt(this.mStartPercentage);
         destination.setEndTo(this.mEndPercentage);
@@ -423,10 +398,6 @@ public abstract class ScFeature {
         // If the have only one color inside the colors array set it directly on the painter
         if (this.mColors != null && this.mColors.length == 1)
             this.mPaint.setColor(this.mColors[0]);
-
-        // If the have only one width inside the widths array set it directly on the painter
-        if (this.mWidths != null && this.mWidths.length == 1)
-            this.mPaint.setStrokeWidth(this.mWidths[0]);
 
         // Id drawing
         this.mIsDrawing = true;
@@ -453,8 +424,8 @@ public abstract class ScFeature {
      * Get the index path measurer and if not exists create and store it.
      * In this case we will use the PathMeasurer class as we need to treat just
      * one unique path.
-     * @param contour   the current contour
-     * @return          the measurer
+     * @param contour the current contour
+     * @return the measurer
      */
     @SuppressWarnings("unused")
     public ScPathMeasure getMeasure(int contour) {
@@ -505,16 +476,9 @@ public abstract class ScFeature {
      */
     @SuppressWarnings("unused")
     public void getTrimmedPath(Path path) {
-        // Convert the percentage values in distance referred to the current path length.
+        // Convert the percentage values in distance referred to the current path height.
         float startDistance = this.getStartAtDistance();
         float endDistance = this.getEndToDistance();
-
-        // In case of rounded stroke adjust the limit
-        Paint painter = this.getPainter();
-        if (painter != null && painter.getStrokeCap() == Paint.Cap.ROUND) {
-            startDistance += painter.getStrokeWidth() / 2.0f;
-            endDistance -= painter.getStrokeWidth() / 2.0f;
-        }
 
         // Trim a new segment and save it inside the path
         ScPathMeasure measurer = this.getMeasure();
@@ -524,9 +488,9 @@ public abstract class ScFeature {
 
     /**
      * Return a path point coordinates and tangent angle given the distance from the path start.
-     * @param  distance the point distance from path start
-     * @param  point    the array where will save the point coordinates
-     * @return          the tangent angle in degrees
+     * @param distance the point distance from path start
+     * @param point    the array where will save the point coordinates
+     * @return the tangent angle in degrees
      */
     @SuppressWarnings("unused")
     public float getPointAndAngle(float distance, float[] point) {
@@ -541,8 +505,8 @@ public abstract class ScFeature {
 
     /**
      * Return a path point coordinates given the distance from the path start.
-     * @param  distance the point distance from path start
-     * @param  point    the array where will save the point coordinates
+     * @param distance the point distance from path start
+     * @param point    the array where will save the point coordinates
      */
     @SuppressWarnings("unused")
     public void getPoint(float distance, float[] point) {
@@ -550,10 +514,10 @@ public abstract class ScFeature {
     }
 
     /**
-     * Get the angle in degrees of the tangent to a point on the path given the distance
+     * Get the tangent angle in degrees of the tangent to a point on the path given the distance
      * from the start of path.
-     * @param distance  the distance
-     * @return          the angle in degrees
+     * @param distance the distance
+     * @return the tangent angle in degrees
      */
     @SuppressWarnings("unused")
     public float getAngle(float distance) {
@@ -562,8 +526,8 @@ public abstract class ScFeature {
 
     /**
      * Given a percentage return the relative distance from the path start.
-     * @param percentage    the percentage of the path
-     * @return              the distance
+     * @param percentage the percentage of the path
+     * @return the distance
      */
     @SuppressWarnings("unused")
     public float getDistance(float percentage) {
@@ -575,9 +539,9 @@ public abstract class ScFeature {
      * Get the current gradient color dependently from the distance from the starting of path,
      * the colors array and the mode to draw. If the colors are not defined will be returned
      * the current color of painter.
-     * @param distance  from the path start
-     * @param length    force the length of the path
-     * @return          the color
+     * @param distance from the path start
+     * @param length   force the height of the path
+     * @return the color
      */
     @SuppressWarnings("unused")
     public int getGradientColor(float distance, float length) {
@@ -592,8 +556,8 @@ public abstract class ScFeature {
      * Get the current gradient color dependently from the distance from the starting of path,
      * the colors array and the mode to draw. If the colors are not defined will be returned
      * the current color of painter.
-     * @param distance  from the starting path
-     * @return          the color
+     * @param distance from the starting path
+     * @return the color
      */
     @SuppressWarnings("unused")
     public int getGradientColor(float distance) {
@@ -603,9 +567,9 @@ public abstract class ScFeature {
     /**
      * Get the current width dependently from the distance from the starting of path and the
      * widths array. If the widths are not defined will be returned the current width of painter.
-     * @param distance  from the path start
-     * @param length    force the length of the path
-     * @return          the width
+     * @param distance from the path start
+     * @param length   force the height of the path
+     * @return the width
      */
     @SuppressWarnings("unused")
     public float getWidth(float distance, float length) {
@@ -613,7 +577,7 @@ public abstract class ScFeature {
                 this.mWidths,
                 distance / length,
                 this.mWidthsMode == WidthsMode.SMOOTH,
-                this.getPainter().getStrokeWidth()
+                0.0f
         );
     }
 
@@ -621,8 +585,8 @@ public abstract class ScFeature {
      * Get the current gradient color dependently from the distance from the starting of path,
      * the colors array and the mode to draw. If the colors are not defined will be returned
      * the current color of painter.
-     * @param distance  from the path start
-     * @return          the color
+     * @param distance from the path start
+     * @return the color
      */
     @SuppressWarnings("unused")
     public float getWidth(float distance) {
@@ -687,7 +651,7 @@ public abstract class ScFeature {
      */
     @SuppressWarnings("unused")
     public void setTag(String value) {
-        if (this.mTag != value) {
+        if (this.equals(this.mTag, value)) {
             this.mTag = value;
             this.onPropertyChange("tag", value);
         }
@@ -722,30 +686,6 @@ public abstract class ScFeature {
     @SuppressWarnings("unused")
     public boolean getVisible() {
         return this.mVisible;
-    }
-
-
-    /**
-     * If true the settings inside the drawing info object will be automatically applied
-     * to the canvas before calling the onDraw method.
-     * @param value the value
-     */
-    @SuppressWarnings("unused")
-    public void setTransformCanvas(boolean value) {
-        if (this.mTransformCanvas != value) {
-            this.mTransformCanvas = value;
-            this.onPropertyChange("transformCanvas", value);
-        }
-    }
-
-    /**
-     * If true the settings inside the drawing info object will be automatically applied
-     * to the canvas before calling the onDraw method.
-     * @return the value
-     */
-    @SuppressWarnings("unused")
-    public boolean getTransformCanvas() {
-        return this.mTransformCanvas;
     }
 
 
@@ -795,7 +735,7 @@ public abstract class ScFeature {
 
 
     /**
-     * Set the start percentage of the path length.
+     * Set the start percentage of the path height.
      * The point before this percentage should not be considered.
      * @param percentage the percentage
      */
@@ -808,7 +748,7 @@ public abstract class ScFeature {
     }
 
     /**
-     * Get the start percentage of the path length.
+     * Get the start percentage of the path height.
      * @return the start limit in percentage
      */
     @SuppressWarnings("unused")
@@ -818,7 +758,7 @@ public abstract class ScFeature {
 
 
     /**
-     * Set the end percentage of the path length.
+     * Set the end percentage of the path height.
      * The point after this percentage should not be considered.
      * @param percentage the percentage
      */
@@ -831,7 +771,7 @@ public abstract class ScFeature {
     }
 
     /**
-     * Get the end percentage of the path length.
+     * Get the end percentage of the path height.
      * @return the end limit in percentage
      */
     @SuppressWarnings("unused")
@@ -839,6 +779,26 @@ public abstract class ScFeature {
         return this.mEndPercentage;
     }
 
+
+    /**
+     * Set the edges type.
+     * Can be: INSIDE, MIDDLE and OUTSIDE.
+     * @param value the edges type
+     */
+    @SuppressWarnings("unused")
+    public void setEdges(Positions value) {
+        if (this.mEdges != value) {
+            this.mEdges = value;
+            this.onPropertyChange("edges", value);
+        }
+    }
+
+    /**
+     * Get the edges type.
+     * @return the edges type
+     */
+    @SuppressWarnings("unused")
+    public Positions getEdges() { return this.mEdges; }
 
     /**
      * If false consider the whole path and call onDraw just one time.
@@ -943,10 +903,10 @@ public abstract class ScFeature {
     public interface OnDrawListener {
 
         /**
-         * Called before draw the path.
+         * Called before draw the contour.
          * @param info the feature info
          */
-        void onBeforeDraw(DrawingInfo info);
+        void onDrawContour(ContourInfo info);
 
     }
 
@@ -989,33 +949,31 @@ public abstract class ScFeature {
     // Drawing info class
 
     /**
-     * This is a structure to hold the feature information before draw it
+     * This is a structure to hold the feature information before draw a contour
      */
     @SuppressWarnings("unused")
-    public class DrawingInfo {
+    public class ContourInfo {
 
         // ***************************************************************************************
         // Properties
 
-        public ScFeature source = null;
-        public int contour = 0;
-
-        public float scaleX = 1.0f;
-        public float scaleY = 1.0f;
-
-        public float offsetX = 0.0f;
-        public float offsetY = 0.0f;
-
-        public float angle = 0.0f;
-        public float centerX = 0.0f;
-        public float centerY = 0.0f;
-
-        public float width = 0.0f;
-        public int color = 0;
-
-        public ScFeature.Positions position = ScFeature.Positions.MIDDLE;
+        public ScFeature source;
+        public int contour;
+        public ScFeature.Positions position;
         public boolean isVisible = true;
 
+        public float angle;
+        public float[] scale;
+        public float[] offset;
+
+
+        // ***************************************************************************************
+        // Constructor
+
+        public ContourInfo() {
+            this.scale = new float[2];
+            this.offset = new float[2];
+        }
 
         // ***************************************************************************************
         // Public methods
@@ -1025,22 +983,15 @@ public abstract class ScFeature {
             this.source = feature;
             this.contour = contour;
 
-            this.scaleX = 1.0f;
-            this.scaleY = 1.0f;
-
-            this.offsetX = 0.0f;
-            this.offsetY = 0.0f;
-
-            RectF bounds = feature.getMeasure().getBounds();
             this.angle = 0.0f;
-            this.centerX = bounds.centerX();
-            this.centerY = bounds.centerY();
-
-            this.width = feature.getPainter().getStrokeWidth();
-            this.color = feature.getPainter().getColor();
-
-            this.position = feature.getPosition();
+            this.position = ScFeature.Positions.MIDDLE;
             this.isVisible = true;
+
+            this.scale[0] = 1.0f;
+            this.scale[1] = 1.0f;
+
+            this.offset[0] = 0.0f;
+            this.offset[1] = 0.0f;
         }
 
     }
