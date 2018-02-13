@@ -73,32 +73,28 @@ public abstract class ScFeature {
 
     private ScPathMeasure mPathMeasure;
     private String mTag;
-
     private Paint mPaint;
     private int[] mColors;
     private float[] mWidths;
-
     private Positions mPosition;
     private Positions mEdges;
     private ColorsMode mColorsMode;
     private WidthsMode mWidthsMode;
     private boolean mConsiderContours;
-
     private boolean mVisible;
     private float mStartPercentage;
     private float mEndPercentage;
     private int mContourIndex;
-
     private boolean mIsDrawing;
+    private ContourInfo mContourInfo;
 
     // Listeners
-    protected OnDrawListener mOnDrawListener;
-    protected OnPropertyChangedListener mOnPropertyChangedListener;
+    private OnDrawContourListener mOnDrawListener;
+    private OnPropertyChangedListener mOnPropertyChangedListener;
 
     // Generic holder
     private ScPathMeasure[] mContoursMeasurer;
     private float[] mGenericTangent;
-    private ContourInfo mGenericInfo;
 
 
     /****************************************************************************************
@@ -112,6 +108,7 @@ public abstract class ScFeature {
         this.mWidthsMode = WidthsMode.SMOOTH;
         this.mPosition = Positions.MIDDLE;
         this.mEdges = Positions.MIDDLE;
+        this.mContourInfo = new ContourInfo();
 
         this.mVisible = true;
         this.mIsDrawing = false;
@@ -119,7 +116,6 @@ public abstract class ScFeature {
         this.mEndPercentage = 100.0f;
 
         this.mGenericTangent = new float[2];
-        this.mGenericInfo = new ContourInfo();
 
         // Path
         this.mPath = path;
@@ -142,16 +138,16 @@ public abstract class ScFeature {
     // Methods to override
 
     /**
-     * Prepare the info object to send before drawing.
-     * Need to override this method if you want have a custom info.
-     * @param contour the current contour
-     * @return the drawing info
+     * Get the current contour drawing info.
+     * This methods must be overridden for create custom drawing info for inherited
+     * classes.
+     * @param contour   the contour index
+     * @return          the contour drawing info
      */
     @SuppressWarnings("unused")
-    protected ContourInfo setDrawingInfo(int contour) {
-        // Reset and Return
-        this.mGenericInfo.reset(this, contour);
-        return this.mGenericInfo;
+    protected ContourInfo getContourInfo(int contour) {
+        this.mContourInfo.reset(this, contour);
+        return this.mContourInfo;
     }
 
     /**
@@ -181,7 +177,7 @@ public abstract class ScFeature {
      * Limit the value within the passed range of percentage value range.
      * Note that if the start value is over the end one will swapped in the right order.
      * @param value the value to limit
-     * @return the limited value
+     * @return      the limited value
      */
     protected float range(float value) {
         // Check the limit
@@ -206,10 +202,10 @@ public abstract class ScFeature {
     /**
      * Given an array of colors calculate the right color by a ratio.
      * The color can be smooth or rough.
-     * @param colors   the source
-     * @param ratio    the ratio
-     * @param isSmooth the type of calculation
-     * @return the color
+     * @param colors    the source
+     * @param ratio     the ratio
+     * @param isSmooth  the type of calculation
+     * @return          the color
      */
     protected int getColor(int[] colors, float ratio, boolean isSmooth) {
         // Check
@@ -250,11 +246,11 @@ public abstract class ScFeature {
     /**
      * Given an array of values calculate the right value by a ratio.
      * The value can be smooth or rough.
-     * @param values       the source
-     * @param ratio        the ratio
-     * @param isSmooth     the type of calculation
-     * @param defaultValue the default value
-     * @return the value
+     * @param values        the source
+     * @param ratio         the ratio
+     * @param isSmooth      the type of calculation
+     * @param defaultValue  the default value
+     * @return              the value
      */
     @SuppressWarnings("all")
     protected float getValue(float[] values, float ratio, boolean isSmooth, float defaultValue) {
@@ -315,8 +311,7 @@ public abstract class ScFeature {
             this.mContourIndex = contour;
 
             // Prepare the info objects
-            ContourInfo info = this.setDrawingInfo(contour);
-            RectF bounds = this.getMeasure().getBounds();
+            ContourInfo info = this.getContourInfo(contour);
 
             // Call the base listener
             if (this.mOnDrawListener != null)
@@ -327,6 +322,7 @@ public abstract class ScFeature {
                 continue;
 
             // Rotate, translate and scale
+            RectF bounds = this.getMeasure().getBounds();
             canvas.save();
             canvas.rotate(info.angle, bounds.centerX(), bounds.centerY());
             canvas.translate(info.offset[0], info.offset[1]);
@@ -900,7 +896,7 @@ public abstract class ScFeature {
      * Define the draw listener interface
      */
     @SuppressWarnings("unused")
-    public interface OnDrawListener {
+    public interface OnDrawContourListener {
 
         /**
          * Called before draw the contour.
@@ -915,7 +911,7 @@ public abstract class ScFeature {
      * @param listener the linked method to call
      */
     @SuppressWarnings("unused")
-    public void setOnDrawListener(OnDrawListener listener) {
+    public void setOnDrawContourListener(OnDrawContourListener listener) {
         this.mOnDrawListener = listener;
     }
 
@@ -984,8 +980,8 @@ public abstract class ScFeature {
             this.contour = contour;
 
             this.angle = 0.0f;
-            this.position = ScFeature.Positions.MIDDLE;
-            this.isVisible = true;
+            this.position = feature.getPosition();
+            this.isVisible = feature.getVisible();
 
             this.scale[0] = 1.0f;
             this.scale[1] = 1.0f;

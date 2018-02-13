@@ -19,6 +19,7 @@ import com.sccomponents.gauges.ScGauge;
 import com.sccomponents.gauges.ScNotches;
 import com.sccomponents.gauges.ScPathMeasure;
 import com.sccomponents.gauges.ScPointer;
+import com.sccomponents.gauges.ScRepetitions;
 import com.sccomponents.gauges.ScWriter;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Dimensions
-        int padding = 24;
-        Rect drawArea = new Rect(padding, padding, 900 - padding, 900 - padding);
+        int padding = 30;
+        final Rect drawArea = new Rect(padding, padding, 500 - padding, 300 - padding);
 
         // Get the main layout
         ImageView imageContainer = (ImageView) this.findViewById(R.id.image);
@@ -47,27 +48,30 @@ public class MainActivity extends AppCompatActivity {
         // Create the path building a bezier curve from the left-top to the right-bottom angles of
         // the drawing area.
         Path path = new Path();
-        path.moveTo(drawArea.left + 100, drawArea.bottom - 100);
-        path.quadTo(drawArea.centerX(), drawArea.top, drawArea.right - 100, drawArea.bottom - 100);
+        path.moveTo(drawArea.left, drawArea.top);
+        path.quadTo(drawArea.centerX(), drawArea.top, drawArea.centerX(), drawArea.centerY());
+        path.quadTo(drawArea.centerX(), drawArea.bottom, drawArea.right, drawArea.bottom);
+
+        // Draw the path only for have a reference
+        Paint temp = new Paint();
+        temp.setStyle(Paint.Style.STROKE);
+        temp.setStrokeWidth(2);
+        canvas.drawPath(path, temp);
 
         // Feature
-        ScCopier copier = new ScCopier(path);
-        copier.setWidths(100);
-        copier.setColors(Color.RED, Color.GREEN, Color.BLUE);
-        //copier.setColorsMode(ScCopier.ColorsMode.SOLID);
-        copier.setPosition(ScFeature.Positions.MIDDLE);
-        copier.getPainter().setStrokeCap(Paint.Cap.ROUND);
-        copier.setEdges(ScFeature.Positions.OUTSIDE);
-        copier.draw(canvas);
-
-        ScPathMeasure measure = new ScPathMeasure(path, false);
-        Paint paint = new Paint();
-
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(4);
-        paint.setColor(Color.RED);
-        canvas.drawPath(path, paint);
-
+        ScWriter writer = new ScWriter (path);
+        writer.setTokens("FIRST", "SECOND", "THIRD", "FOURTH");
+        writer.getPainter().setTextAlign(Paint.Align.LEFT);
+        writer.setPosition(ScFeature.Positions.MIDDLE);
+        //writer.setBending(true);
+        writer.setOnDrawRepetitionListener(new ScRepetitions.OnDrawRepetitionListener() {
+            @Override
+            public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
+                info.angle = -45;
+                info.offset[1] = -10;
+            }
+        });
+        writer.draw(canvas);
 
         // Add the bitmap to the container
         imageContainer.setImageBitmap(bitmap);

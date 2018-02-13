@@ -1,6 +1,8 @@
 package com.sccomponents.gauges;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
 
 import java.util.ArrayList;
@@ -21,10 +23,10 @@ public abstract class ScRepetitions extends ScFeature {
     private boolean mLastRepetitionOnPathEnd;
     private int mRepetitions;
     private float mSpaceBetween;
-    private RepetitionInfo mGenericInfo;
+    private RepetitionInfo mRepetitionInfo;
 
     // Listener
-    protected OnDrawListener mOnDrawListener;
+    private OnDrawRepetitionListener mOnDrawListener;
 
 
     /****************************************************************************************
@@ -42,27 +44,12 @@ public abstract class ScRepetitions extends ScFeature {
         this.mLastRepetitionOnPathEnd = true;
 
         // Generic
-        this.mGenericInfo = new RepetitionInfo();
+        this.mRepetitionInfo = new RepetitionInfo();
     }
 
 
     // ***************************************************************************************
     // Methods to override
-
-    /**
-     * Prepare the info object to send before drawing.
-     * Need to override this method if you want have a custom info.
-     * @param contour       the current contour
-     * @param repetition    the current repetition
-     * @return              the drawing info
-     * @hide
-     */
-    @SuppressWarnings("unused")
-    protected RepetitionInfo setDrawingInfo(int contour, int repetition) {
-        // Reset and Return
-        this.mGenericInfo.reset(this, contour, repetition);
-        return this.mGenericInfo;
-    }
 
     /**
      * The draw method to override in the inherited classes.
@@ -73,6 +60,19 @@ public abstract class ScRepetitions extends ScFeature {
     @Override
     protected void onDraw(Canvas canvas, ContourInfo info) {
         // Do nothing
+    }
+
+    /**
+     * Get the current repetition drawing info.
+     * This methods must be overridden for create custom drawing info for inherited
+     * classes.
+     * @param repetition    the repetition index
+     * @return              the repetition drawing info
+     */
+    @SuppressWarnings("unused")
+    protected RepetitionInfo getRepetitionInfo(int contour, int repetition) {
+        this.mRepetitionInfo.reset(this, contour, repetition);
+        return this.mRepetitionInfo;
     }
 
     /**
@@ -153,7 +153,7 @@ public abstract class ScRepetitions extends ScFeature {
         // Cycle all repetition
         for (int repetition = 1; repetition <= this.mRepetitions; repetition++) {
             // Get the drawing info
-            RepetitionInfo info = this.setDrawingInfo(contour, repetition);
+            RepetitionInfo info = this.getRepetitionInfo(contour, repetition);
 
             // Call the base listener
             if (this.mOnDrawListener != null)
@@ -378,13 +378,7 @@ public abstract class ScRepetitions extends ScFeature {
      * Define the draw listener interface
      */
     @SuppressWarnings("unused")
-    public interface OnDrawListener {
-
-        /**
-         * Called before draw the contour.
-         * @param info the feature info
-         */
-        void onDrawContour(ContourInfo info);
+    public interface OnDrawRepetitionListener {
 
         /**
          * Called before draw the repetition.
@@ -399,7 +393,7 @@ public abstract class ScRepetitions extends ScFeature {
      * @param listener the linked method to call
      */
     @SuppressWarnings("unused")
-    public void setOnDrawListener(OnDrawListener listener) {
+    public void setOnDrawRepetitionListener(OnDrawRepetitionListener listener) {
         this.mOnDrawListener = listener;
     }
 
@@ -448,13 +442,8 @@ public abstract class ScRepetitions extends ScFeature {
 
         public void reset(ScRepetitions feature, int contour, int repetition) {
             // Holder
-            this.source = feature;
-
             float distance = feature.getDistance(repetition);
-            float angle = feature.getPointAndAngle(distance, this.mGenericPoint);
-            int color = feature.getGradientColor(distance);
-            float width = feature.getWidth(distance);
-            boolean isOverLimits = feature.isOverLimits(repetition);
+            float tangent = feature.getPointAndAngle(distance, this.mGenericPoint);
 
             // Find the center as the point on path
             this.point[0] = this.mGenericPoint[0];
@@ -463,19 +452,19 @@ public abstract class ScRepetitions extends ScFeature {
             // Reset the offset and the scale
             this.offset[0] = 0.0f;
             this.offset[1] = 0.0f;
-
             this.scale[0] = 1.0f;
             this.scale[1] = 1.0f;
 
             // Reset the drawing info
+            this.source = feature;
             this.repetition = repetition;
             this.distance = distance;
-            this.width = width;
-            this.tangent = angle;
+            this.width = feature.getWidth(distance);
+            this.tangent = tangent;
             this.angle = 0.0f;
-            this.position = ScFeature.Positions.MIDDLE;
-            this.color = color;
-            this.isVisible = !isOverLimits;
+            this.position = feature.getPosition();
+            this.color = feature.getGradientColor(distance);
+            this.isVisible = !feature.isOverLimits(repetition) && feature.getVisible();
         }
 
     }

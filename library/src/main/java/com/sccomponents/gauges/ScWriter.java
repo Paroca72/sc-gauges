@@ -29,10 +29,7 @@ public class ScWriter extends ScRepetitions {
 
     private float[] mGenericPoint;
     private Rect mGenericRect;
-    private TokenInfo mGenericInfo;
-
-    // Listener
-    protected OnDrawListener mOnDrawListener;
+    private TokenInfo mRepetitionInfo;
 
 
     /****************************************************************************************
@@ -47,10 +44,10 @@ public class ScWriter extends ScRepetitions {
         // Init
         this.mConsiderFontMetrics = true;
         this.mBending = false;
+        this.mRepetitionInfo = new TokenInfo();
 
         this.mGenericPoint = new float[2];
         this.mGenericRect = new Rect();
-        this.mGenericInfo = new TokenInfo();
 
         // Update the painter
         Paint painter = this.getPainter();
@@ -67,8 +64,8 @@ public class ScWriter extends ScRepetitions {
      * Get the text boundaries.
      * As we can have a multiline string we must find the max boundaries calculated on all
      * the rows in the string.
-     * @param text  the text to check
-     * @return      the bounds in rect
+     * @param text the text to check
+     * @return the bounds in rect
      */
     private Rect getBounds(String text) {
         // Holder
@@ -96,12 +93,12 @@ public class ScWriter extends ScRepetitions {
 
     /**
      * Divide the text in tokens (rows) by the carriage return "\n"
-     * @param text  The passed value
-     * @return      the tokens
+     * @param text The passed value
+     * @return the tokens
      */
     private String[] getTextRows(String text) {
         if (text == null || text.length() == 0)
-            return new String[] {};
+            return new String[]{};
         else
             return text.split("\\n");
     }
@@ -109,8 +106,8 @@ public class ScWriter extends ScRepetitions {
     /**
      * In case of multiline get back the the number of rows.
      * NOTE: the separator is "\n"
-     * @param text  the passed text
-     * @return      the number of rows
+     * @param text the passed text
+     * @return the number of rows
      */
     private int getTextRowsCount(String text) {
         return this.getTextRows(text).length;
@@ -119,8 +116,8 @@ public class ScWriter extends ScRepetitions {
     /**
      * Calculate the extra vertical offset by the text position respect to the path.
      * This method consider multiline text also.
-     * @param info  the token info
-     * @return      the extra vertical offset
+     * @param info the token info
+     * @return the extra vertical offset
      */
     private float getVerticalOffset(TokenInfo info) {
         // Return the calculated offset considering the text rows number
@@ -139,8 +136,8 @@ public class ScWriter extends ScRepetitions {
 
     /**
      * Calculate the extra vertical offset by the font metrics dimension.
-     * @param info  the token info
-     * @return      the extra vertical offset
+     * @param info the token info
+     * @return the extra vertical offset
      */
     private float getFontMetricsOffset(TokenInfo info) {
         // Check if need to calculate the offset
@@ -163,7 +160,7 @@ public class ScWriter extends ScRepetitions {
      * @param text  the source
      * @param start the position to start
      * @param end   the position where finish
-     * @return      the width
+     * @return the width
      */
     private int getTextWidth(String text, int start, int end) {
         // Holders
@@ -177,8 +174,8 @@ public class ScWriter extends ScRepetitions {
 
     /**
      * Get the text with using the current painter
-     * @param text  the source
-     * @return      the width
+     * @param text the source
+     * @return the width
      */
     private int getTextWidth(String text) {
         return this.getTextWidth(text, 0, text.length());
@@ -187,17 +184,17 @@ public class ScWriter extends ScRepetitions {
     /**
      * Get the horizontal offset where start to draw the text considering the current
      * painter alignment.
-     * @param text  the source text
-     * @return      the start position
+     * @param text the source text
+     * @return the start position
      */
     private float getHorizontalOffset(String text) {
         // Calculate the start position considering the painter text align
         switch (this.getPainter().getTextAlign()) {
             case CENTER:
-                return - this.getTextWidth(text) / 2.0f;
+                return -this.getTextWidth(text) / 2.0f;
 
             case RIGHT:
-                return - this.getTextWidth(text);
+                return -this.getTextWidth(text);
         }
         return 0.0f;
     }
@@ -212,11 +209,11 @@ public class ScWriter extends ScRepetitions {
      * follow a straight line along the angle of the related first or last point of the path.
      * This method draw each characters of the string one by one and this will have effect on
      * the method performance.
-     * @param canvas    where to draw
-     * @param token     the text to draw
-     * @param distance  the start distance
-     * @param angle     the start angle
-     * @param offsetY   the vertical offset
+     * @param canvas   where to draw
+     * @param token    the text to draw
+     * @param distance the start distance
+     * @param angle    the start angle
+     * @param offsetY  the vertical offset
      */
     private void drawTextOnPath(Canvas canvas, String token,
                                 float distance, float angle, float offsetY) {
@@ -235,7 +232,7 @@ public class ScWriter extends ScRepetitions {
         float lastPointAngle = this.getPointAndAngle(pathLength, lastPoint);
 
         // Draw chars per chars
-        for (int index = 0, len = token.length(); index < len; index ++) {
+        for (int index = 0, len = token.length(); index < len; index++) {
             // Draw before the paths
             if (currentPos < 0) {
                 //float offsetX = (this.getTextWidth(toFill) / (toFill.height() * 2));
@@ -291,11 +288,11 @@ public class ScWriter extends ScRepetitions {
 
     /**
      * Draw the single token on the path
-     * @param canvas    where to draw
-     * @param token     the text to draw
-     * @param x         the point
-     * @param y         the point
-     * @param angle     the angle
+     * @param canvas where to draw
+     * @param token  the text to draw
+     * @param x      the point
+     * @param y      the point
+     * @param angle  the angle
      */
     private void drawToken(Canvas canvas, String token, float x, float y, float angle) {
         // Holders
@@ -339,16 +336,15 @@ public class ScWriter extends ScRepetitions {
                         info.tangent,
                         offsetY
                 );
-            }
-            else
+            } else
                 // Unbending
-                    this.drawToken(
-                            canvas,
-                            token,
-                            this.mGenericPoint[0],
-                            this.mGenericPoint[1] + offsetY,
-                            info.angle
-                    );
+                this.drawToken(
+                        canvas,
+                        token,
+                        this.mGenericPoint[0],
+                        this.mGenericPoint[1] + offsetY,
+                        info.angle
+                );
 
             // Adjust vertical offset
             offsetY += singleRowHeight;
@@ -360,24 +356,17 @@ public class ScWriter extends ScRepetitions {
     // Overrides
 
     /**
-     * Prepare the info object to send before drawing.
-     * Need to override this method if you want have a custom info.
-     * @param contour       the current contour
-     * @param repetition    the current repetition
-     * @return              the drawing info
+     * Get the current repetition drawing info.
+     * This methods must be overridden for create custom drawing info for inherited
+     * classes.
+     * @param repetition the repetition index
+     * @return the repetition drawing info
      */
+    @SuppressWarnings("unused")
     @Override
-    protected TokenInfo setDrawingInfo(int contour, int repetition) {
-        // Reset and fill with the base values
-        this.mGenericInfo.reset(this, contour, repetition);
-
-        // Fill the missing data
-        this.mGenericInfo.bending = this.mBending;
-        if (repetition > 0 && repetition <= this.mTokens.length)
-            this.mGenericInfo.text = this.mTokens[repetition - 1];
-
-        // Return
-        return this.mGenericInfo;
+    protected TokenInfo getRepetitionInfo(int contour, int repetition) {
+        this.mRepetitionInfo.reset(this, contour, repetition);
+        return this.mRepetitionInfo;
     }
 
     /**
@@ -517,43 +506,29 @@ public class ScWriter extends ScRepetitions {
      */
     public class TokenInfo extends RepetitionInfo {
 
+        // ***************************************************************************************
+        // Properties
+
+        public ScWriter source;
         public String text;
         public boolean bending;
 
-    }
+        // ***************************************************************************************
+        // Public methods
 
+        public void reset(ScWriter feature, int contour, int repetition) {
+            // Super
+            super.reset(feature, contour, repetition);
 
-    // ***************************************************************************************
-    // Listeners and Interfaces
+            // Reset
+            this.source = feature;
+            this.bending = feature.getBending();
 
-    /**
-     * Define the draw listener interface
-     */
-    @SuppressWarnings("unused")
-    public interface OnDrawListener {
+            String[] tokens = feature.getTokens();
+            if (tokens != null && repetition > 0 && repetition <= tokens.length)
+                this.text = tokens[repetition - 1];
+        }
 
-        /**
-         * Called before draw the contour.
-         * @param info the feature info
-         */
-        void onDrawContour(ContourInfo info);
-
-        /**
-         * Called before draw the path copy.
-         * @param info the copier info
-         */
-        void onBeforeDraw(Canvas canvas, TokenInfo info);
-
-    }
-
-    /**
-     * Set the draw listener to call.
-     * @param listener the linked method to call
-     */
-    @SuppressWarnings("unused")
-    public void setOnDrawListener(OnDrawListener listener) {
-        this.mOnDrawListener = listener;
     }
 
 }
-

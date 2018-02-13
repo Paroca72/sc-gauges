@@ -59,10 +59,7 @@ public class ScNotches extends ScRepetitions {
     private float[] mFirstPoint;
     private float[] mSecondPoint;
     private RectF mGenericRect;
-    private NotchInfo mGenericInfo;
-
-    // Listener
-    protected OnDrawListener mOnDrawListener;
+    private NotchInfo mRepetitionInfo;
 
 
     // ***************************************************************************************
@@ -77,12 +74,11 @@ public class ScNotches extends ScRepetitions {
         this.mHeights = new float[]{0.0f};
         this.mHeightsMode = HeightsMode.SMOOTH;
         this.mType = NotchTypes.LINE;
+        this.mRepetitionInfo = new NotchInfo();
 
         this.mFirstPoint = new float[2];
         this.mSecondPoint = new float[2];
-
         this.mGenericRect = new RectF();
-        this.mGenericInfo = new NotchInfo();
     }
 
 
@@ -276,26 +272,17 @@ public class ScNotches extends ScRepetitions {
     // Overrides
 
     /**
-     * Prepare the info object to send before drawing.
-     * Need to override this method if you want have a custom info.
-     * @param contour       the current contour
-     * @param repetition    the current repetition
-     * @return              the drawing info
-     * @hide
+     * Get the current repetition drawing info.
+     * This methods must be overridden for create custom drawing info for inherited
+     * classes.
+     * @param repetition    the repetition index
+     * @return              the repetition drawing info
      */
+    @SuppressWarnings("unused")
     @Override
-    protected NotchInfo setDrawingInfo(int contour, int repetition) {
-        // Reset and fill with the base values
-        this.mGenericInfo.reset(this, contour, repetition);
-
-        // Fill the missing data
-        this.mGenericInfo.source = this;
-        this.mGenericInfo.height = this.getHeight(mGenericInfo.distance);
-        this.mGenericInfo.type = this.mType;
-        this.mGenericInfo.bitmap = this.getBitmap();
-
-        // Return
-        return this.mGenericInfo;
+    protected NotchInfo getRepetitionInfo(int contour, int repetition) {
+        this.mRepetitionInfo.reset(this, contour, repetition);
+        return this.mRepetitionInfo;
     }
 
     /**
@@ -481,44 +468,35 @@ public class ScNotches extends ScRepetitions {
     @SuppressWarnings("unused")
     public class NotchInfo extends RepetitionInfo {
 
-        public ScNotches source = null;
-        public float height = 0.0f;
-        public NotchTypes type = NotchTypes.LINE;
+        // ***************************************************************************************
+        // Properties
+
+        public ScNotches source;
+        public float height;
+        public NotchTypes type;
         public Bitmap bitmap;
 
-    }
+        // ***************************************************************************************
+        // Constructor
 
+        public NotchInfo() {
+            this.type = NotchTypes.LINE;
+        }
 
-    // ***************************************************************************************
-    // Listeners and Interfaces
+        // ***************************************************************************************
+        // Public methods
 
-    /**
-     * Define the draw listener interface
-     */
-    @SuppressWarnings("unused")
-    public interface OnDrawListener {
+        public void reset(ScNotches feature, int contour, int repetition) {
+            // Super
+            super.reset(feature, contour, repetition);
 
-        /**
-         * Called before draw the contour.
-         * @param info the feature info
-         */
-        void onDrawContour(ContourInfo info);
+            // Reset
+            this.source = feature;
+            this.height = feature.getHeight(this.distance);
+            this.type = feature.mType;
+            this.bitmap = feature.getBitmap();
+        }
 
-        /**
-         * Called before draw the path copy.
-         * @param info the copier info
-         */
-        void onBeforeDraw(Canvas canvas, NotchInfo info);
-
-    }
-
-    /**
-     * Set the draw listener to call.
-     * @param listener the linked method to call
-     */
-    @SuppressWarnings("unused")
-    public void setOnDrawListener(OnDrawListener listener) {
-        this.mOnDrawListener = listener;
     }
 
 }

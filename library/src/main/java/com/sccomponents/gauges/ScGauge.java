@@ -93,8 +93,8 @@ public abstract class ScGauge extends ScDrawer implements
     private OnDrawListener mOnDrawListener;
 
     // Events proxies
-    private ScFeature.OnDrawListener proxyFeatureDrawListener =
-            new ScFeature.OnDrawListener() {
+    private ScFeature.OnDrawContourListener proxyFeatureDrawListener =
+            new ScFeature.OnDrawContourListener() {
                 @Override
                 public void onDrawContour(ScFeature.ContourInfo info) {
                     callOnDrawContourEvent(info);
@@ -102,13 +102,8 @@ public abstract class ScGauge extends ScDrawer implements
             };
 
     // Events proxies
-    private ScRepetitions.OnDrawListener proxyRepetitionsDrawListener =
-            new ScRepetitions.OnDrawListener() {
-                @Override
-                public void onDrawContour(ScFeature.ContourInfo info) {
-                    callOnDrawContourEvent(info);
-                }
-
+    private ScRepetitions.OnDrawRepetitionListener proxyRepetitionsDrawListener =
+            new ScRepetitions.OnDrawRepetitionListener() {
                 @Override
                 public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
                     callOnDrawRepetitionEvent(info);
@@ -698,11 +693,10 @@ public abstract class ScGauge extends ScDrawer implements
      */
     private void attachFeatureToListener(ScFeature feature) {
         // Attach the listener by the class type
+        feature.setOnDrawContourListener(this.proxyFeatureDrawListener);
         if (feature instanceof ScRepetitions) {
             ScRepetitions repetitions = (ScRepetitions) feature;
-            repetitions.setOnDrawListener(this.proxyRepetitionsDrawListener);
-        } else {
-            feature.setOnDrawListener(this.proxyFeatureDrawListener);
+            repetitions.setOnDrawRepetitionListener(this.proxyRepetitionsDrawListener);
         }
     }
 

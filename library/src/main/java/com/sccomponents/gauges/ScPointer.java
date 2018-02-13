@@ -30,8 +30,7 @@ public class ScPointer extends ScNotches {
     private float mHaloWidth;
     private int mHaloAlpha;
     private Paint mHaloPaint;
-
-    private PointerInfo mGenericInfo;
+    private PointerInfo mRepetitionInfo;
 
 
     /****************************************************************************************
@@ -49,10 +48,9 @@ public class ScPointer extends ScNotches {
 
         this.mHaloWidth = ScPointer.DEFAULT_HALO_WIDTH;
         this.mHaloAlpha = ScPointer.DEFAULT_HALO_ALPHA;
-
-        this.mGenericInfo = new PointerInfo();
         this.mHaloPaint = new Paint();
         this.mHaloPaint.setStyle(Paint.Style.STROKE);
+        this.mRepetitionInfo = new PointerInfo();
     }
 
 
@@ -60,23 +58,17 @@ public class ScPointer extends ScNotches {
     // Overrides
 
     /**
-     * Prepare the info object to send before drawing.
-     * Need to override this method if you want have a custom info.
-     * @param contour   the current contour
-     * @return          the drawing info
-     * @hide
+     * Get the current repetition drawing info.
+     * This methods must be overridden for create custom drawing info for inherited
+     * classes.
+     * @param repetition    the repetition index
+     * @return              the repetition drawing info
      */
+    @SuppressWarnings("unused")
     @Override
-    protected PointerInfo setDrawingInfo(int contour, int repetition) {
-        // Reset and fill with the base values
-        this.mGenericInfo.reset(this, contour, repetition);
-
-        // Fill the missing data
-        this.mGenericInfo.pressed = this.mPressed;
-        this.mGenericInfo.distance = this.mValue;
-
-        // Return
-        return this.mGenericInfo;
+    protected PointerInfo getRepetitionInfo(int contour, int repetition) {
+        this.mRepetitionInfo.reset(this, contour, repetition);
+        return this.mRepetitionInfo;
     }
 
     /**
@@ -325,7 +317,38 @@ public class ScPointer extends ScNotches {
     @SuppressWarnings("unused")
     public class PointerInfo extends NotchInfo {
 
+        // ***************************************************************************************
+        // Properties
+
+        private float[] mGenericPoint;
+
+        public ScPointer source;
         public boolean pressed;
+
+        // ***************************************************************************************
+        // Constructor
+
+        public PointerInfo() {
+            this.mGenericPoint = new float[2];
+        }
+
+        // ***************************************************************************************
+        // Public methods
+
+        public void reset(ScPointer feature, int contour, int repetition) {
+            // Super
+            super.reset(feature, contour, repetition);
+
+            // Reset
+            this.source = feature;
+            this.pressed = feature.getPressed();
+            this.distance = feature.getValue();
+
+            this.height = feature.getHeight(this.distance);
+            this.width = feature.getWidth(this.distance);
+            this.tangent = feature.getPointAndAngle(this.distance, this.mGenericPoint);
+            this.color = feature.getGradientColor(this.distance);
+        }
 
     }
 
