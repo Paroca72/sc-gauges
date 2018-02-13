@@ -29,52 +29,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Dimensions
-        int padding = 30;
-        final Rect drawArea = new Rect(padding, padding, 500 - padding, 300 - padding);
+        // Find the components
+        final TextView counter = (TextView) MainActivity.this.findViewById(R.id.counter);
+        ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
 
-        // Get the main layout
-        ImageView imageContainer = (ImageView) this.findViewById(R.id.image);
-        assert imageContainer != null;
+        // Set the features stroke cap style to rounded
+        gauge.findFeature(ScArcGauge.BASE_IDENTIFIER)
+                .getPainter().setStrokeCap(Paint.Cap.ROUND);
+        gauge.findFeature(ScArcGauge.PROGRESS_IDENTIFIER)
+                .getPainter().setStrokeCap(Paint.Cap.ROUND);
 
-        // Create a bitmap and link a canvas
-        Bitmap bitmap = Bitmap.createBitmap(
-                drawArea.width() + padding * 2, drawArea.height() + padding * 2,
-                Bitmap.Config.ARGB_8888
-        );
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.parseColor("#f5f5f5"));
+        // If you set the value from the xml that not produce an event so I will change the
+        // value from code.
+        gauge.setHighValue(60);
 
-        // Create the path building a bezier curve from the left-top to the right-bottom angles of
-        // the drawing area.
-        Path path = new Path();
-        path.moveTo(drawArea.left, drawArea.top);
-        path.quadTo(drawArea.centerX(), drawArea.top, drawArea.centerX(), drawArea.centerY());
-        path.quadTo(drawArea.centerX(), drawArea.bottom, drawArea.right, drawArea.bottom);
-
-        // Draw the path only for have a reference
-        Paint temp = new Paint();
-        temp.setStyle(Paint.Style.STROKE);
-        temp.setStrokeWidth(2);
-        canvas.drawPath(path, temp);
-
-        // Feature
-        ScWriter writer = new ScWriter (path);
-        writer.setTokens("FIRST", "SECOND", "THIRD", "FOURTH");
-        writer.getPainter().setTextAlign(Paint.Align.LEFT);
-        writer.setPosition(ScFeature.Positions.MIDDLE);
-        //writer.setBending(true);
-        writer.setOnDrawRepetitionListener(new ScRepetitions.OnDrawRepetitionListener() {
+        // Each time I will change the value I must write it inside the counter text.
+        gauge.setOnEventListener(new ScGauge.OnEventListener() {
             @Override
-            public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
-                info.angle = -45;
-                info.offset[1] = -10;
+            public void onValueChange(float lowValue, float highValue) {
+                counter.setText((int) highValue + "%");
             }
         });
-        writer.draw(canvas);
-
-        // Add the bitmap to the container
-        imageContainer.setImageBitmap(bitmap);
     }
 
 }

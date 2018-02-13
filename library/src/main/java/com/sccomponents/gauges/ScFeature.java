@@ -647,7 +647,7 @@ public abstract class ScFeature {
      */
     @SuppressWarnings("unused")
     public void setTag(String value) {
-        if (this.equals(this.mTag, value)) {
+        if (!this.equals(this.mTag, value)) {
             this.mTag = value;
             this.onPropertyChange("tag", value);
         }

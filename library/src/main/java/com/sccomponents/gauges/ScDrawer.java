@@ -715,7 +715,7 @@ public abstract class ScDrawer extends ScBase {
                 // Get the fixed tag
                 String currentTag = feature.getTag() == null ? "": feature.getTag();
                 // Check the instance or add all features if the class reference is null
-                if ((classRef == null || feature.getClass().isAssignableFrom(classRef)) &&
+                if ((classRef == null || feature.getClass().equals(classRef)) &&
                         (tag == null || currentTag.equalsIgnoreCase(tag))) {
                     // Add the feature to the list
                     founds.add(feature);
