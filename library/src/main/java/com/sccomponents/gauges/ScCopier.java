@@ -194,8 +194,10 @@ public class ScCopier extends ScFeature {
         float endTo = this.getEndToDistance();
 
         // Create the path area
-        this.cloneSourcePath(this.mAreaPath, startFrom, endTo);
-        this.cloneSourcePath(this.mAreaPath, endTo, startFrom);
+        if (startFrom != endTo) {
+            this.cloneSourcePath(this.mAreaPath, startFrom, endTo);
+            this.cloneSourcePath(this.mAreaPath, endTo, startFrom);
+        }
 
         // Return the path
         return mAreaPath;

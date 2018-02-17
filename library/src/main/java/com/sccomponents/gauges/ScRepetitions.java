@@ -1,9 +1,9 @@
 package com.sccomponents.gauges;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +133,16 @@ public abstract class ScRepetitions extends ScFeature {
      * @hide
      */
     protected void drawRepetition(Canvas canvas, RepetitionInfo info) {
+        // Rotate, translate and scale
+        canvas.rotate(info.tangent, info.point[0], info.point[1]);
+        canvas.translate(info.offset[0], info.offset[1]);
+        canvas.rotate(info.angle, info.point[0], info.point[1]);
+        canvas.scale(info.scale[0], info.scale[1], info.point[0], info.point[1]);
+
+        // Set the color
+        Paint paint = this.getPainter();
+        paint.setColor(info.color);
+
         // Draw
         this.onDraw(canvas, info);
     }
@@ -163,14 +173,8 @@ public abstract class ScRepetitions extends ScFeature {
             if (!info.isVisible)
                 continue;
 
-            // Rotate, translate and scale
-            canvas.save();
-            canvas.rotate(info.tangent, info.point[0], info.point[1]);
-            canvas.translate(info.offset[0], info.offset[1]);
-            canvas.rotate(info.angle, info.point[0], info.point[1]);
-            canvas.scale(info.scale[0], info.scale[1], info.point[0], info.point[1]);
-
             // Call the draw for the single repetition
+            canvas.save();
             this.drawRepetition(canvas, info);
             canvas.restore();
         }
@@ -184,6 +188,13 @@ public abstract class ScRepetitions extends ScFeature {
      */
     @Override
     protected void drawContour(Canvas canvas, ScFeature.ContourInfo info) {
+        // Rotate, translate and scale
+        RectF bounds = this.getMeasure().getBounds();
+        canvas.rotate(info.angle, bounds.centerX(), bounds.centerY());
+        canvas.translate(info.offset[0], info.offset[1]);
+        canvas.scale(info.scale[0], info.scale[1], bounds.centerX(), bounds.centerY());
+
+        // Draw the repetition
         this.drawRepetitions(canvas, info.contour);
     }
 

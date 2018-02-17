@@ -323,6 +323,10 @@ public class ScWriter extends ScRepetitions {
         float singleRowHeight = bounds.height() / rows.length;
         float offsetY = this.getVerticalOffset(info) - this.getFontMetricsOffset(info);
 
+        // Font size
+        Paint painter = this.getPainter();
+        painter.setTextSize(info.size);
+
         // Draw one line per time
         for (String token : rows) {
             // Draw
@@ -511,6 +515,7 @@ public class ScWriter extends ScRepetitions {
 
         public ScWriter source;
         public String text;
+        public float size;
         public boolean bending;
 
         // ***************************************************************************************
@@ -523,6 +528,9 @@ public class ScWriter extends ScRepetitions {
             // Reset
             this.source = feature;
             this.bending = feature.getBending();
+
+            Paint painter = feature.getPainter();
+            this.size = painter.getTextSize();
 
             String[] tokens = feature.getTokens();
             if (tokens != null && repetition > 0 && repetition <= tokens.length)

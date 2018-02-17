@@ -293,6 +293,12 @@ public abstract class ScFeature {
      * @hide
      */
     protected void drawContour(Canvas canvas, ContourInfo info) {
+        // Rotate, translate and scale
+        RectF bounds = this.getMeasure().getBounds();
+        canvas.rotate(info.angle, bounds.centerX(), bounds.centerY());
+        canvas.translate(info.offset[0], info.offset[1]);
+        canvas.scale(info.scale[0], info.scale[1], bounds.centerX(), bounds.centerY());
+
         // Draw
         this.onDraw(canvas, info);
     }
@@ -321,14 +327,8 @@ public abstract class ScFeature {
             if (!info.isVisible)
                 continue;
 
-            // Rotate, translate and scale
-            RectF bounds = this.getMeasure().getBounds();
-            canvas.save();
-            canvas.rotate(info.angle, bounds.centerX(), bounds.centerY());
-            canvas.translate(info.offset[0], info.offset[1]);
-            canvas.scale(info.scale[0], info.scale[1], bounds.centerX(), bounds.centerY());
-
             // Call the draw for the single contour
+            canvas.save();
             this.drawContour(canvas, info);
             canvas.restore();
         }

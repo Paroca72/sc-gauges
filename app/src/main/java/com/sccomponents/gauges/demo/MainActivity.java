@@ -34,14 +34,27 @@ public class MainActivity extends AppCompatActivity {
         ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
 
         // Set the features stroke cap style to rounded
-        gauge.findFeature(ScArcGauge.BASE_IDENTIFIER)
+        gauge.getBase()
                 .getPainter().setStrokeCap(Paint.Cap.ROUND);
-        gauge.findFeature(ScArcGauge.PROGRESS_IDENTIFIER)
+        gauge.getProgress()
                 .getPainter().setStrokeCap(Paint.Cap.ROUND);
+
+        ScWriter writer = gauge.getWriter();
+        writer.setTokens("01", "02", "03", "04", "05");
+        writer.setColors(Color.GREEN, Color.RED);
+        writer.getPainter().setTextAlign(Paint.Align.CENTER);
+        writer.getPainter().setTextSize(48);
+        writer.setOnDrawRepetitionListener(new ScRepetitions.OnDrawRepetitionListener() {
+            @Override
+            public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
+                info.offset[1] = 60;
+                info.angle = (-info.tangent) / 2;
+            }
+        });
 
         // If you set the value from the xml that not produce an event so I will change the
         // value from code.
-        gauge.setHighValue(60);
+        gauge.setHighValue(50);
 
         // Each time I will change the value I must write it inside the counter text.
         gauge.setOnEventListener(new ScGauge.OnEventListener() {
