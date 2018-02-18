@@ -1,4 +1,4 @@
-package com.sccomponents.codes.demo;
+package com.sccomponents.demo;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.sccomponents.codes.demo.R;
 import com.sccomponents.codes.gauges.ScArcGauge;
 import com.sccomponents.codes.gauges.ScGauge;
 import com.sccomponents.codes.gauges.ScRepetitions;
