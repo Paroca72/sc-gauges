@@ -1,26 +1,15 @@
-package com.sccomponents.gauges.demo;
+package com.sccomponents.codes.demo;
 
-import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sccomponents.gauges.ScArcGauge;
-import com.sccomponents.gauges.ScCopier;
-import com.sccomponents.gauges.ScFeature;
-import com.sccomponents.gauges.ScGauge;
-import com.sccomponents.gauges.ScNotches;
-import com.sccomponents.gauges.ScPathMeasure;
-import com.sccomponents.gauges.ScPointer;
-import com.sccomponents.gauges.ScRepetitions;
-import com.sccomponents.gauges.ScWriter;
+import com.sccomponents.codes.gauges.ScArcGauge;
+import com.sccomponents.codes.gauges.ScGauge;
+import com.sccomponents.codes.gauges.ScRepetitions;
+import com.sccomponents.codes.gauges.ScWriter;
 
 public class MainActivity extends AppCompatActivity {
 

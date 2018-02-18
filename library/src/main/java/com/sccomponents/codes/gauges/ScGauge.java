@@ -1,4 +1,4 @@
-package com.sccomponents.gauges;
+package com.sccomponents.codes.gauges;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -12,6 +12,8 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+
+import com.sccomponents.codes.R;
 
 import java.lang.reflect.Field;
 import java.util.List;

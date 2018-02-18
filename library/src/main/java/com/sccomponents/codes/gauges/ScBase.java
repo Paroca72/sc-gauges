@@ -1,4 +1,4 @@
-package com.sccomponents.gauges;
+package com.sccomponents.codes.gauges;
 
 import android.content.Context;
 import android.graphics.RectF;

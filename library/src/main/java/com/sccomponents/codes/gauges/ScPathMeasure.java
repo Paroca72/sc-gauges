@@ -1,4 +1,4 @@
-package com.sccomponents.gauges;
+package com.sccomponents.codes.gauges;
 
 import android.graphics.Path;
 import android.graphics.PathMeasure;
