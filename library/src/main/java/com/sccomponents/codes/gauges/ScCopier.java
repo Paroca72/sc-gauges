@@ -289,16 +289,16 @@ public class ScCopier extends ScFeature {
                     bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         }
 
-        // Set the shader
-        Paint paint = this.getPainter();
-        paint.setShader(this.mShader);
+        // Create a paint clone and set the shader
+        Paint clone = new Paint(this.getPainter());
+        clone.setShader(this.mShader);
 
         // Check the area path
         if (this.mAreaPath.isEmpty() || this.getConsiderContours())
             this.mAreaPath = this.coverDrawingArea();
 
         // Draw
-        canvas.drawPath(this.mAreaPath, paint);
+        canvas.drawPath(this.mAreaPath, clone);
     }
 
 

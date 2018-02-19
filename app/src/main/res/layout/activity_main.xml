@@ -21,28 +21,12 @@
             sc:progressColor="#ffff00ff"
             sc:progressWidth="10dp"
             sc:strokeColor="#009688"
-            sc:strokeWidth="10dp"
+            sc:strokeWidth="0dp"
+            sc:notches="10"
             android:paddingBottom="20dp"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Percentage"
-            android:textColor="#009688"
-            android:textSize="24dp"/>
-
-        <TextView
-            android:id="@+id/counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:text="0%"
-            android:textColor="#009688"
-            android:textSize="38dp"/>
 
     </FrameLayout>
 
