@@ -16,6 +16,7 @@
         </attr>
         <attr name="snapToNotches" format="boolean" />
         <attr name="pathTouchable" format="boolean" />
+        <attr name="duration" format="integer" />
 
         <!-- VALUES -->
         <attr name="value" format="float" />

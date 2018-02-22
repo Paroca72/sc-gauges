@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         ScNotches notches = gauge.getNotches();
         gauge.bringOnTop(notches);
+        gauge.setDuration(10000);
 
         // If you set the value from the xml that not produce an event so I will change the
         // value from code.

@@ -85,6 +85,7 @@ public abstract class ScGauge extends ScDrawer implements
 
     private float mHighValue;
     private float mLowValue;
+    private int mDuration;
 
     private ValueAnimator mHighValueAnimator;
     private ValueAnimator mLowValueAnimator;
@@ -428,6 +429,8 @@ public abstract class ScGauge extends ScDrawer implements
                     R.styleable.ScGauge_pointerSelectMode, PointerSelectMode.NEAREST.ordinal())
         ];
 
+        this.mDuration = attrArray.getInt(R.styleable.ScGauge_duration, 0);
+
         // Recycle
         attrArray.recycle();
 
@@ -435,12 +438,12 @@ public abstract class ScGauge extends ScDrawer implements
         // ANIMATORS
 
         this.mHighValueAnimator = new ValueAnimator();
-        this.mHighValueAnimator.setDuration(0);
+        this.mHighValueAnimator.setDuration(this.mDuration);
         this.mHighValueAnimator.setInterpolator(new DecelerateInterpolator());
         this.mHighValueAnimator.addUpdateListener(this);
 
         this.mLowValueAnimator = new ValueAnimator();
-        this.mLowValueAnimator.setDuration(0);
+        this.mLowValueAnimator.setDuration(this.mDuration);
         this.mLowValueAnimator.setInterpolator(new DecelerateInterpolator());
         this.mLowValueAnimator.addUpdateListener(this);
 
@@ -1165,6 +1168,33 @@ public abstract class ScGauge extends ScDrawer implements
     @SuppressWarnings("unused")
     public PointerSelectMode getPointerSelectMode() {
         return this.mPointerSelectMode;
+    }
+
+
+    /**
+     * Set the pointer animation duration.
+     * As exists two animator (low and high) for have a major granular control of the animations
+     * you can access to them using {@link #getHighValueAnimator} and {@link #getLowValueAnimator}.
+     * @param value the duration in milliseconds
+     */
+    @SuppressWarnings("unused")
+    public void setDuration(int value) {
+        // Check if value is changed
+        if (this.mDuration != value) {
+            // Set the animators
+            this.mDuration = value;
+            this.mHighValueAnimator.setDuration(this.mDuration);
+            this.mLowValueAnimator.setDuration(this.mDuration);
+        }
+    }
+
+    /**
+     * Get the pointer animation duration.
+     * @return the duration in milliseconds
+     */
+    @SuppressWarnings("unused")
+    public int getDuration() {
+        return this.mDuration;
     }
 
 
