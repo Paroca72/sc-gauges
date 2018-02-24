@@ -4,6 +4,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.sccomponents.codes.demo.R;
@@ -24,13 +27,7 @@ public class MainActivity extends AppCompatActivity {
         // Find the components
         ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
 
-        // Set the features stroke cap style to rounded
-        //gauge.getBase()
-        //        .getPainter().setStrokeCap(Paint.Cap.ROUND);
-        //gauge.getProgress()
-        //        .getPainter().setStrokeCap(Paint.Cap.ROUND);
-
-        ScWriter writer = gauge.getWriter();
+        final ScWriter writer = gauge.getWriter();
         writer.setTokens("01", "02", "03", "04", "05");
         writer.getPainter().setTextAlign(Paint.Align.CENTER);
         writer.getPainter().setTextSize(48);
@@ -47,11 +44,19 @@ public class MainActivity extends AppCompatActivity {
 
         ScNotches notches = gauge.getNotches();
         gauge.bringOnTop(notches);
-        gauge.setDuration(10000);
+        gauge.setDuration(1000);
 
         // If you set the value from the xml that not produce an event so I will change the
         // value from code.
         gauge.setHighValue(80);
+
+        SwitchCompat toggle = this.findViewById(R.id.toggle);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                writer.setVisible(b);
+            }
+        });
     }
 
 }

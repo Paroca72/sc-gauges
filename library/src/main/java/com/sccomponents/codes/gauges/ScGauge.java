@@ -34,8 +34,8 @@ import java.util.List;
  * @since 2016-05-26
  * -----------------------------------------------------------------------------------------------
  */
-public abstract class ScGauge extends ScDrawer implements
-        ValueAnimator.AnimatorUpdateListener {
+public abstract class ScGauge extends ScDrawer
+        implements ScFeature.OnPropertyChangedListener {
 
     // ***************************************************************************************
     // Constants
@@ -110,6 +110,15 @@ public abstract class ScGauge extends ScDrawer implements
                 @Override
                 public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
                     callOnDrawRepetitionEvent(info);
+                }
+            };
+
+    // Events proxies
+    private ValueAnimator.AnimatorUpdateListener proxyAnimatorUpdateListener =
+            new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    callOnAnimationUpdate(valueAnimator);
                 }
             };
 
@@ -389,27 +398,33 @@ public abstract class ScGauge extends ScDrawer implements
         // Features
         this.mBase = (ScCopier) this.addFeature(ScCopier.class);
         this.mBase.setTag(ScGauge.BASE_IDENTIFIER);
+        this.mBase.setOnPropertyChangedListener(this);
         this.applyAttributesToBase(attrArray, this.mBase);
 
         this.mNotches = (ScNotches) this.addFeature(ScNotches.class);
         this.mNotches.setTag(ScGauge.NOTCHES_IDENTIFIER);
+        this.mNotches.setOnPropertyChangedListener(this);
         this.applyAttributesToNotches(attrArray, this.mNotches);
 
         this.mProgress = (ScCopier) this.addFeature(ScCopier.class);
         this.mProgress.setTag(ScGauge.PROGRESS_IDENTIFIER);
+        this.mProgress.setOnPropertyChangedListener(this);
         this.applyAttributesToProgress(attrArray, this.mProgress);
 
         this.mWriter = (ScWriter) this.addFeature(ScWriter.class);
         this.mWriter.setTag(ScGauge.WRITER_IDENTIFIER);
+        this.mWriter.setOnPropertyChangedListener(this);
         this.applyAttributesToWriter(attrArray, this.mWriter);
 
         this.mHighPointer = (ScPointer) this.addFeature(ScPointer.class);
         this.mHighPointer.setTag(ScGauge.HIGH_POINTER_IDENTIFIER);
+        this.mHighPointer.setOnPropertyChangedListener(this);
         this.applyAttributesToPointer(attrArray, this.mHighPointer);
 
         this.mLowPointer = (ScPointer) this.addFeature(ScPointer.class);
         this.mLowPointer.setTag(ScGauge.LOW_POINTER_IDENTIFIER);
         this.mLowPointer.setVisible(false);
+        this.mLowPointer.setOnPropertyChangedListener(this);
 
         // Common
         this.mHighValue = attrArray.getFloat(
@@ -440,12 +455,12 @@ public abstract class ScGauge extends ScDrawer implements
         this.mHighValueAnimator = new ValueAnimator();
         this.mHighValueAnimator.setDuration(this.mDuration);
         this.mHighValueAnimator.setInterpolator(new DecelerateInterpolator());
-        this.mHighValueAnimator.addUpdateListener(this);
+        this.mHighValueAnimator.addUpdateListener(this.proxyAnimatorUpdateListener);
 
         this.mLowValueAnimator = new ValueAnimator();
         this.mLowValueAnimator.setDuration(this.mDuration);
         this.mLowValueAnimator.setInterpolator(new DecelerateInterpolator());
-        this.mLowValueAnimator.addUpdateListener(this);
+        this.mLowValueAnimator.addUpdateListener(this.proxyAnimatorUpdateListener);
 
         //--------------------------------------------------
         // INTERNAL
@@ -723,6 +738,36 @@ public abstract class ScGauge extends ScDrawer implements
             this.mOnDrawListener.onDrawRepetition(info);
     }
 
+    /**
+     * Call the on animation update method
+     * @param animation the animator
+     */
+    private void callOnAnimationUpdate(ValueAnimator animation) {
+        // Get the current value
+        if (animation.equals(this.mHighValueAnimator))
+            this.mHighValue = (float) animation.getAnimatedValue();
+        if (animation.equals(this.mLowValueAnimator))
+            this.mLowValue = (float) animation.getAnimatedValue();
+
+        // Refresh
+        this.invalidate();
+
+        // Manage the listener
+        if (this.mOnEventListener != null) {
+            this.mOnEventListener.onValueChange(this.mLowValue, this.mHighValue);
+        }
+    }
+
+    /**
+     * Call the on property changed method
+     * @param name the property name
+     * @param value the new value
+     */
+    @Override
+    public void onPropertyChanged(String name, Object value) {
+        invalidate();
+    }
+
 
     // ***************************************************************************************
     // Instance state
@@ -814,28 +859,6 @@ public abstract class ScGauge extends ScDrawer implements
 
         // Call the base drawing method
         super.onDraw(canvas);
-    }
-
-    /**
-     * Override the on animation update method
-     * @param animation the animator
-     */
-    @Override
-    @SuppressWarnings("unused")
-    public void onAnimationUpdate(ValueAnimator animation) {
-        // Get the current value
-        if (animation.equals(this.mHighValueAnimator))
-            this.mHighValue = (float) animation.getAnimatedValue();
-        if (animation.equals(this.mLowValueAnimator))
-            this.mLowValue = (float) animation.getAnimatedValue();
-
-        // Refresh
-        this.invalidate();
-
-        // Manage the listener
-        if (this.mOnEventListener != null) {
-            this.mOnEventListener.onValueChange(this.mLowValue, this.mHighValue);
-        }
     }
 
     /**

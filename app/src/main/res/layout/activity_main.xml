@@ -28,6 +28,11 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"/>
 
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/toggle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content" />
+
     </FrameLayout>
 
 </LinearLayout>
