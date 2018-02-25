@@ -49,14 +49,6 @@ public class MainActivity extends AppCompatActivity {
         // If you set the value from the xml that not produce an event so I will change the
         // value from code.
         gauge.setHighValue(80);
-
-        SwitchCompat toggle = this.findViewById(R.id.toggle);
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                writer.setVisible(b);
-            }
-        });
     }
 
 }
