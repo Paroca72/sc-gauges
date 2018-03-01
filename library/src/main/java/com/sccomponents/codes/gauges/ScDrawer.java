@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -428,7 +429,7 @@ public abstract class ScDrawer extends ScBase {
         this.mPath = this.createPath(width - widthGlobalPadding, height - heightGlobalPadding);
         this.mPathMeasure.setPath(this.mPath, false);
 
-        // The path could be changed so I must force the feattures to refresh the path info.
+        // The path could be changed so I must force the features to refresh the path info.
         this.mFeaturesMustBeRefresh = true;
 
         // If have some dimension to wrap will use the path boundaries for have the right
@@ -648,9 +649,8 @@ public abstract class ScDrawer extends ScBase {
         // Manage the possible exception
         try {
             // Try to instantiate a new class
-            ScFeature feature = (ScFeature) classRef
-                    .getDeclaredConstructor(Path.class)
-                    .newInstance(this.mCopyPath);
+            ScFeature feature = (ScFeature) classRef.newInstance();
+            feature.setPath(this.mCopyPath);
 
             // Call the base method and return the new object
             this.addFeature(feature);
@@ -660,6 +660,7 @@ public abstract class ScDrawer extends ScBase {
             // If the passed class reference not inherit from the ScFeature return null.
             // Maybe better to thrown a exception but this mean manage the exception on the
             // method declaration.
+            Log.e("ScGauges", Log.getStackTraceString(ex));
             return null;
         }
     }

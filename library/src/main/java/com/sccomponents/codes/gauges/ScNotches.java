@@ -66,9 +66,9 @@ public class ScNotches extends ScRepetitions {
     // Constructor
 
     @SuppressWarnings("unused")
-    public ScNotches(Path path) {
+    public ScNotches() {
         // Super
-        super(path);
+        super();
 
         // Init
         this.mHeights = new float[]{0.0f};

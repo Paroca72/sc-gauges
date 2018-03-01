@@ -102,7 +102,7 @@ public abstract class ScFeature {
      */
 
     @SuppressWarnings("unused")
-    public ScFeature(Path path) {
+    public ScFeature() {
         // Init
         this.mColorsMode = ColorsMode.GRADIENT;
         this.mWidthsMode = WidthsMode.SMOOTH;
@@ -116,10 +116,6 @@ public abstract class ScFeature {
         this.mEndPercentage = 100.0f;
 
         this.mGenericTangent = new float[2];
-
-        // Path
-        this.mPath = path;
-        this.mPathMeasure = new ScPathMeasure(this.mPath, false);
 
         this.mContourIndex = 1;
         this.mConsiderContours = false;
@@ -620,6 +616,27 @@ public abstract class ScFeature {
 
     // ***************************************************************************************
     // Getter and setter
+
+    /**
+     * Set the path
+     * @param value the painter
+     */
+    @SuppressWarnings("unused")
+    public void setPath(Path value) {
+        this.mPath = value;
+        this.mPathMeasure = new ScPathMeasure(this.mPath, false);
+        this.onPropertyChange("path", value);
+    }
+
+    /**
+     * Get the path
+     * @return the path
+     */
+    @SuppressWarnings("unused")
+    public Path getPath() {
+        return this.mPath;
+    }
+
 
     /**
      * Set the painter

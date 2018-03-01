@@ -37,9 +37,9 @@ public class ScWriter extends ScRepetitions {
      */
 
     @SuppressWarnings("unused")
-    public ScWriter(Path path) {
+    public ScWriter() {
         // Super
-        super(path);
+        super();
 
         // Init
         this.mConsiderFontMetrics = true;

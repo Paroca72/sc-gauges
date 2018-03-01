@@ -38,9 +38,9 @@ public class ScPointer extends ScNotches {
      */
 
     @SuppressWarnings("unused")
-    public ScPointer(Path path) {
+    public ScPointer() {
         // Super
-        super(path);
+        super();
 
         // Init
         this.setRepetitions(1);

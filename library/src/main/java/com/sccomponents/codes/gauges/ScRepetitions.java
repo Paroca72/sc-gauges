@@ -34,9 +34,9 @@ public abstract class ScRepetitions extends ScFeature {
      */
 
     @SuppressWarnings("unused")
-    public ScRepetitions(Path path) {
+    public ScRepetitions() {
         // Init
-        super(path);
+        super();
 
         // Repetitions
         this.mRepetitions = 0;

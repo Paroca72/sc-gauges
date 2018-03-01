@@ -39,12 +39,11 @@ public class ScCopier extends ScFeature {
     // Constructor
 
     @SuppressWarnings("unused")
-    public ScCopier(Path path) {
+    public ScCopier() {
         // Super
-        super(path);
+        super();
 
         // Init
-        this.setEdges(this.getMeasure().isClosed() ? Positions.INSIDE: Positions.OUTSIDE);
         this.getPainter().setStyle(Paint.Style.FILL);
 
         this.mShader = null;
@@ -304,6 +303,18 @@ public class ScCopier extends ScFeature {
 
     // ***************************************************************************************
     // Overrides
+
+    /**
+     * Set the path
+     * @param value the painter
+     */
+    @Override
+    public void setPath(Path value) {
+        super.setPath(value);
+
+        this.setEdges(this.getMeasure().isClosed() ? Positions.INSIDE: Positions.OUTSIDE);
+        this.onPropertyChange("edge", value);
+    }
 
     /**
      * The draw method to override in the inherited classes.
