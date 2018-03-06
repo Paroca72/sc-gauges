@@ -25,6 +25,7 @@ android {
 configurations {
     doclava
 }
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     doclava 'com.google.doclava:doclava:1.0.6'
@@ -36,7 +37,8 @@ task generateJavadoc(type: Javadoc, dependsOn: project.configurations.doclava) {
     source = android.sourceSets.main.java.srcDirs
     options.doclet = "com.google.doclava.Doclava"
     options.docletpath = configurations.doclava.files.asType(List)
+    options.classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     options.quiet()
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    destinationDir = file("../docs/")
+
+    destinationDir = file("$rootDir/docs")
 }

@@ -10,16 +10,11 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.sccomponents.codes.R;
-
 import java.lang.reflect.Field;
 import java.util.List;
-
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 /**
  * Manage a generic gauge.
@@ -28,9 +23,76 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
  * The path is generic and the class start with a standard configuration of features.
  * One base (inherited from the ScDrawer), one notches, one writer, one copier to create the
  * progress effect and two pointer for manage the user touch input.
- * <p>
+ * </p><p>
  * You can drive each features calling back the wanted feature and using the belonging methods or
  * many setting can be drive directly by the XML composer.
+ * </p><br /><p>
+ * <strong>XML attributes</strong><br />
+ * See inherited from class {@link ScDrawer}
+ * <li>duration: int - {@link #setDuration(int)}</li>
+ * <li>value: float - {@link #setHighValue(float)}</li>
+ * <li>highValue: float - {@link #setHighValue(float)}</li>
+ * <li>lowValue: float - {@link #setLowValue(float)}</li>
+ *
+ * <li>strokeColor: color - {@link ScCopier#setColors(int...)}</li>
+ * <li>strokeColors: string - example of 3 colors, #0000ff|#00ff00|#ff0000</li>
+ * <li>strokeColorsMode: enum - {@link ScCopier#setColorsMode(ScFeature.ColorsMode)}</li>
+ * <li>strokeWidth: float - {@link ScCopier#setWidths(float...)}</li>
+ * <li>strokeWidths: string - example of 3 widths in Dip, 10|20|10</li>
+ * <li>strokeWidthsMode: enum - {@link ScCopier#setWidthsMode(ScFeature.WidthsMode)}</li>
+ * <li>strokePosition: enum - {@link ScCopier#setPosition(ScFeature.Positions)}</li>
+ * <li>strokeRoundedCap: boolean</li>
+ *
+ * <li>progressColor: color - {@link ScCopier#setColors(int...)}</li>
+ * <li>progressColors: string - example of 3 colors, #0000ff|#00ff00|#ff0000</li>
+ * <li>progressColorsMode: enum - {@link ScCopier#setColorsMode(ScFeature.ColorsMode)}</li>
+ * <li>progressWidth: float - {@link ScCopier#setWidths(float...)}</li>
+ * <li>progressWidths: string - example of 3 widths in Dip, 10|20|10</li>
+ * <li>progressWidthsMode: enum - {@link ScCopier#setWidthsMode(ScFeature.WidthsMode)}</li>
+ * <li>progressPosition: enum - {@link ScCopier#setPosition(ScFeature.Positions)}</li>
+ * <li>progressRoundedCap: boolean</li>
+ *
+ * <li>pointerSelectMode: enum - {@link #setPointerSelectMode(PointerSelectMode)}</li>
+ * <li>pointerColor: color - {@link ScPointer#setColors(int...)}</li>
+ * <li>pointerColors: string - example of 3 colors, #0000ff|#00ff00|#ff0000</li>
+ * <li>pointerColorsMode: enum - {@link ScPointer#setColorsMode(ScFeature.ColorsMode)}</li>
+ * <li>pointerWidth: float - {@link ScPointer#setWidths(float...)}</li>
+ * <li>pointerWidths: string - example of 3 widths in Dip, 10|20|10</li>
+ * <li>pointerWidthsMode: enum - {@link ScPointer#setWidthsMode(ScFeature.WidthsMode)}</li>
+ * <li>pointerHeight: float - {@link ScPointer#setHeights(float...)}</li>
+ * <li>pointerHeights: string - example of 3 heights in Dip, 10|20|10</li>
+ * <li>pointerHeightsMode: enum - {@link ScPointer#setHeightsMode(ScNotches.HeightsMode)}</li>
+ * <li>pointerPosition: enum - {@link ScPointer#setPosition(ScFeature.Positions)}</li>
+ * <li>pointerHaloSize: dimension - {@link ScPointer#setHaloWidth(float)}</li>
+ * <li>pointerHaloAlpha: dimension - {@link ScPointer#setHaloAlpha(int)}}</li>
+ * <li>pointerRoundedCap: boolean</li>
+ *
+ * <li>notches: integer - {@link ScNotches#setRepetitions(int)}</li>
+ * <li>notchesColor: color - {@link ScNotches#setColors(int...)}</li>
+ * <li>notchesColors: string - example of 3 colors, #0000ff|#00ff00|#ff0000</li>
+ * <li>notchesColorsMode: enum - {@link ScNotches#setColorsMode(ScFeature.ColorsMode)}</li>
+ * <li>notchesWidth: float - {@link ScNotches#setWidths(float...)}</li>
+ * <li>notchesWidths: string - example of 3 widths in Dip, 10|20|10</li>
+ * <li>notchesWidthsMode: enum - {@link ScNotches#setWidthsMode(ScFeature.WidthsMode)}</li>
+ * <li>notchesHeight: float - {@link ScNotches#setHeights(float...)}</li>
+ * <li>notchesHeights: string - example of 3 heights in Dip, 10|20|10</li>
+ * <li>notchesHeightsMode: enum - {@link ScNotches#setHeightsMode(ScNotches.HeightsMode)}</li>
+ * <li>notchesPosition: enum - {@link ScNotches#setPosition(ScFeature.Positions)}</li>
+ * <li>notchesRoundedCap: boolean</li>
+ * <li>snapToNotches: boolean - {@link #setSnapToNotches(boolean)}</li>
+ *
+ * <li>textTokens: string - example, 1|2|3|4 {@link ScWriter#setTokens(String...)}</li>
+ * <li>textColor: color - {@link ScWriter#setColors(int...)}</li>
+ * <li>textColors: string - example of 3 colors, #0000ff|#00ff00|#ff0000</li>
+ * <li>textColorsMode: enum - {@link ScWriter#setColorsMode(ScFeature.ColorsMode)}</li>
+ * <li>textWidth: float - {@link ScWriter#setWidths(float...)}</li>
+ * <li>textWidths: string - example of 3 widths in Dip, 10|20|10</li>
+ * <li>textWidthsMode: enum - {@link ScWriter#setWidthsMode(ScFeature.WidthsMode)}</li>
+ * <li>textPosition: enum {@link ScWriter#setPosition(ScFeature.Positions)}</li>
+ * <li>textAlign: enum</li>
+ * <li>textBending: boolean {@link ScWriter#setBending(boolean)}</li>
+ * <li>textRoundedCap: boolean</li>
+ * </p>
  *
  * @author Samuele Carassai
  * @version 3.0.0
@@ -48,11 +110,17 @@ public abstract class ScGauge extends ScDrawer
     private static final float DEFAULT_HALO_SIZE = 10.0f;
     private static final int DEFAULT_HALO_ALPHA = 128;
 
+    /** Tag identifier of this feature */
     public static final String BASE_IDENTIFIER = "ScGauge_Base";
+    /** Tag identifier of this feature */
     public static final String NOTCHES_IDENTIFIER = "ScGauge_Notches";
+    /** Tag identifier of this feature */
     public static final String WRITER_IDENTIFIER = "ScGauge_Writer";
+    /** Tag identifier of this feature */
     public static final String PROGRESS_IDENTIFIER = "ScGauge_Progress";
+    /** Tag identifier of this feature */
     public static final String HIGH_POINTER_IDENTIFIER = "ScGauge_Pointer_High";
+    /** Tag identifier of this feature */
     public static final String LOW_POINTER_IDENTIFIER = "ScGauge_Pointer_Low";
 
 

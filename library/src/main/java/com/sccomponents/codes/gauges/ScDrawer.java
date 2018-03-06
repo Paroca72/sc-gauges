@@ -15,10 +15,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sccomponents.codes.R;
-
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Define the way to draw a path on a View's canvas
@@ -27,14 +26,22 @@ import java.util.List;
  * the possibility to add some "features" for drawing it.
  * Whereas the "features" are independent from this class but are necessary to draw the path on
  * the canvas.
- * <p>
+ * </p><p>
  * There are two ways to settle the drawing area:
- * <li>DRAW: will simply draw the path on the component canvas using the proper methods.</li>
- * <li>STRETCH: before to draw the path stretch the canvas.</li>
- * <p>
+ * <li><strong>DRAW:</strong> will simply draw the path on the component canvas using the proper methods.</li>
+ * <li><strong>STRETCH:</strong> before to draw the path stretch the canvas.</li>
+ * </p><p>
  * Note that the stretch methods will stretch also the stroke creating a singular effect.
  * Always you can decide witch dimensions to fill: none, both dimensions, vertical or horizontal.
  * This for give to the user many possibilities to render the path on the drawing area.
+ * </p><br /><p>
+ * <strong>XML attributes</strong>
+ * <li>maxWidth: {@link #setMaximumWidth(int value)}</li>
+ * <li>maxHeight: {@link #setMaximumHeight(int)}</li>
+ * <li>pathTouchable: {@link #setRecognizePathTouch(boolean)}</li>
+ * <li>fillArea: {@link #setFillingArea(FillingArea)} </li>
+ * <li>fillMode: {@link #setFillingMode(FillingMode)}</li>
+ * </p>
  *
  * @author Samuele Carassai
  * @version 3.0.0
@@ -69,19 +76,19 @@ public abstract class ScDrawer extends ScBase {
     // ***************************************************************************************
     // Private and protected attributes
 
-    // @hide
+    /** @hide */
     protected Path mPath;
-    // @hide
+    /** @hide */
     protected ScPathMeasure mPathMeasure;
 
-    // @hide
+    /** @hide */
     protected RectF mDrawArea;
-    // @hide
+    /** @hide */
     protected RectF mVirtualArea;
-    // @hide
+    /** @hide */
     protected PointF mAreaScale;
 
-    // @hide
+    /** @hide */
     protected List<ScFeature> mFeatures;
     private boolean mFeaturesMustBeRefresh;
 
@@ -161,25 +168,26 @@ public abstract class ScDrawer extends ScBase {
         // ATTRIBUTES
 
         // Get the attributes list
-        final TypedArray attrArray = context.obtainStyledAttributes(attrs, R.styleable.ScGauge, defStyle, 0);
+        final TypedArray attrArray = context
+                .obtainStyledAttributes(attrs, R.styleable.ScDrawer, defStyle, 0);
 
         // Read all attributes from xml and assign the value to linked variables
         this.mMaximumWidth = attrArray.getDimensionPixelSize(
-                R.styleable.ScGauge_maxWidth, Integer.MAX_VALUE);
+                R.styleable.ScDrawer_maxWidth, Integer.MAX_VALUE);
         this.mMaximumHeight = attrArray.getDimensionPixelSize(
-                R.styleable.ScGauge_maxHeight, Integer.MAX_VALUE);
+                R.styleable.ScDrawer_maxHeight, Integer.MAX_VALUE);
 
         int fillingArea = attrArray.getInt(
-                R.styleable.ScGauge_fillArea, FillingArea.BOTH.ordinal());
+                R.styleable.ScDrawer_fillArea, FillingArea.BOTH.ordinal());
         this.mFillingArea = FillingArea.values()[fillingArea];
 
         int fillingMode = attrArray.getInt(
-                R.styleable.ScGauge_fillMode, FillingMode.DRAW.ordinal());
+                R.styleable.ScDrawer_fillMode, FillingMode.DRAW.ordinal());
         this.mFillingMode = FillingMode.values()[fillingMode];
 
         // Input
         this.mRecognizePathTouch = attrArray.getBoolean(
-                R.styleable.ScGauge_pathTouchable, false);
+                R.styleable.ScDrawer_pathTouchable, false);
 
         // Recycle
         attrArray.recycle();

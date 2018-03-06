@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Components -->
-    <declare-styleable name="ScGauge">
-        <!-- BASE -->
+    <!-- XML Attributes -->
+    <declare-styleable name="ScDrawer">
+        <attr name="maxWidth" format="dimension" />
+        <attr name="maxHeight" format="dimension" />
+        <attr name="pathTouchable" format="boolean" />
+
         <attr name="fillArea" format="enum">
             <enum name="none" value="0" />
             <enum name="both" value="1" />
@@ -14,26 +17,18 @@
             <enum name="stretch" value="0" />
             <enum name="draw" value="1" />
         </attr>
+    </declare-styleable>
+
+    <!-- XML Attributes -->
+    <declare-styleable name="ScGauge">
+        <!-- OPTIONS -->
         <attr name="snapToNotches" format="boolean" />
-        <attr name="pathTouchable" format="boolean" />
         <attr name="duration" format="integer" />
 
         <!-- VALUES -->
         <attr name="value" format="float" />
         <attr name="highValue" format="float" />
         <attr name="lowValue" format="float" />
-
-        <!-- DIMENSIONS -->
-        <attr name="maxWidth" format="dimension" />
-        <attr name="maxHeight" format="dimension" />
-        <attr name="left" format="float" />
-        <attr name="top" format="float" />
-        <attr name="bottom" format="float" />
-        <attr name="right" format="float" />
-
-        <!-- ARC -->
-        <attr name="angleStart" format="float" />
-        <attr name="angleSweep" format="float" />
 
         <!-- STROKE -->
         <attr name="strokeColor" format="color" />
@@ -77,9 +72,7 @@
         <attr name="progressRoundedCap" format="boolean" />
 
         <!-- POINTER -->
-        <attr name="pointerSize" format="dimension" />
-        <attr name="pointerRadius" format="dimension" />
-        <attr name="pointerColor" format="color" />
+\        <attr name="pointerColor" format="color" />
         <attr name="pointerColors" format="string" />
         <attr name="pointerColorsMode" format="enum">
             <enum name="solid" value="0" />
@@ -111,16 +104,22 @@
         <attr name="pointerRoundedCap" format="boolean" />
 
         <!-- NOTCHES -->
+        <attr name="notches" format="integer" />
         <attr name="notchesColor" format="color" />
         <attr name="notchesColors" format="string" />
         <attr name="notchesColorsMode" format="enum">
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
-        <attr name="notches" format="integer" />
         <attr name="notchesHeight" format="dimension" />
         <attr name="notchesHeights" format="string" />
         <attr name="notchesHeightsMode" format="enum">
+            <enum name="rough" value="0" />
+            <enum name="smooth" value="1" />
+        </attr>
+        <attr name="notchesWidth" format="dimension" />
+        <attr name="notchesWidths" format="string" />
+        <attr name="notchesWidthsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
@@ -129,17 +128,10 @@
             <enum name="middle" value="1" />
             <enum name="outside" value="2" />
         </attr>
-        <attr name="notchesWidth" format="dimension" />
-        <attr name="notchesWidths" format="string" />
-        <attr name="notchesWidthsMode" format="enum">
-            <enum name="rough" value="0" />
-            <enum name="smooth" value="1" />
-        </attr>
         <attr name="notchesRoundedCap" format="boolean" />
 
         <!-- TEXT -->
         <attr name="textTokens" format="string" />
-        <attr name="textSize" format="dimension" />
         <attr name="textColor" format="color" />
         <attr name="textColors" format="string" />
         <attr name="textColorsMode" format="enum">
@@ -165,13 +157,12 @@
         <attr name="textBending" format="boolean" />
         <attr name="textRoundedCap" format="boolean" />
 
-        <!-- LINE -->
-        <attr name="orientation" format="enum">
-            <enum name="custom" value="0" />
-            <enum name="horizontal" value="1" />
-            <enum name="vertical" value="2" />
-        </attr>
+    </declare-styleable>
 
+    <!-- XML Attributes -->
+    <declare-styleable name="ScArcGauge">
+        <attr name="angleStart" format="float" />
+        <attr name="angleSweep" format="float" />
     </declare-styleable>
 
 </resources>

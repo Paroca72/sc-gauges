@@ -12,7 +12,7 @@
     <option name="OPTION_DOCUMENT_TAG_VERSION" value="true" />
     <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true" />
     <option name="OPTION_DEPRECATED_LIST" value="true" />
-    <option name="OTHER_OPTIONS" value="-XDignore.symbol.file=true -encoding &quot;ISO-8859-1&quot; -quiet -doclet com.google.doclava.Doclava -docletpath &quot;C:\Users\Samuele\Desktop\Siti Internet\Components\ScComponents\Gauges\doclava-1.0.6\doclava-1.0.6.jar&quot;" />
+    <option name="OTHER_OPTIONS" />
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />

@@ -3,7 +3,6 @@ package com.sccomponents.codes.gauges;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.RectF;
 
 import java.util.Arrays;

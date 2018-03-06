@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="com.sccomponents.codes">
+    package="com.sccomponents.codes.gauges">
 
     <application android:allowBackup="true"
         android:supportsRtl="true">

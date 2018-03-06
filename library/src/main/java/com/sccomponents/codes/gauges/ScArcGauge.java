@@ -11,13 +11,16 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
-import com.sccomponents.codes.R;
-
 /**
  * Define a arc path and draw on it.
  * <p>
  * This class inherited from ScGauge and will give it the possibility to use some features
  * predefined and use new features for draw on the path.
+ * </p><br /><p>
+ * <strong>XML attributes</strong><br />
+ * See inherited from class {@link ScGauge}
+ * <li>angleStart: float - {@link #setAngleStart(float)}</li>
+ * <li>angleSweep: float - {@link #setAngleSweep(float)}</li>
  *
  * @author Samuele Carassai
  * @version 3.0.0
@@ -75,13 +78,13 @@ public class ScArcGauge extends ScGauge {
     private void init(Context context, AttributeSet attrs, int defStyle) {
         // Get the attributes list
         final TypedArray attrArray = context
-                .obtainStyledAttributes(attrs, R.styleable.ScGauge, defStyle, 0);
+                .obtainStyledAttributes(attrs, R.styleable.ScArcGauge, defStyle, 0);
 
         // Read all attributes from xml and assign the value to linked variables
         this.mAngleStart = attrArray.getFloat(
-                R.styleable.ScGauge_angleStart, ScArcGauge.DEFAULT_ANGLE_START);
+                R.styleable.ScArcGauge_angleStart, ScArcGauge.DEFAULT_ANGLE_START);
         this.mAngleSweep = attrArray.getFloat(
-                R.styleable.ScGauge_angleSweep, ScArcGauge.DEFAULT_ANGLE_SWEEP);
+                R.styleable.ScArcGauge_angleSweep, ScArcGauge.DEFAULT_ANGLE_SWEEP);
 
         // Recycle
         attrArray.recycle();
