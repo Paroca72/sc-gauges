@@ -2,14 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:sc="http://schemas.android.com/apk/res-auto"
     android:background="#ffffff"
     android:gravity="center_vertical|center_horizontal">
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:background="#f5f5f5">
+
+        <com.sccomponents.codes.gauges.ScArcGauge
+            android:id="@+id/gauge"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:padding="20dp"
+            sc:angleStart="-180"
+            sc:angleSweep="180" />
 
     </FrameLayout>
 

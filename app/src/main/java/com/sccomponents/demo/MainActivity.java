@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import com.sccomponents.codes.demo.R;
 import com.sccomponents.codes.gauges.ScArcGauge;
+import com.sccomponents.codes.gauges.ScNotches;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,10 +18,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ScArcGauge gauge = new ScArcGauge(this);
-
-        FrameLayout frameLayout = this.findViewById(R.id.frameLayout);
-        frameLayout.addView(gauge);
+        ScArcGauge gauge = this.findViewById(R.id.gauge);
+        ScNotches notches = gauge.getNotches();
+        notches.setSpaceBetweenRepetitions(150);
+        notches.setHeights(10);
+        notches.setWidths(10);
+        notches.setLastRepetitionOnPathEnd(false);
+        notches.setRepetitionOffset(-100);
     }
 
 }

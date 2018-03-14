@@ -523,8 +523,14 @@ public abstract class ScFeature {
      */
     @SuppressWarnings("unused")
     public float getDistance(float percentage) {
-        // Fix the percentage value and calc the distance
-        return this.getMeasure().getLength() * this.range(percentage) / 100.0f;
+        // Holders
+        float length = this.getMeasure().getLength();
+        percentage = this.range(percentage);
+
+        // Calc the distance
+        if (percentage == 0) return 0.0f;
+        if (percentage == 100) return length;
+        return length * percentage / 100.0f;
     }
 
     /**
