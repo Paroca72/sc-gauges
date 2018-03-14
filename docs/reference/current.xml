@@ -3088,6 +3088,17 @@
 <parameter name="repetition" type="int">
 </parameter>
 </method>
+<method name="getRepetitionOffset"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getRepetitions"
  return="int"
  abstract="false"
@@ -3162,6 +3173,19 @@
  visibility="public"
 >
 <parameter name="listener" type="com.sccomponents.codes.gauges.ScRepetitions.OnDrawRepetitionListener">
+</parameter>
+</method>
+<method name="setRepetitionOffset"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
 </parameter>
 </method>
 <method name="setRepetitions"
