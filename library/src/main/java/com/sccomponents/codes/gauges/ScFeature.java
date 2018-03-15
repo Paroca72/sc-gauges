@@ -344,6 +344,72 @@ public abstract class ScFeature {
             this.mOnPropertyChangedListener.onPropertyChanged(name, value);
     }
 
+    /**
+     * Get the index path measurer and if not exists create and store it.
+     * In this case we will use the PathMeasurer class as we need to treat just
+     * one unique path.
+     * @param contour the current contour
+     * @return the measurer
+     */
+    @SuppressWarnings("unused")
+    protected ScPathMeasure getMeasure(int contour) {
+        // Check the limit
+        int len = this.mPathMeasure.getPaths().length;
+        if (contour < 0 || contour > len)
+            throw new IndexOutOfBoundsException();
+
+        // Fix the base 0
+        contour--;
+
+        // Create the holder if not already created
+        if (this.mContoursMeasurer == null)
+            this.mContoursMeasurer = new ScPathMeasure[len];
+
+        // Check if already exists
+        if (this.mContoursMeasurer[contour] == null) {
+            // Store the new measurer
+            Path path = this.mPathMeasure.getPaths()[contour];
+            ScPathMeasure measurer = new ScPathMeasure(path, false);
+            this.mContoursMeasurer[contour] = measurer;
+        }
+
+        // Return the contour measurer
+        return this.mContoursMeasurer[contour];
+    }
+
+    /**
+     * Get back the current path measurer.
+     * If not drawing and not consider the contours by class settings the method will back
+     * the global measurer otherwise will back the measurer related at the current contour.
+     * @return the measurer
+     */
+    @SuppressWarnings("unused")
+    protected ScPathMeasure getMeasure() {
+        // Select the case
+        if (this.mIsDrawing && this.mConsiderContours)
+            // Back the current path measurer
+            return this.getMeasure(this.mContourIndex);
+        else
+            // Back the global measurer
+            return this.mPathMeasure;
+    }
+
+    /**
+     * Get the trimmed current path based on the current start and end limit.
+     * @param path the path trimmed
+     */
+    @SuppressWarnings("unused")
+    protected void getTrimmedPath(Path path) {
+        // Convert the percentage values in distance referred to the current path height.
+        float startDistance = this.getStartAtDistance();
+        float endDistance = this.getEndToDistance();
+
+        // Trim a new segment and save it inside the path
+        ScPathMeasure measurer = this.getMeasure();
+        if (measurer != null)
+            measurer.getSegment(startDistance, endDistance, path, true);
+    }
+
 
     // ***************************************************************************************
     // Public and static methods
@@ -410,72 +476,6 @@ public abstract class ScFeature {
     public void refresh() {
         this.mPathMeasure.setPath(this.mPath, false);
         this.mContoursMeasurer = null;
-    }
-
-    /**
-     * Get the index path measurer and if not exists create and store it.
-     * In this case we will use the PathMeasurer class as we need to treat just
-     * one unique path.
-     * @param contour the current contour
-     * @return the measurer
-     */
-    @SuppressWarnings("unused")
-    public ScPathMeasure getMeasure(int contour) {
-        // Check the limit
-        int len = this.mPathMeasure.getPaths().length;
-        if (contour < 0 || contour > len)
-            throw new IndexOutOfBoundsException();
-
-        // Fix the base 0
-        contour--;
-
-        // Create the holder if not already created
-        if (this.mContoursMeasurer == null)
-            this.mContoursMeasurer = new ScPathMeasure[len];
-
-        // Check if already exists
-        if (this.mContoursMeasurer[contour] == null) {
-            // Store the new measurer
-            Path path = this.mPathMeasure.getPaths()[contour];
-            ScPathMeasure measurer = new ScPathMeasure(path, false);
-            this.mContoursMeasurer[contour] = measurer;
-        }
-
-        // Return the contour measurer
-        return this.mContoursMeasurer[contour];
-    }
-
-    /**
-     * Get back the current path measurer.
-     * If not drawing and not consider the contours by class settings the method will back
-     * the global measurer otherwise will back the measurer related at the current contour.
-     * @return the measurer
-     */
-    @SuppressWarnings("unused")
-    public ScPathMeasure getMeasure() {
-        // Select the case
-        if (this.mIsDrawing && this.mConsiderContours)
-            // Back the current path measurer
-            return this.getMeasure(this.mContourIndex);
-        else
-            // Back the global measurer
-            return this.mPathMeasure;
-    }
-
-    /**
-     * Get the trimmed current path based on the current start and end limit.
-     * @param path the path trimmed
-     */
-    @SuppressWarnings("unused")
-    public void getTrimmedPath(Path path) {
-        // Convert the percentage values in distance referred to the current path height.
-        float startDistance = this.getStartAtDistance();
-        float endDistance = this.getEndToDistance();
-
-        // Trim a new segment and save it inside the path
-        ScPathMeasure measurer = this.getMeasure();
-        if (measurer != null)
-            measurer.getSegment(startDistance, endDistance, path, true);
     }
 
     /**
@@ -619,10 +619,6 @@ public abstract class ScFeature {
         return this.getDistance(this.mEndPercentage);
     }
 
-
-    // ***************************************************************************************
-    // Getter and setter
-
     /**
      * Set the path
      * @param value the painter
@@ -634,15 +630,9 @@ public abstract class ScFeature {
         this.onPropertyChange("path", value);
     }
 
-    /**
-     * Get the path
-     * @return the path
-     */
-    @SuppressWarnings("unused")
-    public Path getPath() {
-        return this.mPath;
-    }
 
+    // ***************************************************************************************
+    // Getter and setter
 
     /**
      * Set the painter

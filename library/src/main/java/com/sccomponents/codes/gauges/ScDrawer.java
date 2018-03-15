@@ -617,6 +617,15 @@ public abstract class ScDrawer extends ScBase {
         return this.mPathMeasure.getDistance(x, y, threshold);
     }
 
+    /**
+     * Get the path measure.
+     * Through this property can be access to the path object and some extra function.
+     * @return the path measure object
+     */
+    public ScPathMeasure getPathMeasure() {
+        return this.mPathMeasure;
+    }
+
 
     // ***************************************************************************************
     // Features
