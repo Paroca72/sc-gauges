@@ -65,6 +65,7 @@ public abstract class ScFeature {
     // ***************************************************************************************
     // Protected variable
 
+    /** @hide */
     protected Path mPath;
 
 
