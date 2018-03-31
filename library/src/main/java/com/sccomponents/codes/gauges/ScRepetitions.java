@@ -108,7 +108,7 @@ public abstract class ScRepetitions extends ScFeature {
         while (true) {
             // Adjust the current position and check
             currentPosition += this.mSpaceBetween;
-            if (currentPosition > length) break;
+            if (this.compare(currentPosition, length) == 1) break;
 
             // Store the value
             repetitions.add(currentPosition);
@@ -256,7 +256,8 @@ public abstract class ScRepetitions extends ScFeature {
     @SuppressWarnings("unused")
     public boolean isOverLimits(int repetition) {
         float distance = this.getDistance(repetition);
-        return distance < this.getStartAtDistance() || distance > this.getEndToDistance();
+        return this.compare(distance, this.getStartAtDistance()) == -1 ||
+                this.compare(distance, this.getEndToDistance()) == 1;
     }
 
     /**

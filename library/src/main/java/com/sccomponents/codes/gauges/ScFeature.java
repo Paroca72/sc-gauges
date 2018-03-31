@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 /**
@@ -29,6 +31,12 @@ import java.util.Arrays;
  * @since 2016-05-26
  */
 public abstract class ScFeature {
+
+    // ***************************************************************************************
+    // Constants
+
+    private static final int DEFAULT_PRECISION = 2;
+
 
     // ***************************************************************************************
     // Enumerators
@@ -88,6 +96,7 @@ public abstract class ScFeature {
     private int mContourIndex;
     private boolean mIsDrawing;
     private ContourInfo mContourInfo;
+    private int mFloatComparisonPrecision;
 
     // Listeners
     private OnDrawContourListener mOnDrawListener;
@@ -121,6 +130,8 @@ public abstract class ScFeature {
         this.mContourIndex = 1;
         this.mConsiderContours = false;
         this.mContoursMeasurer = null;
+
+        this.mFloatComparisonPrecision = DEFAULT_PRECISION;
 
         // Create the painter
         this.mPaint = new Paint();
@@ -160,6 +171,28 @@ public abstract class ScFeature {
     // Private methods
 
     /**
+     * Compare two float given the decimal precision
+     * @param first first number
+     * @param second second number
+     * @param precision precision
+     * @return the comparison result
+     */
+    protected int compare(float first, float second, int precision) {
+        BigDecimal firstDecimal = new BigDecimal(first).setScale(precision, RoundingMode.HALF_EVEN);
+        BigDecimal secondDecimal = new BigDecimal(second).setScale(precision, RoundingMode.HALF_EVEN);
+        return firstDecimal.compareTo(secondDecimal);
+    }
+
+    /**
+     * @param first first number
+     * @param second second number
+     * @return the comparison result
+     */
+    protected int compare(float first, float second) {
+        return this.compare(first, second, this.mFloatComparisonPrecision);
+    }
+
+    /**
      * Check if two strings are equal considering the null too.
      * @param a first
      * @param b second
@@ -178,10 +211,8 @@ public abstract class ScFeature {
      */
     protected float range(float value) {
         // Check the limit
-        if (value < 0.0f)
-            return 0.0f;
-        if (value > 100.0f)
-            return 100.0f;
+        if (this.compare(value, 0.0f) == -1) return 0.0f;
+        if (this.compare(value, 100.0f) == 1) return 100.0f;
         return value;
     }
 
@@ -900,6 +931,28 @@ public abstract class ScFeature {
     @SuppressWarnings("unused")
     public WidthsMode getWidthsMode() {
         return this.mWidthsMode;
+    }
+
+    /**
+     * Set the float comparison precision.
+     * As default is 2 decimal.
+     * @param value the new precision
+     */
+    @SuppressWarnings("unused")
+    public void setFloatComparisonPrecision(int value) {
+        if (this.mFloatComparisonPrecision != value) {
+            this.mFloatComparisonPrecision = value;
+            this.onPropertyChange("floatComparisonPrecision", value);
+        }
+    }
+
+    /**
+     * Get the float comparison precision.
+     * @return the current precision
+     */
+    @SuppressWarnings("unused")
+    public int getFloatComparisonPrecision() {
+        return this.mFloatComparisonPrecision;
     }
 
 

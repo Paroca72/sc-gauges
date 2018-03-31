@@ -581,6 +581,17 @@
  visibility="public"
 >
 </method>
+<method name="getPathMeasure"
+ return="com.sccomponents.codes.gauges.ScPathMeasure"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getPathTouchThreshold"
  return="float"
  abstract="false"
@@ -898,6 +909,38 @@
 <parameter name="destination" type="float[]">
 </parameter>
 </method>
+<method name="compare"
+ return="int"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="first" type="float">
+</parameter>
+<parameter name="second" type="float">
+</parameter>
+<parameter name="precision" type="int">
+</parameter>
+</method>
+<method name="compare"
+ return="int"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="first" type="float">
+</parameter>
+<parameter name="second" type="float">
+</parameter>
+</method>
 <method name="copy"
  return="void"
  abstract="false"
@@ -1097,7 +1140,7 @@
  static="false"
  final="false"
  deprecated="not deprecated"
- visibility="public"
+ visibility="protected"
 >
 <parameter name="contour" type="int">
 </parameter>
@@ -1110,22 +1153,11 @@
  static="false"
  final="false"
  deprecated="not deprecated"
- visibility="public"
+ visibility="protected"
 >
 </method>
 <method name="getPainter"
  return="android.graphics.Paint"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getPath"
- return="android.graphics.Path"
  abstract="false"
  native="false"
  synchronized="false"
@@ -1217,7 +1249,7 @@
  static="false"
  final="false"
  deprecated="not deprecated"
- visibility="public"
+ visibility="protected"
 >
 <parameter name="path" type="android.graphics.Path">
 </parameter>
@@ -1547,16 +1579,6 @@
 <parameter name="value" type="com.sccomponents.codes.gauges.ScFeature.WidthsMode">
 </parameter>
 </method>
-<field name="mPath"
- type="android.graphics.Path"
- transient="false"
- volatile="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-</field>
 </class>
 <class name="ScFeature.ColorsMode"
  extends="java.lang.Enum"
