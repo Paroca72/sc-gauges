@@ -351,4 +351,15 @@ public class ScCopier extends ScFeature {
         super.onPropertyChange(name, value);
     }
 
+    /**
+     * Refresh the feature measure.
+     */
+    @Override
+    @SuppressWarnings("unused")
+    public void refresh() {
+        this.mShader = null;
+        if (this.mAreaPath != null) this.mAreaPath.reset();
+        super.refresh();
+    }
+
 }
