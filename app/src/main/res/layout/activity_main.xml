@@ -18,8 +18,8 @@
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:padding="20dp"
-            sc:angleStart="-180"
-            sc:angleSweep="180" />
+            sc:angleStart="-90"
+            sc:angleSweep="90" />
 
     </FrameLayout>
 

@@ -90,7 +90,6 @@ public abstract class ScDrawer extends ScBase {
 
     /** @hide */
     protected List<ScFeature> mFeatures;
-    private boolean mFeaturesMustBeRefresh;
 
     private FillingArea mFillingArea;
     private FillingMode mFillingMode;
@@ -99,6 +98,7 @@ public abstract class ScDrawer extends ScBase {
     private int mMaximumHeight;
 
     private Path mCopyPath;
+    private Matrix mMatrix;
 
     private boolean mRecognizePathTouch;
     private float mPathTouchThreshold;
@@ -198,7 +198,7 @@ public abstract class ScDrawer extends ScBase {
         this.checkValues();
         this.mPathMeasure = new ScPathMeasure();
         this.mCopyPath = new Path();
-        this.mFeaturesMustBeRefresh = true;
+        this.mMatrix = new Matrix();
     }
 
     /**
@@ -316,47 +316,52 @@ public abstract class ScDrawer extends ScBase {
     // Draw methods
 
     /**
+     * Force to redraw all features
+     */
+    private void forceRedrawFeatures() {
+        // Check for empty values
+        if (this.mFeatures != null) {
+            // Cycle all features
+            for (ScFeature feature : this.mFeatures)
+                if (feature != null)
+                    feature.refresh();
+        }
+    }
+
+    /**
      * Draw all the features
      * @param canvas the canvas where draw
      */
-    private void drawFeatures(Canvas canvas) {
+    private void drawFeatures(Canvas canvas, Matrix matrix) {
         // Check for empty values
         if (this.mFeatures != null) {
             // Cycle all features
             for (ScFeature feature : this.mFeatures)
                 // Check for empty value
                 if (feature != null) {
-                    // Check if need to refresh
-                    if (this.mFeaturesMustBeRefresh) {
-                        feature.refresh();
-                    }
                     //Call the draw methods.
+                    feature.applyMatrixToCanvas(matrix);
                     feature.draw(canvas);
                 }
-
-            // Trigger
-            this.mFeaturesMustBeRefresh = false;
         }
     }
 
     /**
      * Scale and transpose the path and after draw the features on the canvas
      * @param canvas    the canvas where draw
-     * @param xOffset   the horizontal offset
-     * @param yOffset   the vertical offset
      */
-    private void setForDraw(Canvas canvas, float xOffset, float yOffset) {
+    private void setForDraw(Canvas canvas) {
         // Create a copy of the original path because need to move the offset or scale the
         // path and not want lost the original one values.
         this.mCopyPath.set(this.mPath);
         this.scalePath(this.mCopyPath, this.mAreaScale.x, this.mAreaScale.y);
         this.mCopyPath.offset(
-                xOffset + this.getPaddingLeft(),
-                yOffset + this.getPaddingTop()
+                this.mVirtualArea.left + this.getPaddingLeft(),
+                this.mVirtualArea.top + this.getPaddingTop()
         );
 
         // Draw the features
-        this.drawFeatures(canvas);
+        this.drawFeatures(canvas, null);
     }
 
     /**
@@ -364,26 +369,20 @@ public abstract class ScDrawer extends ScBase {
      * @param canvas the canvas where draw
      */
     private void setForStretch(Canvas canvas) {
-        // Save the current canvas status
-        canvas.save();
-
         // Translate and scale the canvas
-        canvas.translate(this.getPaddingLeft(), this.getPaddingTop());
-        canvas.scale(this.mAreaScale.x, this.mAreaScale.y);
+        this.mMatrix.reset();
+        this.mMatrix.postScale(this.mAreaScale.x, this.mAreaScale.y);
 
         // Create a copy of the original path because need to move the offset or scale the
         // path and not want lost the original one values.
         this.mCopyPath.set(this.mPath);
         this.mCopyPath.offset(
-                -this.mPathMeasure.getBounds().left,
-                -this.mPathMeasure.getBounds().top
+                (this.mVirtualArea.left + this.getPaddingLeft()) / this.mAreaScale.x,
+                (this.mVirtualArea.top + this.getPaddingTop()) / this.mAreaScale.y
         );
 
         // Draw all features
-        this.drawFeatures(canvas);
-
-        // Restore the last saved canvas status
-        canvas.restore();
+        this.drawFeatures(canvas, this.mMatrix);
     }
 
 
@@ -407,7 +406,7 @@ public abstract class ScDrawer extends ScBase {
         switch (this.mFillingMode) {
             // Draw
             case DRAW:
-                this.setForDraw(canvas, this.mVirtualArea.left, this.mVirtualArea.top);
+                this.setForDraw(canvas);
                 break;
 
             // Stretch
@@ -438,7 +437,7 @@ public abstract class ScDrawer extends ScBase {
         this.mPathMeasure.setPath(this.mPath, false);
 
         // The path could be changed so I must force the features to refresh the path info.
-        this.mFeaturesMustBeRefresh = true;
+        this.forceRedrawFeatures();
 
         // If have some dimension to wrap will use the path boundaries for have the right
         // dimension summed to the global padding.

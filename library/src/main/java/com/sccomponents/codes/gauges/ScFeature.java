@@ -1,7 +1,9 @@
 package com.sccomponents.codes.gauges;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -97,6 +99,9 @@ public abstract class ScFeature {
     private boolean mIsDrawing;
     private ContourInfo mContourInfo;
     private int mFloatComparisonPrecision;
+    private boolean mNeedToRedraw;
+    private Bitmap mBuffer;
+    private Matrix mMatrix;
 
     // Listeners
     private OnDrawContourListener mOnDrawListener;
@@ -132,6 +137,8 @@ public abstract class ScFeature {
         this.mContoursMeasurer = null;
 
         this.mFloatComparisonPrecision = DEFAULT_PRECISION;
+        this.mNeedToRedraw = true;
+        this.mBuffer = null;
 
         // Create the painter
         this.mPaint = new Paint();
@@ -372,6 +379,10 @@ public abstract class ScFeature {
      * @hide
      */
     protected void onPropertyChange(String name, Object value) {
+        // Force redraw
+        this.mNeedToRedraw = true;
+
+        // Listener
         if (this.mOnPropertyChangedListener != null)
             this.mOnPropertyChangedListener.onPropertyChanged(name, value);
     }
@@ -476,6 +487,14 @@ public abstract class ScFeature {
     }
 
     /**
+     * Apply a matrix to canvas before draw on it
+     * @param matrix the matrix
+     */
+    public void applyMatrixToCanvas(Matrix matrix) {
+        this.mMatrix = matrix;
+    }
+
+    /**
      * Draw something on the canvas.
      * @param canvas where draw
      */
@@ -485,20 +504,37 @@ public abstract class ScFeature {
         if (canvas == null || !this.mVisible || this.mPath == null)
             return;
 
-        // If the have only one color inside the colors array set it directly on the painter
-        if (this.mColors != null && this.mColors.length == 1)
-            this.mPaint.setColor(this.mColors[0]);
-
-        // Id drawing
+        // Is drawing
         this.mIsDrawing = true;
 
-        // Draw the contours
-        Path[] contours = this.mConsiderContours ?
-                this.mPathMeasure.getPaths() : new Path[]{this.mPath};
-        this.drawContours(canvas, contours);
+        // Redraw only if request
+        if (this.mNeedToRedraw) {
+            // Define the bitmap canvas
+            this.mBuffer = Bitmap.createBitmap(
+                    canvas.getWidth(),
+                    canvas.getHeight(),
+                    Bitmap.Config.ARGB_8888
+            );
+            Canvas desk = new Canvas(this.mBuffer);
+            desk.setMatrix(this.mMatrix);
+
+            // If the have only one color inside the colors array set it directly on the painter
+            if (this.mColors != null && this.mColors.length == 1)
+                this.mPaint.setColor(this.mColors[0]);
+
+            // Draw the contours
+            this.mPathMeasure.setPath(this.mPath, false);
+            Path[] contours = this.mConsiderContours ?
+                    this.mPathMeasure.getPaths() : new Path[]{this.mPath};
+            this.drawContours(desk, contours);
+        }
+
+        // Apply
+        canvas.drawBitmap(this.mBuffer, 0, 0, null);
 
         // Not drawing
         this.mIsDrawing = false;
+        this.mNeedToRedraw = false;
     }
 
     /**
@@ -506,8 +542,8 @@ public abstract class ScFeature {
      */
     @SuppressWarnings("unused")
     public void refresh() {
-        this.mPathMeasure.setPath(this.mPath, false);
         this.mContoursMeasurer = null;
+        this.mNeedToRedraw = true;
     }
 
     /**

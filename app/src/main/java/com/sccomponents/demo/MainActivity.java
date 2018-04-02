@@ -23,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.mGauge = this.findViewById(R.id.gauge);
-        this.mGauge.setFillingMode(ScDrawer.FillingMode.STRETCH);
+        //this.mGauge.setFillingMode(ScDrawer.FillingMode.STRETCH);
+        this.mGauge.setFillingArea(ScDrawer.FillingArea.VERTICAL);
         ScNotches notches = this.mGauge.getNotches();
         notches.setHeights(10);
         notches.setWidths(10);

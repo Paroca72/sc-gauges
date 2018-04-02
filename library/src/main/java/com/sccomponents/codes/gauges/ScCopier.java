@@ -24,9 +24,7 @@ public class ScCopier extends ScFeature {
     // ***************************************************************************************
     // Private and protected variables
 
-    private BitmapShader mShader;
     private Path mAreaPath;
-
     private Paint mGenericPaint;
     private Canvas mGenericCanvas;
 
@@ -46,9 +44,7 @@ public class ScCopier extends ScFeature {
         // Init
         this.getPainter().setStyle(Paint.Style.FILL);
 
-        this.mShader = null;
         this.mAreaPath = new Path();
-
         this.mGenericPaint = new Paint();
         this.mGenericCanvas = new Canvas();
 
@@ -282,15 +278,13 @@ public class ScCopier extends ScFeature {
     @SuppressWarnings("all")
     private void drawCopy(Canvas canvas, ContourInfo info) {
         // Check if needs to redraw the bitmap
-        if (this.mShader == null || this.getConsiderContours()) {
-            Bitmap bitmap = this.createBitmap(canvas.getWidth(), canvas.getHeight());
-            this.mShader = new BitmapShader(
-                    bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        }
+        Bitmap bitmap = this.createBitmap(canvas.getWidth(), canvas.getHeight());
+        BitmapShader shader = new BitmapShader(
+                bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
 
         // Create a paint clone and set the shader
         Paint clone = new Paint(this.getPainter());
-        clone.setShader(this.mShader);
+        clone.setShader(shader);
 
         // Check the area path
         if (this.mAreaPath.isEmpty() || this.getConsiderContours())
@@ -346,7 +340,6 @@ public class ScCopier extends ScFeature {
      */
     @Override
     protected void onPropertyChange(String name, Object value) {
-        this.mShader = null;
         if (this.mAreaPath != null) this.mAreaPath.reset();
         super.onPropertyChange(name, value);
     }
@@ -357,7 +350,6 @@ public class ScCopier extends ScFeature {
     @Override
     @SuppressWarnings("unused")
     public void refresh() {
-        this.mShader = null;
         if (this.mAreaPath != null) this.mAreaPath.reset();
         super.refresh();
     }
