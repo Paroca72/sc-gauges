@@ -894,6 +894,19 @@
  visibility="public"
 >
 </constructor>
+<method name="applyMatrixToCanvas"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="matrix" type="android.graphics.Matrix">
+</parameter>
+</method>
 <method name="clonePoint"
  return="void"
  abstract="false"
@@ -1095,6 +1108,17 @@
 </method>
 <method name="getEndToDistance"
  return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getFloatComparisonPrecision"
+ return="int"
  abstract="false"
  native="false"
  synchronized="false"
@@ -1447,6 +1471,19 @@
  visibility="public"
 >
 <parameter name="percentage" type="float">
+</parameter>
+</method>
+<method name="setFloatComparisonPrecision"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="int">
 </parameter>
 </method>
 <method name="setOnDrawContourListener"
@@ -2324,6 +2361,8 @@
 <parameter name="lowValue" type="float">
 </parameter>
 <parameter name="highValue" type="float">
+</parameter>
+<parameter name="isRunning" type="boolean">
 </parameter>
 </method>
 </interface>
