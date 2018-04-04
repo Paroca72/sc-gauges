@@ -38,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
                 mGauge.getNotches().setSpaceBetweenRepetitions(space - 0.01f);
             }
         });
+
+        this.mGauge.getProgress().setColors(Color.RED);
+        this.mGauge.getProgress().setWidths(20);
+        this.mGauge.setDuration(10000);
+        this.mGauge.setHighValue(90);
     }
 
 }

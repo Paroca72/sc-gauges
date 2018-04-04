@@ -155,7 +155,9 @@ public abstract class ScGauge extends ScDrawer
     // Privates variable
 
     private float mHighValue;
+    private float mHighValueAnimated;
     private float mLowValue;
+    private float mLowValueAnimated;
     private int mDuration;
 
     private ValueAnimator mHighValueAnimator;
@@ -819,17 +821,25 @@ public abstract class ScGauge extends ScDrawer
      */
     private void callOnAnimationUpdate(ValueAnimator animation) {
         // Get the current value
-        if (animation.equals(this.mHighValueAnimator))
-            this.mHighValue = (float) animation.getAnimatedValue();
-        if (animation.equals(this.mLowValueAnimator))
-            this.mLowValue = (float) animation.getAnimatedValue();
+        if (animation.equals(this.mHighValueAnimator)) {
+            this.mHighValueAnimated = (float) animation.getAnimatedValue();
+            if (!animation.isRunning()) this.mHighValue = this.mHighValueAnimated;
+        }
+        if (animation.equals(this.mLowValueAnimator)) {
+            this.mLowValueAnimated = (float) animation.getAnimatedValue();
+            if (!animation.isRunning()) this.mLowValue = this.mLowValueAnimated;
+        }
 
         // Refresh
         this.invalidate();
 
         // Manage the listener
         if (this.mOnEventListener != null) {
-            this.mOnEventListener.onValueChange(this.mLowValue, this.mHighValue);
+            this.mOnEventListener.onValueChange(
+                    this.mLowValueAnimated,
+                    this.mHighValueAnimated,
+                    animation.isRunning()
+            );
         }
     }
 
@@ -911,8 +921,8 @@ public abstract class ScGauge extends ScDrawer
         // Set the connected progress features properties
         List<ScFeature> progresses = this.findFeatures(null, ScGauge.PROGRESS_IDENTIFIER);
         for (ScFeature progress : progresses) {
-            progress.setEndTo(this.mHighValue);
-            progress.setStartAt(this.mLowValue);
+            progress.setEndTo(this.mHighValueAnimated);
+            progress.setStartAt(this.mLowValueAnimated);
         }
 
         // Set the connected pointers features properties
@@ -923,11 +933,11 @@ public abstract class ScGauge extends ScDrawer
             // Select
             switch (pointer.getTag()) {
                 case ScGauge.HIGH_POINTER_IDENTIFIER:
-                    casted.setValue(this.mHighValue);
+                    casted.setValue(this.mHighValueAnimated);
                     break;
 
                 case ScGauge.LOW_POINTER_IDENTIFIER:
-                    casted.setValue(this.mLowValue);
+                    casted.setValue(this.mLowValueAnimated);
                     break;
             }
         }
@@ -1310,7 +1320,7 @@ public abstract class ScGauge extends ScDrawer
          * @param lowValue  the current low value
          * @param highValue the current high value
          */
-        void onValueChange(float lowValue, float highValue);
+        void onValueChange(float lowValue, float highValue, boolean isRunning);
 
     }
 
