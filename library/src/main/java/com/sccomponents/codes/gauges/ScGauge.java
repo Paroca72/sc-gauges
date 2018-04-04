@@ -548,6 +548,9 @@ public abstract class ScGauge extends ScDrawer
             this.mLowValue = this.mNotches.snapToRepetitions(this.mLowValue);
         }
 
+        this.mHighValueAnimated = this.mHighValue;
+        this.mLowValueAnimated = this.mLowValue;
+
         // Define the touch threshold
         this.fixTouchOnPathThreshold();
     }
@@ -655,12 +658,12 @@ public abstract class ScGauge extends ScDrawer
         }
 
         // Choice the value and the animation
-        float currValue = treatLowValue ? this.mLowValue : this.mHighValue;
+        float currValue = treatLowValue ? this.mLowValueAnimated : this.mHighValueAnimated;
         ValueAnimator animator = treatLowValue ? this.mLowValueAnimator : this.mHighValueAnimator;
 
         // Limits
-        if (treatLowValue && value > this.mHighValue) value = this.mHighValue;
-        if (!treatLowValue && value < this.mLowValue) value = this.mLowValue;
+        if (treatLowValue && value > this.mHighValue) value = this.mHighValueAnimated;
+        if (!treatLowValue && value < this.mLowValue) value = this.mLowValueAnimated;
 
         // Check if value is changed
         if (currValue != value) {
@@ -1063,6 +1066,11 @@ public abstract class ScGauge extends ScDrawer
         float min = Math.min(startValue, endValue);
         float max = Math.max(startValue, endValue);
         float delta = max - min;
+
+        // Check limits
+        if (percentage <= 0) return min;
+        if (percentage >= 100) return max;
+
         // Return the value
         return (delta * (percentage / 100)) + min;
     }
@@ -1166,14 +1174,7 @@ public abstract class ScGauge extends ScDrawer
      */
     @SuppressWarnings("unused")
     public float getHighValue(float startRange, float endRange) {
-        // Check the domain
-        if (this.mHighValue == 0) {
-            return 0.0f;
-
-        } else {
-            // Calculate the value relative
-            return ((endRange - startRange) * this.mHighValue) / 100.0f;
-        }
+        return ScGauge.percentageToValue(this.mHighValue, startRange, endRange);
     }
 
 
@@ -1218,14 +1219,7 @@ public abstract class ScGauge extends ScDrawer
      */
     @SuppressWarnings("unused")
     public float getLowValue(float startRange, float endRange) {
-        // Check the domain
-        if (this.mHighValue == 0) {
-            return 0.0f;
-
-        } else {
-            // Calculate the value relative
-            return ((endRange - startRange) * this.mLowValue) / 100.0f;
-        }
+        return ScGauge.percentageToValue(this.mLowValue, startRange, endRange);
     }
 
 

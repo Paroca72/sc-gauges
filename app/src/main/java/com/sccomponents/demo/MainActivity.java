@@ -41,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
         this.mGauge.getProgress().setColors(Color.RED);
         this.mGauge.getProgress().setWidths(20);
-        this.mGauge.setDuration(10000);
+        this.mGauge.setDuration(500);
         this.mGauge.setHighValue(90);
+        this.mGauge.setPathTouchThreshold(50);
+        this.mGauge.setRecognizePathTouch(true);
     }
 
 }
