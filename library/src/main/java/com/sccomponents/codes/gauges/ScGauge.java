@@ -760,6 +760,7 @@ public abstract class ScGauge extends ScDrawer
                 pointer.getTag().equalsIgnoreCase(ScGauge.LOW_POINTER_IDENTIFIER)) {
             // Set and exit
             this.invalidate();
+            this.mLowValue = value;
             this.setGenericValue(value, true);
             return;
         }
@@ -769,6 +770,7 @@ public abstract class ScGauge extends ScDrawer
                 (pointer.getTag() != null && pointer.getTag().equalsIgnoreCase(ScGauge.HIGH_POINTER_IDENTIFIER))) {
             // Set and exit
             this.invalidate();
+            this.mHighValue = value;
             this.setGenericValue(value, false);
             return;
         }
@@ -1139,6 +1141,7 @@ public abstract class ScGauge extends ScDrawer
      */
     @SuppressWarnings("unused")
     public void setHighValue(float percentage) {
+        this.mHighValue = percentage;
         this.setGenericValue(percentage, false);
     }
 
@@ -1163,7 +1166,7 @@ public abstract class ScGauge extends ScDrawer
         // Find the relative percentage
         float percentage = this.findPercentage(value, startRange, endRange);
         // Call the base method
-        this.setGenericValue(percentage, false);
+        this.setHighValue(percentage);
     }
 
     /**
@@ -1184,6 +1187,7 @@ public abstract class ScGauge extends ScDrawer
      */
     @SuppressWarnings("unused")
     public void setLowValue(float percentage) {
+        this.mLowValue = percentage;
         this.setGenericValue(percentage, true);
     }
 
@@ -1208,7 +1212,7 @@ public abstract class ScGauge extends ScDrawer
         // Find the relative percentage
         float percentage = this.findPercentage(value, startRange, endRange);
         // Call the base method
-        this.setGenericValue(percentage, true);
+        this.setLowValue(percentage);
     }
 
     /**

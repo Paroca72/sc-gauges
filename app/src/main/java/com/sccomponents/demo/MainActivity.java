@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import com.sccomponents.codes.demo.R;
 import com.sccomponents.codes.gauges.ScArcGauge;
 import com.sccomponents.codes.gauges.ScDrawer;
+import com.sccomponents.codes.gauges.ScGauge;
 import com.sccomponents.codes.gauges.ScNotches;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         this.mGauge.setHighValue(90);
         this.mGauge.setPathTouchThreshold(50);
         this.mGauge.setRecognizePathTouch(true);
+
+        this.mGauge.setOnEventListener(new ScGauge.OnEventListener() {
+            @Override
+            public void onValueChange(float lowValue, float highValue, boolean isRunning) {
+                int a = 0;
+            }
+        });
     }
 
 }
