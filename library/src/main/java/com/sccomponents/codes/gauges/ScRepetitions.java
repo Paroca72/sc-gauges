@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,7 +113,10 @@ public abstract class ScRepetitions extends ScFeature {
             if (this.compare(currentPosition, length) == 1) break;
 
             // Store the value
-            repetitions.add(currentPosition);
+            float floor = new BigDecimal(currentPosition)
+                    .setScale(1, RoundingMode.FLOOR)
+                    .floatValue();
+            repetitions.add(floor);
         }
 
         // Check for last

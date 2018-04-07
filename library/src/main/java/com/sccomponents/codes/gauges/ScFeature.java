@@ -185,8 +185,8 @@ public abstract class ScFeature {
      * @return the comparison result
      */
     protected int compare(float first, float second, int precision) {
-        BigDecimal firstDecimal = new BigDecimal(first).setScale(precision, RoundingMode.HALF_EVEN);
-        BigDecimal secondDecimal = new BigDecimal(second).setScale(precision, RoundingMode.HALF_EVEN);
+        BigDecimal firstDecimal = new BigDecimal(first).setScale(precision, RoundingMode.FLOOR);
+        BigDecimal secondDecimal = new BigDecimal(second).setScale(precision, RoundingMode.FLOOR);
         return firstDecimal.compareTo(secondDecimal);
     }
 

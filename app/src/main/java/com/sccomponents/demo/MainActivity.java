@@ -13,6 +13,7 @@ import com.sccomponents.codes.gauges.ScArcGauge;
 import com.sccomponents.codes.gauges.ScDrawer;
 import com.sccomponents.codes.gauges.ScGauge;
 import com.sccomponents.codes.gauges.ScNotches;
+import com.sccomponents.codes.gauges.ScWriter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
         this.mGauge = this.findViewById(R.id.gauge);
         //this.mGauge.setFillingMode(ScDrawer.FillingMode.STRETCH);
         this.mGauge.setFillingArea(ScDrawer.FillingArea.VERTICAL);
+        this.mGauge.setHighValue(90);
+        this.mGauge.setPathTouchThreshold(50);
+        this.mGauge.setRecognizePathTouch(true);
+
         ScNotches notches = this.mGauge.getNotches();
         notches.setHeights(10);
         notches.setWidths(10);
@@ -37,20 +42,6 @@ public class MainActivity extends AppCompatActivity {
                 int ticks = 10;
                 float space = mGauge.getPathMeasure().getLength() / ticks;
                 mGauge.getNotches().setSpaceBetweenRepetitions(space - 0.01f);
-            }
-        });
-
-        this.mGauge.getProgress().setColors(Color.RED);
-        this.mGauge.getProgress().setWidths(20);
-        this.mGauge.setDuration(500);
-        this.mGauge.setHighValue(90);
-        this.mGauge.setPathTouchThreshold(50);
-        this.mGauge.setRecognizePathTouch(true);
-
-        this.mGauge.setOnEventListener(new ScGauge.OnEventListener() {
-            @Override
-            public void onValueChange(float lowValue, float highValue, boolean isRunning) {
-                int a = 0;
             }
         });
     }
