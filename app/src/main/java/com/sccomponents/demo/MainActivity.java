@@ -10,9 +10,12 @@ import android.widget.FrameLayout;
 
 import com.sccomponents.codes.demo.R;
 import com.sccomponents.codes.gauges.ScArcGauge;
+import com.sccomponents.codes.gauges.ScCopier;
 import com.sccomponents.codes.gauges.ScDrawer;
+import com.sccomponents.codes.gauges.ScFeature;
 import com.sccomponents.codes.gauges.ScGauge;
 import com.sccomponents.codes.gauges.ScNotches;
+import com.sccomponents.codes.gauges.ScRepetitions;
 import com.sccomponents.codes.gauges.ScWriter;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,24 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
         this.mGauge = this.findViewById(R.id.gauge);
         //this.mGauge.setFillingMode(ScDrawer.FillingMode.STRETCH);
-        this.mGauge.setFillingArea(ScDrawer.FillingArea.VERTICAL);
-        this.mGauge.setHighValue(90);
-        this.mGauge.setPathTouchThreshold(50);
-        this.mGauge.setRecognizePathTouch(true);
+        this.mGauge.setAngleStart(-180);
+        this.mGauge.setAngleSweep(180);
 
-        ScNotches notches = this.mGauge.getNotches();
-        notches.setHeights(10);
-        notches.setWidths(10);
-        notches.setLastRepetitionOnPathEnd(false);
-
-        this.mGauge.post(new Runnable() {
-            @Override
-            public void run() {
-                int ticks = 10;
-                float space = mGauge.getPathMeasure().getLength() / ticks;
-                mGauge.getNotches().setSpaceBetweenRepetitions(space - 0.01f);
-            }
-        });
+        ScCopier base = this.mGauge.getBase();
+        base.setWidths(20);
+        base.setColorsMode(ScFeature.ColorsMode.GRADIENT);
+        base.setColors(Color.GREEN, Color.TRANSPARENT, Color.RED);
     }
 
 }

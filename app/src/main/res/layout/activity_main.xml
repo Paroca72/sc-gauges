@@ -17,9 +17,7 @@
             android:id="@+id/gauge"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:padding="20dp"
-            sc:angleStart="-90"
-            sc:angleSweep="90" />
+            android:padding="20dp"/>
 
     </FrameLayout>
 

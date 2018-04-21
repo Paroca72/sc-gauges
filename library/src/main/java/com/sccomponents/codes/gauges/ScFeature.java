@@ -263,13 +263,20 @@ public abstract class ScFeature {
             int sColor = colors[sector];
             int eColor = colors[sector + 1];
 
+            // Manage the transparent case
+            if (sColor == Color.TRANSPARENT)
+                sColor = Color.argb(0, Color.red(eColor), Color.green(eColor), Color.blue(eColor));
+            if (eColor == Color.TRANSPARENT)
+                eColor = Color.argb(0, Color.red(sColor), Color.green(sColor), Color.blue(sColor));
+
             // Calculate the result color
+            int alpha = (int) (Color.alpha(eColor) * ratio + Color.alpha(sColor) * (1 - ratio));
             int red = (int) (Color.red(eColor) * ratio + Color.red(sColor) * (1 - ratio));
             int green = (int) (Color.green(eColor) * ratio + Color.green(sColor) * (1 - ratio));
             int blue = (int) (Color.blue(eColor) * ratio + Color.blue(sColor) * (1 - ratio));
 
             // Get the color
-            return Color.rgb(red, green, blue);
+            return Color.argb(alpha, red, green, blue);
 
         } else {
             // Rough value
