@@ -11,8 +11,6 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
-import com.sccomponents.codes.gauges.R;
-
 /**
  * Define a arc path and draw on it.
  * <p>

@@ -13,8 +13,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.sccomponents.codes.gauges.R;
-
 import java.lang.reflect.Field;
 import java.util.List;
 
