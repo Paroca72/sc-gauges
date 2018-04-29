@@ -1,4 +1,4 @@
-package com.sccomponents.codes.gauges;
+package com.sccomponents.gauges.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.sccomponents.codes.gauges.R;
 
 import java.util.ArrayList;
 import java.util.List;

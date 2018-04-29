@@ -1,4 +1,4 @@
-package com.sccomponents.codes.gauges;
+package com.sccomponents.gauges.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+
+import com.sccomponents.codes.gauges.R;
 
 /**
  * Define a arc path and draw on it.
