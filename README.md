@@ -10,10 +10,12 @@ This is a library of gauges.<br />
 > **IMPORTANT**<br />
 > The 3.x version it is NOT compatible with the previous versions.
 <br />
+<br />
 
 # Some implementation
 [Gauges Reality](http://www.sccomponents.com/)
-
+<br />
+<br />
 
 # The idea
 
