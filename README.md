@@ -11,6 +11,9 @@ This is a library of gauges.<br />
 > The 3.x version it is NOT compatible with the previous versions.
 <br />
 
+# Some implementation
+[Gauges Reality](http://www.sccomponents.com/)
+
 
 # The idea
 

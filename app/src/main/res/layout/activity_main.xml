@@ -17,7 +17,7 @@
             android:id="@+id/gauge"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:padding="20dp"/>
+            android:padding="40dp"/>
 
     </FrameLayout>
 
