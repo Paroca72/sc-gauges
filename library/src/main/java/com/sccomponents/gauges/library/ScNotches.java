@@ -117,9 +117,6 @@ public class ScNotches extends ScRepetitions {
      * @param info   the notch info
      */
     protected void drawLine(Canvas canvas, NotchInfo info, Paint paint) {
-        // Set the stroke width
-        paint.setStrokeWidth(info.width);
-
         // Adjust the first point
         this.mFirstPoint[1] -= info.height / 2;
 
@@ -225,6 +222,9 @@ public class ScNotches extends ScRepetitions {
         Paint painter = this.getPainter();
         painter.setStyle(
                 isFilled ? Paint.Style.FILL : Paint.Style.STROKE);
+
+        // Set the stroke width
+        painter.setStrokeWidth(info.width);
 
         // Get the point by the distance
         this.getPoint(info.distance, this.mFirstPoint);

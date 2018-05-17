@@ -30,42 +30,16 @@ public class MainActivity extends AppCompatActivity {
         this.mGauge.setAngleStart(-270);
         this.mGauge.setAngleSweep(270);
 
+        ScCopier base = this.mGauge.getBase();
+        base.setWidths(5);
+
         ScNotches notches = this.mGauge.getNotches();
-        notches.setRepetitions(8);
+        notches.setRepetitions(2);
         notches.setHeights(50);
-        notches.setWidths(10);
+        notches.setWidths(30);
         notches.setColors(Color.RED);
-
-        ScWriter writer = this.mGauge.getWriter();
-        writer.setTokens("1", "22", "333", "4444", "1", "22", "333", "4444");
-
-        final Paint paint = writer.getPainter();
-        paint.setTextSize(60);
-        paint.setTextAlign(Paint.Align.CENTER);
-
-        this.mGauge.setOnDrawListener(new ScGauge.OnDrawListener() {
-            @Override
-            public void onDrawContour(ScFeature.ContourInfo info) {
-
-            }
-
-            @Override
-            public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
-                if (info.source instanceof  ScWriter) {
-                    Rect bounds = new Rect();
-                    String text = ((ScWriter.TokenInfo) info).text;
-                    paint.getTextBounds(text, 0, text.length(), bounds);
-
-                    double radiant = Math.toRadians(info.tangent) + Math.PI / 2;
-                    double distance = 60;
-                    double minWidth = 50;
-
-                    info.offset[0] = (float) ((minWidth + bounds.width() / 2) * Math.cos(radiant));
-                    info.offset[1] = (float) ((distance + bounds.height() / 2) * Math.sin(radiant));
-                    info.tangent = 0;
-                }
-            }
-        });
+        notches.setPosition(ScFeature.Positions.OUTSIDE);
+        notches.setEdges(ScFeature.Positions.INSIDE);
     }
 
 }
