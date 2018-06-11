@@ -359,10 +359,10 @@ public abstract class ScGauge extends ScDrawer
 
         // Find the height
         float[] heights = this
-                .splitToWidths(attrArray.getString(R.styleable.ScGauge_notchesHeights));
+                .splitToWidths(attrArray.getString(R.styleable.ScGauge_sccNotchesHeights));
         if (heights == null) {
             float length = attrArray.getDimension(
-                    R.styleable.ScGauge_notchesHeight,
+                    R.styleable.ScGauge_sccNotchesHeight,
                     this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE)
             );
             heights = new float[] { length };
@@ -371,7 +371,7 @@ public abstract class ScGauge extends ScDrawer
 
         ScNotches.HeightsMode heightsMode = ScNotches.HeightsMode.values()[
             attrArray.getInt(
-                    R.styleable.ScGauge_notchesHeightsMode,
+                    R.styleable.ScGauge_sccNotchesHeightsMode,
                     ScNotches.HeightsMode.SMOOTH.ordinal()
             )
         ];
@@ -389,18 +389,18 @@ public abstract class ScGauge extends ScDrawer
 
         // Get tokens
         String stringTokens = attrArray
-                .getString(R.styleable.ScGauge_textTokens);
+                .getString(R.styleable.ScGauge_sccTextTokens);
         String[] tokens = stringTokens != null ? stringTokens.split("\\|") : null;
 
         // Get the text alignment
         Paint.Align textAlign = Paint.Align.values()[
             attrArray.getInt(
-                    R.styleable.ScGauge_textAlign, Paint.Align.LEFT.ordinal())
+                    R.styleable.ScGauge_sccTextAlign, Paint.Align.LEFT.ordinal())
         ];
 
         // Bending
         boolean bending = attrArray.getBoolean(
-                R.styleable.ScGauge_textBending, false);
+                R.styleable.ScGauge_sccTextBending, false);
 
         // Assign
         feature.setTokens(tokens);
@@ -419,10 +419,10 @@ public abstract class ScGauge extends ScDrawer
 
         // Find the height
         float[] heights = this
-                .splitToWidths(attrArray.getString(R.styleable.ScGauge_notchesHeights));
+                .splitToWidths(attrArray.getString(R.styleable.ScGauge_sccNotchesHeights));
         if (heights == null) {
             float length = attrArray.getDimension(
-                    R.styleable.ScGauge_notchesHeight,
+                    R.styleable.ScGauge_sccNotchesHeight,
                     this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE)
             );
             heights = new float[] { length };
@@ -430,18 +430,18 @@ public abstract class ScGauge extends ScDrawer
 
         ScNotches.HeightsMode heightsMode = ScNotches.HeightsMode.values()[
                 attrArray.getInt(
-                        R.styleable.ScGauge_notchesHeightsMode,
+                        R.styleable.ScGauge_sccNotchesHeightsMode,
                         ScNotches.HeightsMode.SMOOTH.ordinal()
                 )
                 ];
 
         // Halo
         float haloWidth= attrArray.getDimension(
-                R.styleable.ScGauge_pointerHaloSize,
+                R.styleable.ScGauge_sccPointerHaloSize,
                 this.dipToPixel(ScGauge.DEFAULT_HALO_SIZE)
         );
         int haloAlpha = attrArray.getInt(
-                R.styleable.ScGauge_pointerHaloAlpha,
+                R.styleable.ScGauge_sccPointerHaloAlpha,
                 ScGauge.DEFAULT_HALO_ALPHA
         );
 
@@ -501,23 +501,23 @@ public abstract class ScGauge extends ScDrawer
 
         // Common
         this.mHighValue = attrArray.getFloat(
-                R.styleable.ScGauge_value, 0.0f);
+                R.styleable.ScGauge_sccValue, 0.0f);
         this.mLowValue = attrArray.getFloat(
-                R.styleable.ScGauge_lowValue, 0.0f);
+                R.styleable.ScGauge_sccLowValue, 0.0f);
 
         if (this.mHighValue == 0.0f)
             this.mHighValue = attrArray.getFloat(
-                    R.styleable.ScGauge_highValue, 0.0f);
+                    R.styleable.ScGauge_sccHighValue, 0.0f);
 
         this.mSnapToNotches = attrArray.getBoolean(
-                R.styleable.ScGauge_snapToNotches, false);
+                R.styleable.ScGauge_sccSnapToNotches, false);
 
         this.mPointerSelectMode = PointerSelectMode.values()[
             attrArray.getInt(
-                    R.styleable.ScGauge_pointerSelectMode, PointerSelectMode.NEAREST.ordinal())
+                    R.styleable.ScGauge_sccPointerSelectMode, PointerSelectMode.NEAREST.ordinal())
         ];
 
-        this.mDuration = attrArray.getInt(R.styleable.ScGauge_duration, 0);
+        this.mDuration = attrArray.getInt(R.styleable.ScGauge_sccDuration, 0);
 
         // Recycle
         attrArray.recycle();

@@ -173,21 +173,21 @@ public abstract class ScDrawer extends ScBase {
 
         // Read all attributes from xml and assign the value to linked variables
         this.mMaximumWidth = attrArray.getDimensionPixelSize(
-                R.styleable.ScDrawer_maxWidth, Integer.MAX_VALUE);
+                R.styleable.ScDrawer_sccMaxWidth, Integer.MAX_VALUE);
         this.mMaximumHeight = attrArray.getDimensionPixelSize(
-                R.styleable.ScDrawer_maxHeight, Integer.MAX_VALUE);
+                R.styleable.ScDrawer_sccMaxHeight, Integer.MAX_VALUE);
 
         int fillingArea = attrArray.getInt(
-                R.styleable.ScDrawer_fillArea, FillingArea.BOTH.ordinal());
+                R.styleable.ScDrawer_sccFillArea, FillingArea.BOTH.ordinal());
         this.mFillingArea = FillingArea.values()[fillingArea];
 
         int fillingMode = attrArray.getInt(
-                R.styleable.ScDrawer_fillMode, FillingMode.DRAW.ordinal());
+                R.styleable.ScDrawer_sccFillMode, FillingMode.DRAW.ordinal());
         this.mFillingMode = FillingMode.values()[fillingMode];
 
         // Input
         this.mRecognizePathTouch = attrArray.getBoolean(
-                R.styleable.ScDrawer_pathTouchable, false);
+                R.styleable.ScDrawer_scPathTouchable, false);
 
         // Recycle
         attrArray.recycle();

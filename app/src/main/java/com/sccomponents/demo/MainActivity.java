@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.SeekBar;
 
 import com.sccomponents.codes.demo.R;
 import com.sccomponents.gauges.library.ScArcGauge;
@@ -40,6 +41,25 @@ public class MainActivity extends AppCompatActivity {
         notches.setColors(Color.RED);
         notches.setPosition(ScFeature.Positions.OUTSIDE);
         notches.setEdges(ScFeature.Positions.INSIDE);
+
+        SeekBar seek = this.findViewById(R.id.seekBar);
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                mGauge.setAngleStart(i - 180);
+                //mGauge.invalidate();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
 }

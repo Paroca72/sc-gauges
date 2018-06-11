@@ -3,17 +3,17 @@
 
     <!-- XML Attributes -->
     <declare-styleable name="ScDrawer">
-        <attr name="maxWidth" format="dimension" />
-        <attr name="maxHeight" format="dimension" />
-        <attr name="pathTouchable" format="boolean" />
+        <attr name="sccMaxWidth" format="dimension" />
+        <attr name="sccMaxHeight" format="dimension" />
+        <attr name="scPathTouchable" format="boolean" />
 
-        <attr name="fillArea" format="enum">
+        <attr name="sccFillArea" format="enum">
             <enum name="none" value="0" />
             <enum name="both" value="1" />
             <enum name="horizontal" value="2" />
             <enum name="vertical" value="3" />
         </attr>
-        <attr name="fillMode" format="enum">
+        <attr name="sccFillMode" format="enum">
             <enum name="stretch" value="0" />
             <enum name="draw" value="1" />
         </attr>
@@ -22,147 +22,147 @@
     <!-- XML Attributes -->
     <declare-styleable name="ScGauge">
         <!-- OPTIONS -->
-        <attr name="snapToNotches" format="boolean" />
-        <attr name="duration" format="integer" />
+        <attr name="sccSnapToNotches" format="boolean" />
+        <attr name="sccDuration" format="integer" />
 
         <!-- VALUES -->
-        <attr name="value" format="float" />
-        <attr name="highValue" format="float" />
-        <attr name="lowValue" format="float" />
+        <attr name="sccValue" format="float" />
+        <attr name="sccHighValue" format="float" />
+        <attr name="sccLowValue" format="float" />
 
         <!-- STROKE -->
-        <attr name="strokeColor" format="color" />
-        <attr name="strokeColors" format="string" />
-        <attr name="strokeColorsMode" format="enum">
+        <attr name="sccStrokeColor" format="color" />
+        <attr name="sccStrokeColors" format="string" />
+        <attr name="sccStrokeColorsMode" format="enum">
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
-        <attr name="strokeWidth" format="dimension" />
-        <attr name="strokeWidths" format="string" />
-        <attr name="strokeWidthsMode" format="enum">
+        <attr name="sccStrokeWidth" format="dimension" />
+        <attr name="sccStrokeWidths" format="string" />
+        <attr name="sccStrokeWidthsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
-        <attr name="strokePosition" format="enum">
+        <attr name="sccStrokePosition" format="enum">
             <enum name="inside" value="0" />
             <enum name="middle" value="1" />
             <enum name="outside" value="2" />
         </attr>
-        <attr name="strokeRoundedCap" format="boolean" />
+        <attr name="sccStrokeRoundedCap" format="boolean" />
 
         <!-- PROGRESS -->
-        <attr name="progressSize" format="dimension" />
-        <attr name="progressColor" format="color" />
-        <attr name="progressColors" format="string" />
-        <attr name="progressColorsMode" format="enum">
+        <attr name="sccProgressSize" format="dimension" />
+        <attr name="sccProgressColor" format="color" />
+        <attr name="sccProgressColors" format="string" />
+        <attr name="sccProgressColorsMode" format="enum">
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
-        <attr name="progressWidth" format="dimension" />
-        <attr name="progressWidths" format="string" />
-        <attr name="progressWidthsMode" format="enum">
+        <attr name="sccProgressWidth" format="dimension" />
+        <attr name="sccProgressWidths" format="string" />
+        <attr name="sccProgressWidthsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
-        <attr name="progressPosition" format="enum">
+        <attr name="sccProgressPosition" format="enum">
             <enum name="inside" value="0" />
             <enum name="middle" value="1" />
             <enum name="outside" value="2" />
         </attr>
-        <attr name="progressRoundedCap" format="boolean" />
+        <attr name="sccProgressRoundedCap" format="boolean" />
 
         <!-- POINTER -->
-\        <attr name="pointerColor" format="color" />
-        <attr name="pointerColors" format="string" />
-        <attr name="pointerColorsMode" format="enum">
+        <attr name="sccPointerColor" format="color" />
+        <attr name="sccPointerColors" format="string" />
+        <attr name="sccPointerColorsMode" format="enum">
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
-        <attr name="pointerSelectMode" format="enum">
+        <attr name="sccPointerSelectMode" format="enum">
             <enum name="nearest" value="0" />
             <enum name="over" value="1" />
         </attr>
-        <attr name="pointerWidth" format="dimension" />
-        <attr name="pointerWidths" format="string" />
-        <attr name="pointerWidthsMode" format="enum">
+        <attr name="sccPointerWidth" format="dimension" />
+        <attr name="sccPointerWidths" format="string" />
+        <attr name="sccPointerWidthsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
-        <attr name="pointerHeight" format="dimension" />
-        <attr name="pointerHeights" format="string" />
-        <attr name="pointerHeightsMode" format="enum">
+        <attr name="sccPointerHeight" format="dimension" />
+        <attr name="sccPointerHeights" format="string" />
+        <attr name="sccPointerHeightsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
-        <attr name="pointerHaloSize" format="dimension" />
-        <attr name="pointerHaloAlpha" format="float" />
-        <attr name="pointerPosition" format="enum">
+        <attr name="sccPointerHaloSize" format="dimension" />
+        <attr name="sccPointerHaloAlpha" format="float" />
+        <attr name="sccPointerPosition" format="enum">
             <enum name="inside" value="0" />
             <enum name="middle" value="1" />
             <enum name="outside" value="2" />
         </attr>
-        <attr name="pointerRoundedCap" format="boolean" />
+        <attr name="sccPointerRoundedCap" format="boolean" />
 
         <!-- NOTCHES -->
-        <attr name="notches" format="integer" />
-        <attr name="notchesColor" format="color" />
-        <attr name="notchesColors" format="string" />
-        <attr name="notchesColorsMode" format="enum">
+        <attr name="sccNotches" format="integer" />
+        <attr name="sccNotchesColor" format="color" />
+        <attr name="sccNotchesColors" format="string" />
+        <attr name="sccNotchesColorsMode" format="enum">
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
-        <attr name="notchesHeight" format="dimension" />
-        <attr name="notchesHeights" format="string" />
-        <attr name="notchesHeightsMode" format="enum">
+        <attr name="sccNotchesHeight" format="dimension" />
+        <attr name="sccNotchesHeights" format="string" />
+        <attr name="sccNotchesHeightsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
-        <attr name="notchesWidth" format="dimension" />
-        <attr name="notchesWidths" format="string" />
-        <attr name="notchesWidthsMode" format="enum">
+        <attr name="sccNotchesWidth" format="dimension" />
+        <attr name="sccNotchesWidths" format="string" />
+        <attr name="sccNotchesWidthsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
-        <attr name="notchesPosition" format="enum">
+        <attr name="sccNotchesPosition" format="enum">
             <enum name="inside" value="0" />
             <enum name="middle" value="1" />
             <enum name="outside" value="2" />
         </attr>
-        <attr name="notchesRoundedCap" format="boolean" />
+        <attr name="sccNotchesRoundedCap" format="boolean" />
 
         <!-- TEXT -->
-        <attr name="textTokens" format="string" />
-        <attr name="textColor" format="color" />
-        <attr name="textColors" format="string" />
-        <attr name="textColorsMode" format="enum">
+        <attr name="sccTextTokens" format="string" />
+        <attr name="sccTextColor" format="color" />
+        <attr name="sccTextColors" format="string" />
+        <attr name="sccTextColorsMode" format="enum">
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
-        <attr name="textWidth" format="dimension" />
-        <attr name="textWidths" format="string" />
-        <attr name="textWidthsMode" format="enum">
+        <attr name="sccTextWidth" format="dimension" />
+        <attr name="sccTextWidths" format="string" />
+        <attr name="sccTextWidthsMode" format="enum">
             <enum name="rough" value="0" />
             <enum name="smooth" value="1" />
         </attr>
-        <attr name="textPosition" format="enum">
+        <attr name="sccTextPosition" format="enum">
             <enum name="inside" value="0" />
             <enum name="middle" value="1" />
             <enum name="outside" value="2" />
         </attr>
-        <attr name="textAlign" format="enum">
+        <attr name="sccTextAlign" format="enum">
             <enum name="left" value="0" />
             <enum name="center" value="1" />
             <enum name="right" value="2" />
         </attr>
-        <attr name="textBending" format="boolean" />
-        <attr name="textRoundedCap" format="boolean" />
+        <attr name="sccTextBending" format="boolean" />
+        <attr name="sccTextRoundedCap" format="boolean" />
 
     </declare-styleable>
 
     <!-- XML Attributes -->
     <declare-styleable name="ScArcGauge">
-        <attr name="angleStart" format="float" />
-        <attr name="angleSweep" format="float" />
+        <attr name="sccAngleStart" format="float" />
+        <attr name="sccAngleSweep" format="float" />
     </declare-styleable>
 
 </resources>
