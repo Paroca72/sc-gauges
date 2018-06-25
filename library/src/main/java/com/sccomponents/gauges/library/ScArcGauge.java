@@ -119,7 +119,7 @@ public class ScArcGauge extends ScGauge {
                 android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             // Create a transform and rotate the path on the starting angle
             Matrix matrix = new Matrix();
-            matrix.postRotate(this.mAngleStart);
+            matrix.postRotate(this.mAngleStart, area.centerX(), area.centerY());
             path.transform(matrix);
         }
 
