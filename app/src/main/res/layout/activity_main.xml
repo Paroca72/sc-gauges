@@ -16,7 +16,7 @@
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
             android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="40dp" />
 

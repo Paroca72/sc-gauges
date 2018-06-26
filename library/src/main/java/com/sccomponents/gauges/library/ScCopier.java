@@ -5,7 +5,10 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
+import android.graphics.Xfermode;
 
 /**
  * Create a custom drawn copy of a given path.
@@ -214,6 +217,7 @@ public class ScCopier extends ScFeature {
         Paint painter = this.mGenericPaint;
         painter.set(this.getPainter());
         painter.setStrokeCap(Paint.Cap.SQUARE);
+        painter.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 
         // Fix the start and end
         float length = this.getMeasure().getLength();

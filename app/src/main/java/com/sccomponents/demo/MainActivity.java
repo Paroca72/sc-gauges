@@ -27,39 +27,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.mGauge = this.findViewById(R.id.gauge);
-        this.mGauge.setFillingArea(ScDrawer.FillingArea.NONE);
-        this.mGauge.setAngleStart(-270);
+        this.mGauge.setAngleStart(-225);
         this.mGauge.setAngleSweep(270);
+        this.mGauge.setRecognizePathTouch(true);
+        this.mGauge.setPathTouchThreshold(100);
 
         ScCopier base = this.mGauge.getBase();
-        base.setWidths(5);
+        base.setWidths(100);
+        base.setColors(Color.parseColor("#55FF0000"), Color.MAGENTA, Color.YELLOW);
+        base.setColorsMode(ScFeature.ColorsMode.GRADIENT);
+        base.getPainter().setStrokeCap(Paint.Cap.ROUND);
 
-        ScNotches notches = this.mGauge.getNotches();
-        notches.setRepetitions(2);
-        notches.setHeights(50);
-        notches.setWidths(30);
-        notches.setColors(Color.RED);
-        notches.setPosition(ScFeature.Positions.OUTSIDE);
-        notches.setEdges(ScFeature.Positions.INSIDE);
-
-        SeekBar seek = this.findViewById(R.id.seekBar);
-        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                mGauge.setAngleStart(i - 180);
-                //mGauge.invalidate();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+        ScCopier progress = this.mGauge.getProgress();
+        progress.setWidths(100);
+        progress.setColors(Color.RED);
+        progress.getPainter().setStrokeCap(Paint.Cap.ROUND);
     }
 
 }
