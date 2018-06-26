@@ -262,7 +262,7 @@ public class ScCopier extends ScFeature {
             // if is first
             if (distance == 0)
                 // Draw a point in front of the path
-                canvas.drawPoint(adjustX - halfWidth * 2, adjustY, painter);
+                canvas.drawPoint(adjustX - halfWidth * 2 + 1, adjustY, painter);
 
             // Draw the common point
             canvas.drawPoint(adjustX, adjustY, painter);

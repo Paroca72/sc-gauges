@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         ScCopier base = this.mGauge.getBase();
         base.setWidths(100);
-        base.setColors(Color.parseColor("#55FF0000"), Color.MAGENTA, Color.YELLOW);
+        base.setColors(Color.YELLOW, Color.MAGENTA, Color.YELLOW);
         base.setColorsMode(ScFeature.ColorsMode.GRADIENT);
         base.getPainter().setStrokeCap(Paint.Cap.ROUND);
 
