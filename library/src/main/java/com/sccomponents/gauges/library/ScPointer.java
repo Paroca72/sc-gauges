@@ -23,7 +23,7 @@ public class ScPointer extends ScNotches {
      * Private variables
      */
 
-    private float mValue;
+    private float mDistance;
     private boolean mPressed;
 
     private float mHaloWidth;
@@ -42,8 +42,9 @@ public class ScPointer extends ScNotches {
         super();
 
         // Init
-        this.setRepetitions(1);
-        this.setLastRepetitionOnPathEnd(false);
+        super.setRepetitions(1);
+        super.setLastRepetitionOnPathEnd(false);
+        super.setType(NotchTypes.OVAL_FILLED);
 
         this.mHaloWidth = ScPointer.DEFAULT_HALO_WIDTH;
         this.mHaloAlpha = ScPointer.DEFAULT_HALO_ALPHA;
@@ -110,8 +111,9 @@ public class ScPointer extends ScNotches {
     protected void onDraw(Canvas canvas, RepetitionInfo info) {
         // Set the painters
         PointerInfo pointerInfo = (PointerInfo) info;
-        this.mHaloPaint.setAlpha(pointerInfo.pressed ? 255: this.mHaloAlpha);
         this.mHaloPaint.setStrokeWidth(this.mHaloWidth);
+        this.mHaloPaint.setColor(pointerInfo.color);
+        this.mHaloPaint.setAlpha(pointerInfo.pressed ? 255: this.mHaloAlpha);
 
         Paint paint = this.getPainter();
         paint.setAlpha(pointerInfo.pressed ? this.mHaloAlpha: 255);
@@ -181,7 +183,7 @@ public class ScPointer extends ScNotches {
         super.copy(destination);
 
         // Set
-        destination.setValue(this.mValue);
+        destination.setDistance(this.mDistance);
         destination.setPressed(this.mPressed);
 
         destination.setHaloAlpha(this.mHaloAlpha);
@@ -189,15 +191,15 @@ public class ScPointer extends ScNotches {
     }
 
     /**
-     * Get the pointer mac dimension.
+     * Get the pointer max dimension.
      * Note than this could be depend on the current position on the path.
      * @return   the max dimension
      */
     @SuppressWarnings("unused")
     public float getMaxDimension() {
         // Find the max dimension
-        float width = this.getWidth(this.mValue);
-        float height = this.getHeight(this.mValue);
+        float width = this.getWidth(this.mDistance);
+        float height = this.getHeight(this.mDistance);
         float max = width > height ? width: height;
 
         // Add the halo dimension
@@ -209,29 +211,29 @@ public class ScPointer extends ScNotches {
     // Public properties
 
     /**
-     * Set the position of pointer in percentage respect to the path height.
+     * Set the distance of pointer in percentage respect to the path start.
      * @param value the position in percentage
      */
     @SuppressWarnings("unused")
-    public void setValue(float value) {
+    public void setDistance(float value) {
         // Check the limits
         if (value < 0.0f) value = 0.0f;
         if (value > 100.0f) value = 100.0f;
 
         // Store the value
-        if (this.mValue != value) {
-            this.mValue = value;
-            this.onPropertyChange("pointer", value);
+        if (this.mDistance != value) {
+            this.mDistance = value;
+            this.onPropertyChange("distance", value);
         }
     }
 
     /**
-     * Get the position of pointer in percentage respect to the path height.
+     * Get the position of pointer in percentage respect to the path start.
      * @return the position in percentage
      */
     @SuppressWarnings("unused")
-    public float getValue() {
-        return this.mValue;
+    public float getDistance() {
+        return this.mDistance;
     }
 
 
@@ -338,15 +340,23 @@ public class ScPointer extends ScNotches {
             // Super
             super.reset(feature, contour, repetition);
 
+            // Holder
+            float percentage = feature.getDistance();
+            float distance = feature.getDistance(percentage);
+
             // Reset
             this.source = feature;
             this.pressed = feature.getPressed();
-            this.distance = feature.getValue();
+            this.distance = distance;
 
-            this.height = feature.getHeight(this.distance);
-            this.width = feature.getWidth(this.distance);
-            this.tangent = feature.getPointAndAngle(this.distance, this.mGenericPoint);
-            this.color = feature.getGradientColor(this.distance);
+            this.height = feature.getHeight(distance);
+            this.width = feature.getWidth(distance);
+            this.tangent = feature.getPointAndAngle(distance, this.mGenericPoint);
+            this.color = feature.getGradientColor(distance);
+
+            // Find the center as the point on path
+            this.point[0] = this.mGenericPoint[0];
+            this.point[1] = this.mGenericPoint[1];
         }
 
     }

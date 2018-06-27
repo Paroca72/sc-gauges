@@ -14,6 +14,7 @@ import com.sccomponents.gauges.library.ScDrawer;
 import com.sccomponents.gauges.library.ScFeature;
 import com.sccomponents.gauges.library.ScGauge;
 import com.sccomponents.gauges.library.ScNotches;
+import com.sccomponents.gauges.library.ScPointer;
 import com.sccomponents.gauges.library.ScRepetitions;
 import com.sccomponents.gauges.library.ScWriter;
 
@@ -26,22 +27,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        int size = 30;
+
         this.mGauge = this.findViewById(R.id.gauge);
         this.mGauge.setAngleStart(-225);
         this.mGauge.setAngleSweep(270);
         this.mGauge.setRecognizePathTouch(true);
-        this.mGauge.setPathTouchThreshold(100);
+        this.mGauge.setPathTouchThreshold(size);
 
         ScCopier base = this.mGauge.getBase();
-        base.setWidths(100);
-        base.setColors(Color.YELLOW, Color.MAGENTA, Color.YELLOW);
-        base.setColorsMode(ScFeature.ColorsMode.GRADIENT);
+        base.setWidths(size);
+        base.setColors(Color.WHITE);
         base.getPainter().setStrokeCap(Paint.Cap.ROUND);
 
         ScCopier progress = this.mGauge.getProgress();
-        progress.setWidths(100);
+        progress.setWidths(size);
         progress.setColors(Color.RED);
         progress.getPainter().setStrokeCap(Paint.Cap.ROUND);
+
+        ScPointer pointer = this.mGauge.getHighPointer();
+        pointer.setVisible(true);
+        pointer.setWidths(size * 2);
+        pointer.setHeights(size * 2, size * 4);
+        pointer.setColors(Color.RED);
     }
 
 }

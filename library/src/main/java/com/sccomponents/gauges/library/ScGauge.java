@@ -492,6 +492,7 @@ public abstract class ScGauge extends ScDrawer
         this.mHighPointer = (ScPointer) this.addFeature(ScPointer.class);
         this.mHighPointer.setTag(ScGauge.HIGH_POINTER_IDENTIFIER);
         this.mHighPointer.setOnPropertyChangedListener(this);
+        this.mHighPointer.setVisible(false);
         this.applyAttributesToPointer(attrArray, this.mHighPointer);
 
         this.mLowPointer = (ScPointer) this.addFeature(ScPointer.class);
@@ -691,8 +692,8 @@ public abstract class ScGauge extends ScDrawer
             if (!current.getVisible()) continue;
 
             // Find the distance from the current pointer and the pressed point
-            float normalDistance = Math.abs(percentage - current.getValue());
-            float inverseDistance = Math.abs(100 - percentage + current.getValue());
+            float normalDistance = Math.abs(percentage - current.getDistance());
+            float inverseDistance = Math.abs(100 - percentage + current.getDistance());
 
             // Check in the normal way
             if (normalDistance < nearestValue) {
@@ -727,7 +728,7 @@ public abstract class ScGauge extends ScDrawer
             if (!current.getVisible()) continue;
 
             // Transform a distance of the current pointer from percentage to pixel
-            float percentage = current.getValue();
+            float percentage = current.getDistance();
             float currentDistance = ScGauge
                     .percentageToValue(percentage, 0, this.mPathMeasure.getLength());
 
@@ -781,7 +782,7 @@ public abstract class ScGauge extends ScDrawer
 
         // If here mean that the pointer is untagged.
         // I will move the pointer to the new position but I will not change no values.
-        pointer.setValue(value);
+        pointer.setDistance(value);
         this.invalidate();
     }
 
@@ -938,11 +939,11 @@ public abstract class ScGauge extends ScDrawer
             // Select
             switch (pointer.getTag()) {
                 case ScGauge.HIGH_POINTER_IDENTIFIER:
-                    casted.setValue(this.mHighValueAnimated);
+                    casted.setDistance(this.mHighValueAnimated);
                     break;
 
                 case ScGauge.LOW_POINTER_IDENTIFIER:
-                    casted.setValue(this.mLowValueAnimated);
+                    casted.setDistance(this.mLowValueAnimated);
                     break;
             }
         }
