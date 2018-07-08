@@ -3,12 +3,13 @@ package com.sccomponents.gauges.library;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.Xfermode;
 
 /**
  * Create a custom drawn copy of a given path.
@@ -32,8 +33,7 @@ public class ScCopier extends ScFeature {
     private Canvas mGenericCanvas;
 
     private float[] mFirstPoint;
-    private float[] mSecondPoint;
-    private float[] mThirdPoint;
+    private RectF mRectangle;
 
 
     // ***************************************************************************************
@@ -52,13 +52,26 @@ public class ScCopier extends ScFeature {
         this.mGenericCanvas = new Canvas();
 
         this.mFirstPoint = new float[2];
-        this.mSecondPoint = new float[2];
-        this.mThirdPoint = new float[2];
+        this.mRectangle = new RectF();
     }
 
 
     // ***************************************************************************************
     // Private methods
+
+    /**
+     * Get the point on the path given the distance from the start and apply the offset
+     * by the line position respect to the path.
+     */
+    private void getFixedPoint(float distance, float[] point, boolean isReturn) {
+        // Holders
+        float halfWidth = this.getWidth(distance) / 2;
+        int multiplier = isReturn ? 1: -1;
+
+        // Get the center and calc the rectangle area
+        float angle = this.getPointAndAngle(distance, point);
+        this.movePoint(point, halfWidth, angle + 90 * multiplier);
+    }
 
     /**
      * Move a point considering an angle
@@ -81,54 +94,21 @@ public class ScCopier extends ScFeature {
                               float startDistance, float endDistance) {
         // Holders
         float distance = isReturn ? startDistance : endDistance;
-        float angle = this.getAngle(distance) + (isReturn ? 180 : 0);
-        float halfWidth = this.getWidth(distance) / 2;
+        float multiplier = isReturn ? 1 : -1;
+        float radius = this.getWidth(distance) / 2;
 
-        // Get the points
-        this.calcPoint(this.mFirstPoint, distance, isReturn);
-        this.calcPoint(this.mSecondPoint, distance, !isReturn);
-        this.clonePoint(mSecondPoint, this.mThirdPoint);
-
-        this.movePoint(this.mFirstPoint, halfWidth, angle);
-        this.movePoint(this.mSecondPoint, halfWidth, angle);
-
-        // Draw
-        source.quadTo(
-                this.mFirstPoint[0],
-                this.mFirstPoint[1],
-                (this.mSecondPoint[0] + this.mFirstPoint[0]) / 2,
-                (this.mSecondPoint[1] + this.mFirstPoint[1]) / 2
+        // Get the center point and calc the rectangle area
+        float angle = this.getPointAndAngle(distance, this.mFirstPoint);
+        this.mRectangle.set(
+                this.mFirstPoint[0] - radius,
+                this.mFirstPoint[1] - radius,
+                this.mFirstPoint[0] + radius,
+                this.mFirstPoint[1] + radius
         );
-        source.quadTo(
-                this.mSecondPoint[0], this.mSecondPoint[1],
-                this.mThirdPoint[0], this.mThirdPoint[1]
-        );
-    }
 
-    /**
-     * Calculate the point on path considering the direction and the position respect the path.
-     * @param distance from path start
-     * @param isReturn the direction
-     */
-    private void calcPoint(float[] point, float distance, boolean isReturn) {
-        // Adjust the point
-        float halfWidth = this.getWidth(distance) / 2;
-        float toMove = 0.0f;
-
-        switch (this.getPosition()) {
-            case INSIDE:
-                toMove = (isReturn ? 2 : 0) * halfWidth;
-                break;
-            case MIDDLE:
-                toMove = (isReturn ? -1 : 1) * halfWidth;
-                break;
-            case OUTSIDE:
-                toMove = -(isReturn ? 2 : 0) * halfWidth;
-                break;
-        }
-
-        float angle = this.getPointAndAngle(distance, point);
-        this.movePoint(point, toMove, angle + 90);
+        // Draw the arc
+        angle += 90 * multiplier;
+        source.arcTo(this.mRectangle, angle, 180);
     }
 
     /**
@@ -146,15 +126,20 @@ public class ScCopier extends ScFeature {
         float fixedStart = startFrom < endTo ? startFrom : endTo;
         float fixedEnd = endTo > startFrom ? endTo : startFrom;
 
-        // Adjust the limits
-        switch (this.getEdges()) {
-            case INSIDE:
-                fixedStart += this.getWidth(fixedStart) / 2;
-                fixedEnd -= this.getWidth(fixedEnd) / 2;
-                break;
-            case MIDDLE:
-                fixedStart += this.getWidth(fixedStart) / 4;
-                fixedEnd -= this.getWidth(fixedEnd) / 4;
+        // If rounded must fix the limits
+        boolean isRounded = this.getPainter().getStrokeCap() == Paint.Cap.ROUND;
+        if (isRounded) {
+            // Get the start and end point dimension
+            float startWidth = this.getWidth(fixedStart) / 2;
+            float endWidth = this.getWidth(fixedEnd) / 2;
+
+            // Fix it
+            fixedStart += startWidth + 2;
+            fixedEnd -= endWidth - 2;
+
+            // The distance must be enough to draw something.
+            if (fixedStart > fixedEnd)
+                fixedEnd = fixedStart;
         }
 
         // Clone the source path adjusting the y position
@@ -162,7 +147,7 @@ public class ScCopier extends ScFeature {
             // Fix the distance as the return way check is different and
             // calculate the right point position on the path.
             float fixedDistance = isReturn ? startFrom - distance : distance;
-            this.calcPoint(this.mFirstPoint, fixedDistance, isReturn);
+            this.getFixedPoint(fixedDistance, this.mFirstPoint, isReturn);
 
             // Check if empty
             if (path.isEmpty())
@@ -174,9 +159,10 @@ public class ScCopier extends ScFeature {
         }
 
         // Conjunction with arc
-        boolean isRounded = this.getPainter().getStrokeCap() == Paint.Cap.ROUND;
-        if (isRounded)
+        if (isRounded) {
+            // Draw the arc
             this.addArcToPath(path, isReturn, fixedStart, fixedEnd);
+        }
     }
 
     /**
@@ -184,12 +170,14 @@ public class ScCopier extends ScFeature {
      * @return the area
      */
     private Path coverDrawingArea() {
-        // Holders
-        this.mAreaPath.reset();
-
-        // Get the start and end
+        // Find the effective limits
         float startFrom = this.getStartAtDistance();
         float endTo = this.getEndToDistance();
+
+        // Get the widths
+        // Holders
+        this.mAreaPath.reset();
+        this.mAreaPath.incReserve((int)(endTo - startFrom));
 
         // Create the path area
         if (startFrom != endTo) {
@@ -198,7 +186,29 @@ public class ScCopier extends ScFeature {
         }
 
         // Return the path
-        return mAreaPath;
+        this.mAreaPath.close();
+        return this.mAreaPath;
+    }
+
+    /**
+     * Get the current ratio respect at the current color sector.
+     * @param distance the distance from the path start
+     * @param length the path length
+     * @return the color ratio
+     */
+    private float getCurrentColorRatio(float distance, float length) {
+        // Check for empty values
+        if (distance == 0 || length == 0)
+            return 0;
+
+        // Holders
+        int colorsCount = this.getColors().length;
+        float sectorLength = length / (float) colorsCount;
+        int position = (int)(distance / sectorLength);
+
+        // Return the calculated ratio
+        float sectorDistance = distance - sectorLength * position;
+        return sectorDistance / sectorLength;
     }
 
     /**
@@ -226,6 +236,7 @@ public class ScCopier extends ScFeature {
         for (float distance = 0; distance < length; distance++) {
             // Get and check the width for empty values
             float width = this.getWidth(distance);
+            float halfWidth = width / 2;
             if (width <= 0)
                 continue;
 
@@ -237,21 +248,6 @@ public class ScCopier extends ScFeature {
             painter.setColor(color);
             painter.setStrokeWidth(width);
 
-            // Adjust the point
-            float halfWidth = width / 2;
-            float adjustX = this.mFirstPoint[0] + halfWidth;
-            float adjustY = this.mFirstPoint[1];
-
-            // Adjust the y
-            switch (this.getPosition()) {
-                case INSIDE:
-                    adjustY = this.mFirstPoint[1] + halfWidth;
-                    break;
-                case OUTSIDE:
-                    adjustY = this.mFirstPoint[1] - halfWidth;
-                    break;
-            }
-
             // If the round stroke is not settled the point have a square shape.
             // This can create a visual issue when the path follow a curve.
             // To avoid this issue the point (square) will be rotate of the tangent angle
@@ -259,15 +255,12 @@ public class ScCopier extends ScFeature {
             canvas.save();
             canvas.rotate(angle, this.mFirstPoint[0], this.mFirstPoint[1]);
 
-            // if is first
-            if (distance == 0)
-                // Draw a point in front of the path
-                canvas.drawPoint(adjustX - halfWidth * 2 + 1, adjustY, painter);
+            // Adjust the x position
+            float x = this.mFirstPoint[0] + halfWidth;
+            float adjust = (width - 1) * this.getCurrentColorRatio(distance, length);
 
-            // Draw the common point
-            canvas.drawPoint(adjustX, adjustY, painter);
-
-            // Restore the canvas status as previous
+            // Draw the common point and restore the canvas status as previous
+            canvas.drawPoint(x - adjust, this.mFirstPoint[1], painter);
             canvas.restore();
         }
 
@@ -303,14 +296,50 @@ public class ScCopier extends ScFeature {
     // Overrides
 
     /**
+     * Find the point and the angle and adjust it to be at center of the line considering
+     * the line position respect the origin.
+     * @param distance the point distance from path start
+     * @param point    the array where will save the point coordinates
+     * @return the angle
+     */
+    @Override
+    public float getPointAndAngle(float distance, float[] point) {
+        // Base method
+        float angle = super.getPointAndAngle(distance, point);
+
+        // Adjust the y considering the point width
+        float halfWidth = this.getWidth(distance) / 2;
+        switch (this.getPosition()) {
+            case INSIDE:
+                movePoint(point, halfWidth, angle + 90);
+                break;
+            case OUTSIDE:
+                movePoint(point, halfWidth, angle + 270);
+                break;
+        }
+
+        // Return the angle
+        return angle;
+    }
+
+    /**
+     * Find the point and adjust it to be at center of the line considering
+     * the line position respect the origin.
+     * @param distance the point distance from path start
+     * @param point    the array where will save the point coordinates
+     */
+    @Override
+    public void getPoint(float distance, float[] point) {
+        this.getPointAndAngle(distance, point);
+    }
+
+    /**
      * Set the path
      * @param value the painter
      */
     @Override
     public void setPath(Path value) {
         super.setPath(value);
-
-        this.setEdges(this.getMeasure().isClosed() ? Positions.INSIDE: Positions.OUTSIDE);
         this.onPropertyChange("edge", value);
     }
 

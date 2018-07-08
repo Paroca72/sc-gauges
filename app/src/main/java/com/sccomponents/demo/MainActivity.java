@@ -27,29 +27,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int size = 30;
+        int size = 60;
 
         this.mGauge = this.findViewById(R.id.gauge);
-        this.mGauge.setAngleStart(-225);
-        this.mGauge.setAngleSweep(270);
+        //this.mGauge.setAngleStart(-225);
+        this.mGauge.setAngleSweep(360);
         this.mGauge.setRecognizePathTouch(true);
         this.mGauge.setPathTouchThreshold(size);
 
         ScCopier base = this.mGauge.getBase();
         base.setWidths(size);
-        base.setColors(Color.WHITE);
-        base.getPainter().setStrokeCap(Paint.Cap.ROUND);
+        base.setColors(Color.WHITE, Color.WHITE);
+        //base.setVisible(false);
+        //base.getPainter().setStrokeCap(Paint.Cap.ROUND);
+        base.setPosition(ScFeature.Positions.OUTSIDE);
 
         ScCopier progress = this.mGauge.getProgress();
         progress.setWidths(size);
-        progress.setColors(Color.RED);
+        progress.setColors(Color.YELLOW, Color.MAGENTA);
+        //progress.setColorsMode(ScFeature.ColorsMode.SOLID);
         progress.getPainter().setStrokeCap(Paint.Cap.ROUND);
-
-        ScPointer pointer = this.mGauge.getHighPointer();
-        pointer.setVisible(true);
-        pointer.setWidths(size * 2);
-        pointer.setHeights(size * 2, size * 4);
-        pointer.setColors(Color.RED);
+        progress.setPosition(ScFeature.Positions.OUTSIDE);
     }
 
 }

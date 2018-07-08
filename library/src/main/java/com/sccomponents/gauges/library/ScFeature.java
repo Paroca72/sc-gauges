@@ -88,7 +88,6 @@ public abstract class ScFeature {
     private int[] mColors;
     private float[] mWidths;
     private Positions mPosition;
-    private Positions mEdges;
     private ColorsMode mColorsMode;
     private WidthsMode mWidthsMode;
     private boolean mConsiderContours;
@@ -122,7 +121,6 @@ public abstract class ScFeature {
         this.mColorsMode = ColorsMode.GRADIENT;
         this.mWidthsMode = WidthsMode.SMOOTH;
         this.mPosition = Positions.MIDDLE;
-        this.mEdges = Positions.MIDDLE;
         this.mContourInfo = new ContourInfo();
 
         this.mVisible = true;
@@ -484,7 +482,6 @@ public abstract class ScFeature {
             destination.setWidths(this.mWidths.clone());
 
         destination.setPosition(this.mPosition);
-        destination.setEdges(this.mEdges);
         destination.setColorsMode(this.mColorsMode);
         destination.setWidthsMode(this.mWidthsMode);
         destination.setConsiderContours(this.mConsiderContours);
@@ -863,26 +860,6 @@ public abstract class ScFeature {
         return this.mEndPercentage;
     }
 
-
-    /**
-     * Set the edges type.
-     * Can be: INSIDE, MIDDLE and OUTSIDE.
-     * @param value the edges type
-     */
-    @SuppressWarnings("unused")
-    public void setEdges(Positions value) {
-        if (this.mEdges != value) {
-            this.mEdges = value;
-            this.onPropertyChange("edges", value);
-        }
-    }
-
-    /**
-     * Get the edges type.
-     * @return the edges type
-     */
-    @SuppressWarnings("unused")
-    public Positions getEdges() { return this.mEdges; }
 
     /**
      * If false consider the whole path and call onDraw just one time.

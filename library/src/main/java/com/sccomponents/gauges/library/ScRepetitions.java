@@ -27,6 +27,7 @@ public abstract class ScRepetitions extends ScFeature {
     private float mRepetitionOffset;
     private boolean mLastRepetitionOnPathEnd;
     private RepetitionInfo mRepetitionInfo;
+    private Positions mEdges;
 
     // Listener
     private OnDrawRepetitionListener mOnDrawListener;
@@ -47,6 +48,7 @@ public abstract class ScRepetitions extends ScFeature {
         this.mPositions = new float[]{};
         this.mRepetitionOffset = 0;
         this.mLastRepetitionOnPathEnd = true;
+        this.mEdges = Positions.MIDDLE;
 
         // Generic
         this.mRepetitionInfo = new RepetitionInfo();
@@ -299,6 +301,7 @@ public abstract class ScRepetitions extends ScFeature {
         destination.setRepetitions(this.mRepetitions);
         destination.setSpaceBetweenRepetitions(this.mSpaceBetween);
         destination.setRepetitionOffset(this.mRepetitionOffset);
+        destination.setEdges(this.mEdges);
     }
 
     /**
@@ -318,6 +321,27 @@ public abstract class ScRepetitions extends ScFeature {
 
     // ***************************************************************************************
     // Getter and setter
+
+    /**
+     * Set the edges type.
+     * Can be: INSIDE, MIDDLE and OUTSIDE.
+     * @param value the edges type
+     */
+    @SuppressWarnings("unused")
+    public void setEdges(Positions value) {
+        if (this.mEdges != value) {
+            this.mEdges = value;
+            this.onPropertyChange("edges", value);
+        }
+    }
+
+    /**
+     * Get the edges type.
+     * @return the edges type
+     */
+    @SuppressWarnings("unused")
+    public Positions getEdges() { return this.mEdges; }
+
 
     /**
      * Set the repetitions count.
