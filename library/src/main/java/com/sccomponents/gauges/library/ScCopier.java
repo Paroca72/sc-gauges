@@ -134,8 +134,8 @@ public class ScCopier extends ScFeature {
             float endWidth = this.getWidth(fixedEnd) / 2;
 
             // Fix it
-            fixedStart += startWidth + 2;
-            fixedEnd -= endWidth - 2;
+            fixedStart += startWidth;
+            fixedEnd -= endWidth;
 
             // The distance must be enough to draw something.
             if (fixedStart > fixedEnd)
@@ -208,7 +208,7 @@ public class ScCopier extends ScFeature {
 
         // Return the calculated ratio
         float sectorDistance = distance - sectorLength * position;
-        return sectorDistance / sectorLength;
+        return sectorDistance == 0 ? 1.0f: sectorDistance / sectorLength;
     }
 
     /**
@@ -233,7 +233,7 @@ public class ScCopier extends ScFeature {
         float length = this.getMeasure().getLength();
 
         // Cycle all points of the path
-        for (float distance = 0; distance < length; distance++) {
+        for (float distance = 0; distance <= length; distance++) {
             // Get and check the width for empty values
             float width = this.getWidth(distance);
             float halfWidth = width / 2;
@@ -257,7 +257,8 @@ public class ScCopier extends ScFeature {
 
             // Adjust the x position
             float x = this.mFirstPoint[0] + halfWidth;
-            float adjust = (width - 1) * this.getCurrentColorRatio(distance, length);
+            float sectorRatio = this.getCurrentColorRatio(distance, length);
+            float adjust = (width - 2) * sectorRatio + 2;
 
             // Draw the common point and restore the canvas status as previous
             canvas.drawPoint(x - adjust, this.mFirstPoint[1], painter);

@@ -27,27 +27,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int size = 60;
+        int size = 120;
 
         this.mGauge = this.findViewById(R.id.gauge);
-        //this.mGauge.setAngleStart(-225);
+        this.mGauge.setAngleStart(-225);
         this.mGauge.setAngleSweep(360);
         this.mGauge.setRecognizePathTouch(true);
         this.mGauge.setPathTouchThreshold(size);
 
         ScCopier base = this.mGauge.getBase();
-        base.setWidths(size);
-        base.setColors(Color.WHITE, Color.WHITE);
+        base.setWidths(size / 2, size);
+        base.setWidthsMode(ScFeature.WidthsMode.ROUGH);
+        base.setColors(Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE);
         //base.setVisible(false);
-        //base.getPainter().setStrokeCap(Paint.Cap.ROUND);
-        base.setPosition(ScFeature.Positions.OUTSIDE);
+        base.getPainter().setStrokeCap(Paint.Cap.ROUND);
+        base.setPosition(ScFeature.Positions.MIDDLE);
 
         ScCopier progress = this.mGauge.getProgress();
-        progress.setWidths(size);
-        progress.setColors(Color.YELLOW, Color.MAGENTA);
-        //progress.setColorsMode(ScFeature.ColorsMode.SOLID);
+        progress.setWidths(size / 2, size);
+        progress.setWidthsMode(ScFeature.WidthsMode.ROUGH);
+        progress.setColors(Color.RED, Color.BLACK);
+        progress.setColorsMode(ScFeature.ColorsMode.SOLID);
         progress.getPainter().setStrokeCap(Paint.Cap.ROUND);
-        progress.setPosition(ScFeature.Positions.OUTSIDE);
+        progress.setPosition(ScFeature.Positions.MIDDLE);
     }
 
 }

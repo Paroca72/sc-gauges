@@ -7,11 +7,11 @@
     android:gravity="center_vertical|center_horizontal">
 
     <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#333333">
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#333333">
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
@@ -19,13 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="40dp" />
-
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="360"
-            android:progress="180" />
 
     </FrameLayout>
 
