@@ -3,13 +3,14 @@ package com.sccomponents.gauges.library;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
+
+import java.util.Arrays;
 
 /**
  * Create a custom drawn copy of a given path.
@@ -34,6 +35,7 @@ public class ScCopier extends ScFeature {
 
     private float[] mFirstPoint;
     private RectF mRectangle;
+    private BitmapShader mShader;
 
 
     // ***************************************************************************************
@@ -174,10 +176,8 @@ public class ScCopier extends ScFeature {
         float startFrom = this.getStartAtDistance();
         float endTo = this.getEndToDistance();
 
-        // Get the widths
-        // Holders
+        // Reset the old path
         this.mAreaPath.reset();
-        this.mAreaPath.incReserve((int)(endTo - startFrom));
 
         // Create the path area
         if (startFrom != endTo) {
@@ -276,13 +276,15 @@ public class ScCopier extends ScFeature {
     @SuppressWarnings("all")
     private void drawCopy(Canvas canvas, ContourInfo info) {
         // Check if needs to redraw the bitmap
-        Bitmap bitmap = this.createBitmap(canvas.getWidth(), canvas.getHeight());
-        BitmapShader shader = new BitmapShader(
-                bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        if (this.mShader == null) {
+            Bitmap bitmap = this.createBitmap(canvas.getWidth(), canvas.getHeight());
+            this.mShader = new BitmapShader(
+                    bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        }
 
         // Create a paint clone and set the shader
         Paint clone = new Paint(this.getPainter());
-        clone.setShader(shader);
+        clone.setShader(this.mShader);
 
         // Check the area path
         if (this.mAreaPath.isEmpty() || this.getConsiderContours())
@@ -341,7 +343,7 @@ public class ScCopier extends ScFeature {
     @Override
     public void setPath(Path value) {
         super.setPath(value);
-        this.onPropertyChange("edge", value);
+        this.onPropertyChange("path", value);
     }
 
     /**
@@ -374,7 +376,20 @@ public class ScCopier extends ScFeature {
      */
     @Override
     protected void onPropertyChange(String name, Object value) {
-        if (this.mAreaPath != null) this.mAreaPath.reset();
+        // Consider to redraw the shader
+        String[] properties = new String[] {
+                "path", "paint", "colors", "colorsMode", "considerContours",
+                "position", "widths", "widthsMode"
+        };
+        boolean contains = Arrays.asList(properties).contains(name);
+        if (contains)
+            this.mShader = null;
+
+        // Rebuild the path
+        if (this.mAreaPath != null)
+            this.mAreaPath.reset();
+
+        // Super
         super.onPropertyChange(name, value);
     }
 
