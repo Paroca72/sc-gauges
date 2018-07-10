@@ -400,6 +400,7 @@ public class ScCopier extends ScFeature {
     @SuppressWarnings("unused")
     public void refresh() {
         if (this.mAreaPath != null) this.mAreaPath.reset();
+        this.mShader = null;
         super.refresh();
     }
 
