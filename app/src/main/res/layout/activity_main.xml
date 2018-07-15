@@ -10,15 +10,15 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="#333333">
+    android:layout_gravity="center">
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
             android:layout_width="300dp"
+            android:padding="40dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="40dp" />
+            android:background="#333"
+            android:layout_gravity="center_horizontal" />
 
     </FrameLayout>
 

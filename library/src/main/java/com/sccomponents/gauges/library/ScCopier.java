@@ -34,6 +34,7 @@ public class ScCopier extends ScFeature {
     private Canvas mGenericCanvas;
 
     private float[] mFirstPoint;
+    private float[] mSecondPoint;
     private RectF mRectangle;
     private BitmapShader mShader;
 
@@ -50,11 +51,19 @@ public class ScCopier extends ScFeature {
         this.getPainter().setStyle(Paint.Style.FILL);
 
         this.mAreaPath = new Path();
-        this.mGenericPaint = new Paint();
         this.mGenericCanvas = new Canvas();
 
         this.mFirstPoint = new float[2];
+        this.mSecondPoint = new float[2];
         this.mRectangle = new RectF();
+
+        // Painter
+        this.mGenericPaint = new Paint();
+        this.mGenericPaint.set(this.getPainter());
+        this.mGenericPaint.setStyle(Paint.Style.FILL);
+        this.mGenericPaint.setStrokeCap(Paint.Cap.SQUARE);
+        this.mGenericPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+        this.mGenericPaint.setStrokeWidth(2);
     }
 
 
@@ -191,27 +200,6 @@ public class ScCopier extends ScFeature {
     }
 
     /**
-     * Get the current ratio respect at the current color sector.
-     * @param distance the distance from the path start
-     * @param length the path length
-     * @return the color ratio
-     */
-    private float getCurrentColorRatio(float distance, float length) {
-        // Check for empty values
-        if (distance == 0 || length == 0)
-            return 0;
-
-        // Holders
-        int colorsCount = this.getColors().length;
-        float sectorLength = length / (float) colorsCount;
-        int position = (int)(distance / sectorLength);
-
-        // Return the calculated ratio
-        float sectorDistance = distance - sectorLength * position;
-        return sectorDistance == 0 ? 1.0f: sectorDistance / sectorLength;
-    }
-
-    /**
      * Create a colored bitmap following the path.
      * @param canvasWidth  the width
      * @param canvasHeight the height
@@ -223,46 +211,28 @@ public class ScCopier extends ScFeature {
         Canvas canvas = this.mGenericCanvas;
         canvas.setBitmap(bitmap);
 
-        // Set a clone of the original painter
-        Paint painter = this.mGenericPaint;
-        painter.set(this.getPainter());
-        painter.setStrokeCap(Paint.Cap.SQUARE);
-        painter.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-
-        // Fix the start and end
-        float length = this.getMeasure().getLength();
-
         // Cycle all points of the path
+        float length = this.getMeasure().getLength();
         for (float distance = 0; distance <= length; distance++) {
-            // Get and check the width for empty values
-            float width = this.getWidth(distance);
-            float halfWidth = width / 2;
-            if (width <= 0)
-                continue;
-
             // Get the point and the angle
             float angle = this.getPointAndAngle(distance, this.mFirstPoint);
+            float halfWidth = this.getWidth(distance) / 2;
+
+            // Set the current painter color
             int color = this.getGradientColor(distance);
-
-            // Set the current painter
-            painter.setColor(color);
-            painter.setStrokeWidth(width);
-
-            // If the round stroke is not settled the point have a square shape.
-            // This can create a visual issue when the path follow a curve.
-            // To avoid this issue the point (square) will be rotate of the tangent angle
-            // before to write it on the canvas.
-            canvas.save();
-            canvas.rotate(angle, this.mFirstPoint[0], this.mFirstPoint[1]);
+            this.mGenericPaint.setColor(color);
 
             // Adjust the x position
-            float x = this.mFirstPoint[0] + halfWidth;
-            float sectorRatio = this.getCurrentColorRatio(distance, length);
-            float adjust = (width - 2) * sectorRatio + 2;
+            this.clonePoint(this.mFirstPoint, this.mSecondPoint);
+            this.movePoint(this.mSecondPoint, halfWidth, angle - 90);
+            this.movePoint(this.mFirstPoint, halfWidth, angle + 90);
 
-            // Draw the common point and restore the canvas status as previous
-            canvas.drawPoint(x - adjust, this.mFirstPoint[1], painter);
-            canvas.restore();
+            // Draw a line between the points
+            canvas.drawLine(
+                    this.mFirstPoint[0], this.mFirstPoint[1],
+                    this.mSecondPoint[0], this.mSecondPoint[1],
+                    this.mGenericPaint
+            );
         }
 
         // Return the new bitmap
