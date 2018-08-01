@@ -103,6 +103,7 @@ public abstract class ScDrawer extends ScBase {
     private boolean mRecognizePathTouch;
     private float mPathTouchThreshold;
     private boolean mPathIsTouched;
+    private boolean mDoubleBuffering;
 
     private OnPathTouchListener mOnPathTouchListener;
 
@@ -199,6 +200,7 @@ public abstract class ScDrawer extends ScBase {
         this.mPathMeasure = new ScPathMeasure();
         this.mCopyPath = new Path();
         this.mMatrix = new Matrix();
+        this.mDoubleBuffering = true;
     }
 
     /**
@@ -340,6 +342,7 @@ public abstract class ScDrawer extends ScBase {
                 // Check for empty value
                 if (feature != null) {
                     //Call the draw methods.
+                    feature.setDoubleBuffering(this.mDoubleBuffering);
                     feature.applyMatrixToCanvas(matrix);
                     feature.draw(canvas);
                 }
@@ -557,6 +560,7 @@ public abstract class ScDrawer extends ScBase {
         state.putInt("mFillingArea", this.mFillingArea.ordinal());
         state.putInt("mFillingMode", this.mFillingMode.ordinal());
         state.putBoolean("mRecognizePathTouch", this.mRecognizePathTouch);
+        state.putBoolean("mDoubleBuffering", this.mDoubleBuffering);
         state.putFloat("mPathTouchThreshold", this.mPathTouchThreshold);
 
         // Return the new state
@@ -583,6 +587,7 @@ public abstract class ScDrawer extends ScBase {
         this.mFillingArea = FillingArea.values()[savedState.getInt("mFillingArea")];
         this.mFillingMode = FillingMode.values()[savedState.getInt("mFillingMode")];
         this.mRecognizePathTouch = savedState.getBoolean("mRecognizePathTouch");
+        this.mDoubleBuffering = savedState.getBoolean("mDoubleBuffering");
         this.mPathTouchThreshold = savedState.getFloat("mPathTouchThreshold");
     }
 
@@ -612,6 +617,7 @@ public abstract class ScDrawer extends ScBase {
      * @param threshold the threshold
      * @return          the distance from the path start
      */
+    @SuppressWarnings("unused")
     protected float getDistance(float x, float y, float threshold) {
         return this.mPathMeasure.getDistance(x, y, threshold);
     }
@@ -621,6 +627,7 @@ public abstract class ScDrawer extends ScBase {
      * Through this property can be access to the path object and some extra function.
      * @return the path measure object
      */
+    @SuppressWarnings("unused")
     public ScPathMeasure getPathMeasure() {
         return this.mPathMeasure;
     }
@@ -952,6 +959,40 @@ public abstract class ScDrawer extends ScBase {
     @SuppressWarnings("unused")
     public int getMaximumWidth() {
         return this.mMaximumWidth;
+    }
+
+
+    /**
+     * Set the double buffering status.
+     * <p>
+     * If true the feature will store a bitmap of the draw for increase the performance.
+     * This bitmap will lost if some feature properties will change or calling the refresh method.
+     * <p>
+     * This could be very expensive in term of memory when are using many drawer in the same
+     * activity. In these kind of cases its recommended to disable the double buffering.
+     * @param value the status
+     */
+    @SuppressWarnings("unused")
+    public void setDoubleBuffering(boolean value) {
+        if (this.mDoubleBuffering != value) {
+            this.mDoubleBuffering = value;
+            this.invalidate();
+        }
+    }
+
+    /**
+     * Get the double buffering status.
+     * <p>
+     * If true the feature will store a bitmap of the draw for increase the performance.
+     * This bitmap will lost if some feature properties will change or calling the refresh method.
+     * <p>
+     * This could be very expensive in term of memory when are using many drawer in the same
+     * activity. In these kind of cases its recommended to disable the double buffering.
+     * @return the status
+     */
+    @SuppressWarnings("unused")
+    public boolean getDoubleBuffering() {
+        return this.mDoubleBuffering;
     }
 
 

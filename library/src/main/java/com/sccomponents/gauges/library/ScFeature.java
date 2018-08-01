@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.util.Log;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -98,9 +99,10 @@ public abstract class ScFeature {
     private boolean mIsDrawing;
     private ContourInfo mContourInfo;
     private int mFloatComparisonPrecision;
-    private boolean mNeedToRedraw;
     private Bitmap mBuffer;
+    private Canvas mCanvas;
     private Matrix mMatrix;
+    private boolean mDoubleBuffering;
 
     // Listeners
     private OnDrawContourListener mOnDrawListener;
@@ -135,8 +137,9 @@ public abstract class ScFeature {
         this.mContoursMeasurer = null;
 
         this.mFloatComparisonPrecision = DEFAULT_PRECISION;
-        this.mNeedToRedraw = true;
         this.mBuffer = null;
+        this.mCanvas = new Canvas();
+        this.mDoubleBuffering = true;
 
         // Create the painter
         this.mPaint = new Paint();
@@ -378,14 +381,29 @@ public abstract class ScFeature {
     }
 
     /**
+     * Free the double buffering bitmap memory and all the related objects.
+     */
+    @SuppressWarnings("unused")
+    protected void freeBitmapMemory() {
+        // Free memory
+        if (this.mCanvas != null)
+            this.mCanvas.setBitmap(null);
+
+        if (this.mBuffer != null)
+            this.mBuffer.recycle();
+
+        this.mBuffer = null;
+    }
+
+    /**
      * Proxy for call the property change event
      * @param name  the property name
      * @param value the property value
      * @hide
      */
     protected void onPropertyChange(String name, Object value) {
-        // Force redraw
-        this.mNeedToRedraw = true;
+        // Need to redraw the bitmap
+        this.freeBitmapMemory();
 
         // Listener
         if (this.mOnPropertyChangedListener != null)
@@ -458,6 +476,24 @@ public abstract class ScFeature {
             measurer.getSegment(startDistance, endDistance, path, true);
     }
 
+    /**
+     * Try to allocate a bitmap
+     */
+    @SuppressWarnings("unused")
+    private Bitmap createBitmap(Canvas canvas) {
+        try {
+            return Bitmap.createBitmap(
+                canvas.getWidth(),
+                canvas.getHeight(),
+                Bitmap.Config.ARGB_8888
+            );
+
+        } catch (Exception ex) {
+            Log.d("ScFeature", "createBitmap: no memory");
+            return null;
+        }
+    }
+
 
     // ***************************************************************************************
     // Public and static methods
@@ -512,15 +548,21 @@ public abstract class ScFeature {
         this.mIsDrawing = true;
 
         // Redraw only if request
-        if (this.mNeedToRedraw) {
-            // Define the bitmap canvas
-            this.mBuffer = Bitmap.createBitmap(
-                    canvas.getWidth(),
-                    canvas.getHeight(),
-                    Bitmap.Config.ARGB_8888
-            );
-            Canvas desk = new Canvas(this.mBuffer);
-            desk.setMatrix(this.mMatrix);
+        if (this.mBuffer == null) {
+            // Try to create the bitmap for double buffering
+            if (this.mDoubleBuffering)
+                this.mBuffer = this.createBitmap(canvas);
+
+            // Define the bitmap canvas if able to use double buffering
+            if (this.mBuffer != null)
+                this.mCanvas.setBitmap(this.mBuffer);
+            else
+                // Is impossible to use the double buffering so will write
+                // directly on the master canvas.
+                this.mCanvas = canvas;
+
+            // Apply the matrix
+            this.mCanvas.setMatrix(this.mMatrix);
 
             // If the have only one color inside the colors array set it directly on the painter
             if (this.mColors != null && this.mColors.length == 1)
@@ -530,15 +572,15 @@ public abstract class ScFeature {
             this.mPathMeasure.setPath(this.mPath, false);
             Path[] contours = this.mConsiderContours ?
                     this.mPathMeasure.getPaths() : new Path[]{this.mPath};
-            this.drawContours(desk, contours);
+            this.drawContours(this.mCanvas, contours);
         }
 
-        // Apply
-        canvas.drawBitmap(this.mBuffer, 0, 0, null);
+        // Draw the buffer on the canvas only if exists
+        if (this.mBuffer != null)
+            canvas.drawBitmap(this.mBuffer, 0, 0, null);
 
         // Not drawing
         this.mIsDrawing = false;
-        this.mNeedToRedraw = false;
     }
 
     /**
@@ -546,8 +588,9 @@ public abstract class ScFeature {
      */
     @SuppressWarnings("unused")
     public void refresh() {
+        // Force redraw
+        this.freeBitmapMemory();
         this.mContoursMeasurer = null;
-        this.mNeedToRedraw = true;
     }
 
     /**
@@ -745,6 +788,40 @@ public abstract class ScFeature {
     @SuppressWarnings("unused")
     public String getTag() {
         return this.mTag;
+    }
+
+
+    /**
+     * Set the double buffering status.
+     * <p>
+     * If true the feature will store a bitmap of the draw for increase the performance.
+     * This bitmap will lost if some feature properties will change or calling the refresh method.
+     * <p>
+     * This could be very expensive in term of memory when are using many drawer in the same
+     * activity. In these kind of cases its recommended to disable the double buffering.
+     * @param value the status
+     */
+    @SuppressWarnings("unused")
+    public void setDoubleBuffering(boolean value) {
+        if (this.mDoubleBuffering != value) {
+            this.mDoubleBuffering = value;
+            this.onPropertyChange("doubleBuffering", value);
+        }
+    }
+
+    /**
+     * Get the double buffering status.
+     * <p>
+     * If true the feature will store a bitmap of the draw for increase the performance.
+     * This bitmap will lost if some feature properties will change or calling the refresh method.
+     * <p>
+     * This could be very expensive in term of memory when are using many drawer in the same
+     * activity. In these kind of cases its recommended to disable the double buffering.
+     * @return the status
+     */
+    @SuppressWarnings("unused")
+    public boolean getDoubleBuffering() {
+        return this.mDoubleBuffering;
     }
 
 
