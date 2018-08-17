@@ -30,7 +30,7 @@ import java.util.Arrays;
  * Also many method (eg: getPointAndAngle) will related to the current contour (and not the
  * global path) when called inside the drawing period.
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  */
 public abstract class ScFeature {
@@ -87,10 +87,8 @@ public abstract class ScFeature {
     private String mTag;
     private Paint mPaint;
     private int[] mColors;
-    private float[] mWidths;
     private Positions mPosition;
     private ColorsMode mColorsMode;
-    private WidthsMode mWidthsMode;
     private boolean mConsiderContours;
     private boolean mVisible;
     private float mStartPercentage;
@@ -121,7 +119,6 @@ public abstract class ScFeature {
     public ScFeature() {
         // Init
         this.mColorsMode = ColorsMode.GRADIENT;
-        this.mWidthsMode = WidthsMode.SMOOTH;
         this.mPosition = Positions.MIDDLE;
         this.mContourInfo = new ContourInfo();
 
@@ -206,6 +203,7 @@ public abstract class ScFeature {
      * @param b second
      * @return  true is equals
      */
+    @SuppressWarnings("all")
     protected boolean equals(String a, String b) {
         if (a == null) return b == null;
         return a.equals(b);
@@ -325,6 +323,27 @@ public abstract class ScFeature {
             int sector = (int) (values.length * ratio);
             return values[sector];
         }
+    }
+
+    /**
+     * Given an array of strings calculate the right value by a ratio.
+     * @param values        the source
+     * @param ratio         the ratio
+     * @return              the value
+     */
+    protected String getString(String[] values, float ratio) {
+        // Check
+        if (values == null)
+            return null;
+
+        if (ratio <= 0 || values.length == 1)
+            return values[0];
+        if (ratio >= 1)
+            return values[values.length - 1];
+
+        // Rough value
+        int sector = (int) (values.length * ratio);
+        return values[sector];
     }
 
     /**
@@ -514,12 +533,9 @@ public abstract class ScFeature {
 
         if (this.mColors != null)
             destination.setColors(this.mColors.clone());
-        if (this.mWidths != null)
-            destination.setWidths(this.mWidths.clone());
 
         destination.setPosition(this.mPosition);
         destination.setColorsMode(this.mColorsMode);
-        destination.setWidthsMode(this.mWidthsMode);
         destination.setConsiderContours(this.mConsiderContours);
         destination.setVisible(this.mVisible);
         destination.setStartAt(this.mStartPercentage);
@@ -675,35 +691,6 @@ public abstract class ScFeature {
     @SuppressWarnings("unused")
     public int getGradientColor(float distance) {
         return this.getGradientColor(distance, this.getMeasure().getLength());
-    }
-
-    /**
-     * Get the current width dependently from the distance from the starting of path and the
-     * widths array. If the widths are not defined will be returned the current width of painter.
-     * @param distance from the path start
-     * @param length   force the height of the path
-     * @return the width
-     */
-    @SuppressWarnings("unused")
-    public float getWidth(float distance, float length) {
-        return this.getValue(
-                this.mWidths,
-                distance / length,
-                this.mWidthsMode == WidthsMode.SMOOTH,
-                0.0f
-        );
-    }
-
-    /**
-     * Get the current gradient color dependently from the distance from the starting of path,
-     * the colors array and the mode to draw. If the colors are not defined will be returned
-     * the current color of painter.
-     * @param distance from the path start
-     * @return the color
-     */
-    @SuppressWarnings("unused")
-    public float getWidth(float distance) {
-        return this.getWidth(distance, this.getMeasure().getLength());
     }
 
     /**
@@ -985,50 +972,6 @@ public abstract class ScFeature {
         return this.mPosition;
     }
 
-
-    /**
-     * Set the current stroke widths
-     * @param values the new stroke widths
-     */
-    @SuppressWarnings("unused")
-    public void setWidths(float... values) {
-        if (!Arrays.equals(this.mWidths, values)) {
-            this.mWidths = values;
-            this.onPropertyChange("widths", values);
-        }
-    }
-
-    /**
-     * Get the current stroke widths
-     * @return the current stroke widths
-     */
-    @SuppressWarnings("unused")
-    public float[] getWidths() {
-        return this.mWidths;
-    }
-
-
-    /**
-     * Set the widths filling mode.
-     * You can have two way for manage the width of the path: SMOOTH or ROUGH.
-     * @param value the new width filling mode
-     */
-    @SuppressWarnings("unused")
-    public void setWidthsMode(WidthsMode value) {
-        if (this.mWidthsMode != value) {
-            this.mWidthsMode = value;
-            this.onPropertyChange("widthsMode", value);
-        }
-    }
-
-    /**
-     * Get the widths filling mode.
-     * @return the width filling mode
-     */
-    @SuppressWarnings("unused")
-    public WidthsMode getWidthsMode() {
-        return this.mWidthsMode;
-    }
 
     /**
      * Set the float comparison precision.

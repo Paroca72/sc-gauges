@@ -7,7 +7,7 @@ import android.graphics.Paint;
  * Draw a pointer on the path at certain distance from the path start.
 
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  */
 public class ScPointer extends ScNotches {

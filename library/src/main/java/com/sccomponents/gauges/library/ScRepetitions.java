@@ -13,7 +13,7 @@ import java.util.List;
  * This class extends the ScFeature give to it the possibility to manage the repetitions.
  *
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  */
 public abstract class ScRepetitions extends ScFeature {
@@ -485,7 +485,6 @@ public abstract class ScRepetitions extends ScFeature {
         public float distance;
         public float angle;
         public float tangent;
-        public float width;
         public int color;
         public ScFeature.Positions position;
         private boolean isVisible;
@@ -526,7 +525,6 @@ public abstract class ScRepetitions extends ScFeature {
             this.source = feature;
             this.repetition = repetition;
             this.distance = distance;
-            this.width = feature.getWidth(distance);
             this.tangent = tangent;
             this.angle = 0.0f;
             this.position = feature.getPosition();

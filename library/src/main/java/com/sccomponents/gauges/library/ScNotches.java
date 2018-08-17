@@ -16,7 +16,7 @@ import java.util.Arrays;
  * All the notch are customizable before drawing it using the proper event.
  *
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-30
  */
 public class ScNotches extends ScRepetitions {
@@ -50,8 +50,11 @@ public class ScNotches extends ScRepetitions {
     // ***************************************************************************************
     // Private and protected variables
 
+    private float[] mWidths;
+    private WidthsMode mWidthsMode;
     private float[] mHeights;
     private HeightsMode mHeightsMode;
+
     private NotchTypes mType;
     private Bitmap mBitmap;
 
@@ -70,8 +73,11 @@ public class ScNotches extends ScRepetitions {
         super();
 
         // Init
+        this.mWidths = new float[]{0.0f};
+        this.mWidthsMode = WidthsMode.SMOOTH;
         this.mHeights = new float[]{0.0f};
         this.mHeightsMode = HeightsMode.SMOOTH;
+
         this.mType = NotchTypes.LINE;
         this.mRepetitionInfo = new NotchInfo();
 
@@ -300,10 +306,58 @@ public class ScNotches extends ScRepetitions {
     // Public Methods
 
     /**
-     * Get the notches height given a distance from the path start.
-     * @param distance  the distance
-     * @return          the height
+     * Get the current width dependently from the distance from the starting of path and the
+     * widths array. If the widths are not defined will be returned the current width of painter.
+     * @param distance from the path start
+     * @param length force the length of the path
+     * @return the width
      */
+    @SuppressWarnings("unused")
+    public float getWidth(float distance, float length) {
+        return this.getValue(
+                this.mWidths,
+                distance / length,
+                this.mWidthsMode == WidthsMode.SMOOTH,
+                0.0f
+        );
+    }
+
+    /**
+     * Get the current width dependently from the distance from the starting of path,
+     * the colors array and the mode to draw. If the width are not defined will be returned
+     * the current width of painter.
+     * @param distance from the path start
+     * @return the color
+     */
+    @SuppressWarnings("unused")
+    public float getWidth(float distance) {
+        return this.getWidth(distance, this.getMeasure().getLength());
+    }
+
+    /**
+     * Get the current height dependently from the distance from the starting of path and the
+     * widths array. If the height are not defined will be returned the current height of painter.
+     * @param distance the distance
+     * @param length force the length of the path
+     * @return the height
+     */
+    @SuppressWarnings("unused")
+    public float getHeight(float distance, float length) {
+        return this.getValue(
+                this.mHeights,
+                distance / this.getMeasure().getLength(),
+                this.mHeightsMode == HeightsMode.SMOOTH,
+                0.0f
+        );
+    }
+
+    /**
+     * Get the current height dependently from the distance from the starting of path and the
+     * widths array. If the height are not defined will be returned the current height of painter.
+     * @param distance the distance
+     * @return the height
+     */
+    @SuppressWarnings("unused")
     public float getHeight(float distance) {
         return this.getValue(
                 this.mHeights,
@@ -323,9 +377,12 @@ public class ScNotches extends ScRepetitions {
         super.copy(destination);
 
         // This object
+        if (this.mWidths != null)
+            destination.setWidths(this.mWidths.clone());
         if (this.mHeights != null)
             destination.setHeights(this.mHeights.clone());
 
+        destination.setWidthsMode(this.mWidthsMode);
         destination.setHeightsMode(this.mHeightsMode);
         destination.setType(this.mType);
         destination.setBitmap(this.mBitmap);
@@ -389,6 +446,51 @@ public class ScNotches extends ScRepetitions {
     @Deprecated
     public float getCount() {
         return this.getRepetitions();
+    }
+
+
+    /**
+     * Set the current stroke widths
+     * @param values the new stroke widths
+     */
+    @SuppressWarnings("unused")
+    public void setWidths(float... values) {
+        if (!Arrays.equals(this.mWidths, values)) {
+            this.mWidths = values;
+            this.onPropertyChange("widths", values);
+        }
+    }
+
+    /**
+     * Get the current stroke widths
+     * @return the current stroke widths
+     */
+    @SuppressWarnings("unused")
+    public float[] getWidths() {
+        return this.mWidths;
+    }
+
+
+    /**
+     * Set the widths filling mode.
+     * You can have two way for manage the width of the path: SMOOTH or ROUGH.
+     * @param value the new width filling mode
+     */
+    @SuppressWarnings("unused")
+    public void setWidthsMode(WidthsMode value) {
+        if (this.mWidthsMode != value) {
+            this.mWidthsMode = value;
+            this.onPropertyChange("widthsMode", value);
+        }
+    }
+
+    /**
+     * Get the widths filling mode.
+     * @return the width filling mode
+     */
+    @SuppressWarnings("unused")
+    public WidthsMode getWidthsMode() {
+        return this.mWidthsMode;
     }
 
 
@@ -471,6 +573,7 @@ public class ScNotches extends ScRepetitions {
         // Properties
 
         public ScNotches source;
+        public float width;
         public float height;
         public NotchTypes type;
         public Bitmap bitmap;
@@ -491,6 +594,7 @@ public class ScNotches extends ScRepetitions {
 
             // Reset
             this.source = feature;
+            this.width = feature.getWidth(this.distance);
             this.height = feature.getHeight(this.distance);
             this.type = feature.mType;
             this.bitmap = feature.getBitmap();

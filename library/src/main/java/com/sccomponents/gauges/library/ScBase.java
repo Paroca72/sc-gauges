@@ -15,7 +15,7 @@ import android.view.WindowManager;
  * This is a simpler collection of methods used from the inherited classes as utility.
  *
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  */
 public abstract class ScBase extends View {

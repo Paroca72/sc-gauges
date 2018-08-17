@@ -13,7 +13,7 @@ import java.util.List;
  * totality.
  *
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  */
 public class ScPathMeasure extends PathMeasure {

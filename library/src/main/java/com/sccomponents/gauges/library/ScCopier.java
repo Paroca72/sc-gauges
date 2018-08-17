@@ -21,13 +21,16 @@ import java.util.Arrays;
  * the global application performance.
  *
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  */
 public class ScCopier extends ScFeature {
 
     // ***************************************************************************************
     // Private and protected variables
+
+    private float[] mWidths;
+    private WidthsMode mWidthsMode;
 
     private Path mAreaPath;
     private Paint mGenericPaint;
@@ -50,9 +53,11 @@ public class ScCopier extends ScFeature {
         // Init
         this.getPainter().setStyle(Paint.Style.FILL);
 
+        this.mWidths = new float[]{0.0f};
+        this.mWidthsMode = WidthsMode.SMOOTH;
+
         this.mAreaPath = new Path();
         this.mGenericCanvas = new Canvas();
-
         this.mFirstPoint = new float[2];
         this.mSecondPoint = new float[2];
         this.mRectangle = new RectF();
@@ -266,6 +271,87 @@ public class ScCopier extends ScFeature {
 
 
     // ***************************************************************************************
+    // Public
+
+    /**
+     * Get the current width dependently from the distance from the starting of path and the
+     * widths array. If the widths are not defined will be returned the current width of painter.
+     * @param distance from the path start
+     * @param length force the length of the path
+     * @return the width
+     */
+    @SuppressWarnings("unused")
+    public float getWidth(float distance, float length) {
+        return this.getValue(
+                this.mWidths,
+                distance / length,
+                this.mWidthsMode == WidthsMode.SMOOTH,
+                0.0f
+        );
+    }
+
+    /**
+     * Get the current width dependently from the distance from the starting of path,
+     * the colors array and the mode to draw. If the width are not defined will be returned
+     * the current width of painter.
+     * @param distance from the path start
+     * @return the color
+     */
+    @SuppressWarnings("unused")
+    public float getWidth(float distance) {
+        return this.getWidth(distance, this.getMeasure().getLength());
+    }
+
+
+    // ***************************************************************************************
+    // Public properties
+
+    /**
+     * Set the current stroke widths
+     * @param values the new stroke widths
+     */
+    @SuppressWarnings("unused")
+    public void setWidths(float... values) {
+        if (!Arrays.equals(this.mWidths, values)) {
+            this.mWidths = values;
+            this.onPropertyChange("widths", values);
+        }
+    }
+
+    /**
+     * Get the current stroke widths
+     * @return the current stroke widths
+     */
+    @SuppressWarnings("unused")
+    public float[] getWidths() {
+        return this.mWidths;
+    }
+
+
+    /**
+     * Set the widths filling mode.
+     * You can have two way for manage the width of the path: SMOOTH or ROUGH.
+     * @param value the new width filling mode
+     */
+    @SuppressWarnings("unused")
+    public void setWidthsMode(WidthsMode value) {
+        if (this.mWidthsMode != value) {
+            this.mWidthsMode = value;
+            this.onPropertyChange("widthsMode", value);
+        }
+    }
+
+    /**
+     * Get the widths filling mode.
+     * @return the width filling mode
+     */
+    @SuppressWarnings("unused")
+    public WidthsMode getWidthsMode() {
+        return this.mWidthsMode;
+    }
+
+
+    // ***************************************************************************************
     // Overrides
 
     /**
@@ -335,6 +421,12 @@ public class ScCopier extends ScFeature {
     public void copy(ScCopier destination) {
         // Super
         super.copy(destination);
+
+        // This object
+        if (this.mWidths != null)
+            destination.setWidths(this.mWidths.clone());
+
+        destination.setWidthsMode(this.mWidthsMode);
     }
 
     /**

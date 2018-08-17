@@ -138,12 +138,6 @@
             <enum name="solid" value="0" />
             <enum name="gradient" value="1" />
         </attr>
-        <attr name="sccTextWidth" format="dimension" />
-        <attr name="sccTextWidths" format="string" />
-        <attr name="sccTextWidthsMode" format="enum">
-            <enum name="rough" value="0" />
-            <enum name="smooth" value="1" />
-        </attr>
         <attr name="sccTextPosition" format="enum">
             <enum name="inside" value="0" />
             <enum name="middle" value="1" />
@@ -155,7 +149,29 @@
             <enum name="right" value="2" />
         </attr>
         <attr name="sccTextBending" format="boolean" />
-        <attr name="sccTextRoundedCap" format="boolean" />
+
+        <!-- LABEL -->
+        <attr name="sccLabelText" format="string" />
+        <attr name="sccLabelColor" format="color" />
+        <attr name="sccLabelColors" format="string" />
+        <attr name="sccLabelColorsMode" format="enum">
+            <enum name="solid" value="0" />
+            <enum name="gradient" value="1" />
+        </attr>
+        <attr name="sccLabelPosition" format="enum">
+            <enum name="inside" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="outside" value="2" />
+        </attr>
+        <attr name="sccLabelAlign" format="enum">
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+        <attr name="sccLabelBending" format="boolean" />
+        <attr name="sccLabelFormat" format="string" />
+        <attr name="sccLabelLinked" format="boolean" />
+        <attr name="sccLabelUnderlined" format="boolean" />
 
     </declare-styleable>
 

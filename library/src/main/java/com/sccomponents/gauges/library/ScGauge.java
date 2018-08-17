@@ -85,17 +85,22 @@ import java.util.List;
  * <li>textColor: color - {@link ScWriter#setColors(int...)}</li>
  * <li>textColors: string - example of 3 colors, #0000ff|#00ff00|#ff0000</li>
  * <li>textColorsMode: enum - {@link ScWriter#setColorsMode(ScFeature.ColorsMode)}</li>
- * <li>textWidth: float - {@link ScWriter#setWidths(float...)}</li>
- * <li>textWidths: string - example of 3 widths in Dip, 10|20|10</li>
- * <li>textWidthsMode: enum - {@link ScWriter#setWidthsMode(ScFeature.WidthsMode)}</li>
  * <li>textPosition: enum {@link ScWriter#setPosition(ScFeature.Positions)}</li>
  * <li>textAlign: enum</li>
  * <li>textBending: boolean {@link ScWriter#setBending(boolean)}</li>
- * <li>textRoundedCap: boolean</li>
+ *
+ * <li>labelTokens: string - example, 1|2|3|4 {@link ScLabeler#setTokens(String...)}</li>
+ * <li>labelColor: color - {@link ScLabeler#setColors(int...)}</li>
+ * <li>labelColors: string - example of 3 colors, #0000ff|#00ff00|#ff0000</li>
+ * <li>labelColorsMode: enum - {@link ScLabeler#setColorsMode(ScFeature.ColorsMode)}</li>
+ * <li>labelPosition: enum {@link ScLabeler#setPosition(ScFeature.Positions)}</li>
+ * <li>labelAlign: enum</li>
+ * <li>labelBending: boolean {@link ScLabeler#setBending(boolean)}</li>
+ * <li>labelFormat: String {@link ScLabeler#setFormat(String)}</li>
  * </p>
  *
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  * -----------------------------------------------------------------------------------------------
  */
@@ -122,6 +127,8 @@ public abstract class ScGauge extends ScDrawer
     public static final String HIGH_POINTER_IDENTIFIER = "ScGauge_Pointer_High";
     /** Tag identifier of this feature */
     public static final String LOW_POINTER_IDENTIFIER = "ScGauge_Pointer_Low";
+    /** Tag identifier of this feature */
+    public static final String LABELER_IDENTIFIER = "ScGauge_Labeler";
 
 
     // ***************************************************************************************
@@ -149,6 +156,7 @@ public abstract class ScGauge extends ScDrawer
     private ScWriter mWriter;
     private ScPointer mHighPointer;
     private ScPointer mLowPointer;
+    private ScLabeler mLabeler;
 
 
     // ***************************************************************************************
@@ -228,7 +236,7 @@ public abstract class ScGauge extends ScDrawer
     private int getAttributeId(String prefix, String name) {
         // Holders
         Field[] allFields = R.styleable.class.getFields();
-        String resourceName = "ScGauge_" + prefix + name;
+        String resourceName = "ScGauge_scc" + prefix + name;
 
         // Cycle all styleable resource fields
         for (Field field : allFields) {
@@ -247,38 +255,12 @@ public abstract class ScGauge extends ScDrawer
     }
 
     /**
-     * Apply the default attributes to a generic feature
+     * Retrieve a color array from the attributes
      * @param attrArray the attribute array
-     * @param feature   the destination feature
      * @param prefix    the attribute prefix
+     * @return          the values
      */
-    private void applyDefaultAttribute(TypedArray attrArray, ScFeature feature, String prefix) {
-        // Find the width
-        float[] widths = this
-                .splitToWidths(attrArray.getString(this.getAttributeId(prefix, "Widths")));
-        if (widths == null) {
-            float width = attrArray.getDimension(
-                    this.getAttributeId(prefix, "Width"),
-                    0.0f
-            );
-
-            if (width != 0.0)
-                widths = new float[] { width };
-            else {
-                if (feature.getWidths() == null)
-                    widths = new float[] { ScGauge.DEFAULT_STROKE_SIZE };
-                else
-                    widths = feature.getWidths();
-            }
-        }
-
-        ScFeature.WidthsMode widthMode = ScFeature.WidthsMode.values()[
-            attrArray.getInt(
-                    this.getAttributeId(prefix, "WidthsMode"),
-                    ScFeature.WidthsMode.SMOOTH.ordinal()
-            )
-        ];
-
+    private int[] getColorsAttributes(TypedArray attrArray, String prefix) {
         // Find the colors
         int[] colors = this
                 .splitToColors(attrArray.getString(this.getAttributeId(prefix, "Colors")));
@@ -287,15 +269,46 @@ public abstract class ScGauge extends ScDrawer
                     this.getAttributeId(prefix, "Color"),
                     ScGauge.DEFAULT_STROKE_COLOR
             );
+            return color != 0.0 ? new int[] { color }: null;
+        } else
+            return null;
+    }
 
-            if (color != 0.0)
-                colors = new int[] { color };
-            else {
-                if (feature.getColors() == null)
-                    colors = new int[] { ScGauge.DEFAULT_STROKE_COLOR };
-                else
-                    colors = feature.getColors();
-            }
+    /**
+     * Retrieve a float array from an attributes name
+     * @param attrArray the attribute array
+     * @param prefix    the attribute prefix
+     * @param name      the name of the attribute
+     * @return          the values
+     */
+    private float[] getFloatsAttributes(TypedArray attrArray, String prefix, String name) {
+        float[] results = this
+                .splitToWidths(attrArray.getString(this.getAttributeId(prefix, name)));
+        if (results == null) {
+            String shortName = prefix.substring(0, name.length() - 1);
+            float value = attrArray.getDimension(
+                    this.getAttributeId(prefix, shortName),
+                    0.0f
+            );
+            return value != 0.0 ? new float[] { value }: null;
+        } else
+            return results;
+    }
+
+    /**
+     * Apply the default attributes to a generic feature
+     * @param attrArray the attribute array
+     * @param feature   the destination feature
+     * @param prefix    the attribute prefix
+     */
+    private void applyDefaultAttribute(TypedArray attrArray, ScFeature feature, String prefix) {
+        // Find the colors
+        int[] colors = this.getColorsAttributes(attrArray, prefix);
+        if (colors == null) {
+            if (feature.getColors() == null)
+                colors = new int[] { ScGauge.DEFAULT_STROKE_COLOR };
+            else
+                colors = feature.getColors();
         }
 
         ScFeature.ColorsMode colorsMode = ScFeature.ColorsMode.values()[
@@ -311,6 +324,38 @@ public abstract class ScGauge extends ScDrawer
             index = feature.getPosition().ordinal();
         ScFeature.Positions position = ScFeature.Positions.values()[index];
 
+        // Apply
+        feature.setColors(colors);
+        feature.setColorsMode(colorsMode);
+        feature.setPosition(position);
+    }
+
+    /**
+     * Apply the default attributes to a copier feature
+     * @param attrArray the attribute array
+     * @param feature   the destination feature
+     * @param prefix    the attribute prefix
+     */
+    private void applyAttributeToCopier(TypedArray attrArray, ScCopier feature, String prefix) {
+        // Get the default
+        this.applyDefaultAttribute(attrArray, feature, prefix);
+
+        // Find the width
+        float[] widths = this.getFloatsAttributes(attrArray, prefix, "Widths");
+        if (widths == null) {
+            if (feature.getWidths() == null)
+                widths = new float[] { ScGauge.DEFAULT_STROKE_SIZE };
+            else
+                widths = feature.getWidths();
+        }
+
+        ScFeature.WidthsMode widthMode = ScFeature.WidthsMode.values()[
+            attrArray.getInt(
+                    this.getAttributeId(prefix, "WidthsMode"),
+                    ScFeature.WidthsMode.SMOOTH.ordinal()
+            )
+        ];
+
         // Rounded cap
         boolean roundedCap =
                 attrArray.getBoolean(this.getAttributeId(prefix, "RoundedCap"), false);
@@ -320,18 +365,16 @@ public abstract class ScGauge extends ScDrawer
         // Apply
         feature.setWidths(widths);
         feature.setWidthsMode(widthMode);
-        feature.setColors(colors);
-        feature.setColorsMode(colorsMode);
-        feature.setPosition(position);
     }
 
     /**
-     * Apply the attributes to the base feature.
+      * Apply the attributes to the base feature.
      * @param attrArray the attributes array
      * @param feature   the feature
      */
+    @SuppressWarnings("")
     private void applyAttributesToBase(TypedArray attrArray, ScCopier feature) {
-        this.applyDefaultAttribute(attrArray, feature, "stroke");
+        this.applyAttributeToCopier(attrArray, feature, "Stroke");
     }
 
     /**
@@ -340,41 +383,66 @@ public abstract class ScGauge extends ScDrawer
      * @param feature   the feature
      */
     private void applyAttributesToProgress(TypedArray attrArray, ScCopier feature) {
-        this.applyDefaultAttribute(attrArray, feature, "progress");
+        this.applyAttributeToCopier(attrArray, feature, "Progress");
     }
 
     /**
      * Apply the attributes to the notches feature.
      * @param attrArray the attributes array
      * @param feature   the feature
+     * @param prefix    the attribute prefix
      */
-    private void applyAttributesToNotches(TypedArray attrArray, ScNotches feature) {
+    private void applyAttributesToNotches(TypedArray attrArray, ScNotches feature, String prefix) {
         // Apply the default attributes
-        this.applyDefaultAttribute(attrArray, feature, "notches");
+        this.applyDefaultAttribute(attrArray, feature, prefix);
 
         // Get the notches count
         int count = attrArray.getInt(
-                this.getAttributeId("", "notches"), 0);
-        feature.setRepetitions(count);
+                this.getAttributeId("", prefix), 0);
+
+        // Find the width
+        float[] widths = this.getFloatsAttributes(attrArray, prefix, "Widths");
+        if (widths == null) {
+            if (feature.getWidths() == null)
+                widths = new float[] { ScGauge.DEFAULT_STROKE_SIZE };
+            else
+                widths = feature.getWidths();
+        }
+
+        ScFeature.WidthsMode widthMode = ScFeature.WidthsMode.values()[
+            attrArray.getInt(
+                    this.getAttributeId(prefix, "WidthsMode"),
+                    ScFeature.WidthsMode.SMOOTH.ordinal()
+            )
+        ];
 
         // Find the height
-        float[] heights = this
-                .splitToWidths(attrArray.getString(R.styleable.ScGauge_sccNotchesHeights));
+        float[] heights = this.getFloatsAttributes(attrArray, prefix, "Heights");
         if (heights == null) {
-            float length = attrArray.getDimension(
-                    R.styleable.ScGauge_sccNotchesHeight,
-                    this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE)
-            );
-            heights = new float[] { length };
+            if (feature.getHeights() == null)
+                heights = new float[] { ScGauge.DEFAULT_STROKE_SIZE };
+            else
+                heights = feature.getHeights();
         }
-        feature.setHeights(heights);
 
         ScNotches.HeightsMode heightsMode = ScNotches.HeightsMode.values()[
             attrArray.getInt(
-                    R.styleable.ScGauge_sccNotchesHeightsMode,
+                    this.getAttributeId(prefix, "HeightsMode"),
                     ScNotches.HeightsMode.SMOOTH.ordinal()
             )
         ];
+
+        // Rounded cap
+        boolean roundedCap =
+                attrArray.getBoolean(this.getAttributeId(prefix, "RoundedCap"), false);
+        if (roundedCap)
+            feature.getPainter().setStrokeCap(Paint.Cap.ROUND);
+
+        // Apply
+        feature.setRepetitions(count);
+        feature.setWidths(widths);
+        feature.setWidthsMode(widthMode);
+        feature.setHeights(heights);
         feature.setHeightsMode(heightsMode);
     }
 
@@ -382,25 +450,28 @@ public abstract class ScGauge extends ScDrawer
      * Apply the attributes to the text writer feature.
      * @param attrArray the attributes array
      * @param feature   the feature
+     * @param prefix    the attribute prefix
      */
-    private void applyAttributesToWriter(TypedArray attrArray, ScWriter feature) {
+    private void applyAttributesToWriter(TypedArray attrArray, ScWriter feature, String prefix) {
         // Apply the default attributes
-        this.applyDefaultAttribute(attrArray, feature, "text");
+        this.applyDefaultAttribute(attrArray, feature, prefix);
 
         // Get tokens
         String stringTokens = attrArray
-                .getString(R.styleable.ScGauge_sccTextTokens);
-        String[] tokens = stringTokens != null ? stringTokens.split("\\|") : null;
+                .getString(this.getAttributeId(prefix, "Tokens"));
+        String[] tokens = stringTokens != null ?
+                stringTokens.split("\\|") : feature.getTokens();
 
         // Get the text alignment
+        Paint.Align align = feature.getPainter().getTextAlign();
         Paint.Align textAlign = Paint.Align.values()[
             attrArray.getInt(
-                    R.styleable.ScGauge_sccTextAlign, Paint.Align.LEFT.ordinal())
+                    this.getAttributeId(prefix, "Align"), align.ordinal())
         ];
 
         // Bending
         boolean bending = attrArray.getBoolean(
-                R.styleable.ScGauge_sccTextBending, false);
+                this.getAttributeId(prefix, "Bending"), feature.getBending());
 
         // Assign
         feature.setTokens(tokens);
@@ -415,41 +486,42 @@ public abstract class ScGauge extends ScDrawer
      */
     private void applyAttributesToPointer(TypedArray attrArray, ScPointer feature) {
         // Apply the default attributes
-        this.applyDefaultAttribute(attrArray, feature, "pointer");
-
-        // Find the height
-        float[] heights = this
-                .splitToWidths(attrArray.getString(R.styleable.ScGauge_sccNotchesHeights));
-        if (heights == null) {
-            float length = attrArray.getDimension(
-                    R.styleable.ScGauge_sccNotchesHeight,
-                    this.dipToPixel(ScGauge.DEFAULT_STROKE_SIZE)
-            );
-            heights = new float[] { length };
-        }
-
-        ScNotches.HeightsMode heightsMode = ScNotches.HeightsMode.values()[
-                attrArray.getInt(
-                        R.styleable.ScGauge_sccNotchesHeightsMode,
-                        ScNotches.HeightsMode.SMOOTH.ordinal()
-                )
-                ];
+        String prefix = "Pointer";
+        this.applyAttributesToNotches(attrArray, feature, prefix);
 
         // Halo
         float haloWidth= attrArray.getDimension(
-                R.styleable.ScGauge_sccPointerHaloSize,
+                this.getAttributeId(prefix, "HaloSize"),
                 this.dipToPixel(ScGauge.DEFAULT_HALO_SIZE)
         );
         int haloAlpha = attrArray.getInt(
-                R.styleable.ScGauge_sccPointerHaloAlpha,
+                this.getAttributeId(prefix, "HaloAlpha"),
                 ScGauge.DEFAULT_HALO_ALPHA
         );
 
         // Assign
         feature.setHaloWidth(haloWidth);
         feature.setHaloAlpha(haloAlpha);
-        feature.setHeights(heights);
-        feature.setHeightsMode(heightsMode);
+    }
+
+    /**
+     * Apply the attributes to the label writer feature.
+     * @param attrArray the attributes array
+     * @param feature   the feature
+     */
+    private void applyAttributesToLabeler(TypedArray attrArray, ScLabeler feature) {
+        // Apply the default attributes
+        String prefix = "Label";
+        this.applyAttributesToWriter(attrArray, feature, prefix);
+
+        // Other
+        String format = attrArray.getString(this.getAttributeId(prefix, "Format"));
+        boolean linked = attrArray.getBoolean(
+                this.getAttributeId(prefix, "Linked"), feature.getLinkedToProgress());
+
+        // Assign
+        feature.setFormat(format);
+        feature.setLinkedToProgress(linked);
     }
 
     /**
@@ -477,7 +549,7 @@ public abstract class ScGauge extends ScDrawer
         this.mNotches = (ScNotches) this.addFeature(ScNotches.class);
         this.mNotches.setTag(ScGauge.NOTCHES_IDENTIFIER);
         this.mNotches.setOnPropertyChangedListener(this);
-        this.applyAttributesToNotches(attrArray, this.mNotches);
+        this.applyAttributesToNotches(attrArray, this.mNotches, "Notches");
 
         this.mProgress = (ScCopier) this.addFeature(ScCopier.class);
         this.mProgress.setTag(ScGauge.PROGRESS_IDENTIFIER);
@@ -487,7 +559,7 @@ public abstract class ScGauge extends ScDrawer
         this.mWriter = (ScWriter) this.addFeature(ScWriter.class);
         this.mWriter.setTag(ScGauge.WRITER_IDENTIFIER);
         this.mWriter.setOnPropertyChangedListener(this);
-        this.applyAttributesToWriter(attrArray, this.mWriter);
+        this.applyAttributesToWriter(attrArray, this.mWriter, "Text");
 
         this.mHighPointer = (ScPointer) this.addFeature(ScPointer.class);
         this.mHighPointer.setTag(ScGauge.HIGH_POINTER_IDENTIFIER);
@@ -500,11 +572,15 @@ public abstract class ScGauge extends ScDrawer
         this.mLowPointer.setVisible(false);
         this.mLowPointer.setOnPropertyChangedListener(this);
 
+        this.mLabeler = (ScLabeler) this.addFeature(ScLabeler.class);
+        this.mLabeler.setTag(ScGauge.LABELER_IDENTIFIER);
+        this.mLabeler.setVisible(false);
+        this.mLabeler.setOnPropertyChangedListener(this);
+        this.applyAttributesToLabeler(attrArray, this.mLabeler);
+
         // Common
-        this.mHighValue = attrArray.getFloat(
-                R.styleable.ScGauge_sccValue, 0.0f);
-        this.mLowValue = attrArray.getFloat(
-                R.styleable.ScGauge_sccLowValue, 0.0f);
+        this.mHighValue = attrArray.getFloat(R.styleable.ScGauge_sccValue, 0.0f);
+        this.mLowValue = attrArray.getFloat(R.styleable.ScGauge_sccLowValue, 0.0f);
 
         if (this.mHighValue == 0.0f)
             this.mHighValue = attrArray.getFloat(
@@ -620,27 +696,6 @@ public abstract class ScGauge extends ScDrawer
 
         // return
         return widths;
-    }
-
-    /**
-     * Find the value percentage respect range of values.
-     * @param value         the value
-     * @param startRange    the start range value
-     * @param endRange      the end range value
-     * @return              the percentage
-     */
-    private float findPercentage(float value, float startRange, float endRange) {
-        // Limit the value within the range
-        value = ScGauge.valueRangeLimit(value, startRange, endRange);
-        // Check the domain
-        if (endRange - startRange == 0.0f) {
-            // Return zero
-            return 0.0f;
-
-        } else {
-            // return the calculated percentage
-            return ((value - startRange) / (endRange - startRange)) * 100.0f;
-        }
     }
 
     /**
@@ -948,6 +1003,16 @@ public abstract class ScGauge extends ScDrawer
             }
         }
 
+        // Set the connected labeler features properties
+        List<ScFeature> labelers = this.findFeatures(ScLabeler.class, null);
+        for (ScFeature labeler : labelers) {
+            // Cast to right class
+            ScLabeler casted = (ScLabeler) labeler;
+            // Set the distance only if this labeler still linked with the progress
+            if (casted.getLinkedToProgress())
+                casted.setDistance(this.mHighValueAnimated);
+        }
+
         // Call the base drawing method
         super.onDraw(canvas);
     }
@@ -993,7 +1058,7 @@ public abstract class ScGauge extends ScDrawer
     @Override
     protected void onPathTouch(float distance) {
         // Select the nearest pointer and set the value
-        float percentage = this.findPercentage(distance, 0, this.mPathMeasure.getLength());
+        float percentage = ScGauge.valueToPercentage(distance, 0, this.mPathMeasure.getLength());
         this.mSelectedPointer = null;
 
         if (this.mPointerSelectMode == PointerSelectMode.NEAREST)
@@ -1025,7 +1090,7 @@ public abstract class ScGauge extends ScDrawer
     @Override
     protected void onPathSlide(float distance) {
         // Move the pointer and the value
-        float percentage = this.findPercentage(distance, 0, this.mPathMeasure.getLength());
+        float percentage = ScGauge.valueToPercentage(distance, 0, this.mPathMeasure.getLength());
         this.setValueByPointer(percentage, this.mSelectedPointer);
 
         // Super
@@ -1076,6 +1141,27 @@ public abstract class ScGauge extends ScDrawer
 
         // Return the value
         return (delta * (percentage / 100)) + min;
+    }
+
+    /**
+     * Find the percentage respect a range of values.
+     * @param value         the value
+     * @param startRange    the start range value
+     * @param endRange      the end range value
+     * @return              the percentage
+     */
+    public static float valueToPercentage(float value, float startRange, float endRange) {
+        // Limit the value within the range
+        value = ScGauge.valueRangeLimit(value, startRange, endRange);
+        // Check the domain
+        if (endRange - startRange == 0.0f) {
+            // Return zero
+            return 0.0f;
+
+        } else {
+            // return the calculated percentage
+            return ((value - startRange) / (endRange - startRange)) * 100.0f;
+        }
     }
 
     /**
@@ -1132,6 +1218,15 @@ public abstract class ScGauge extends ScDrawer
         return this.mLowPointer;
     }
 
+    /**
+     * Get the labeler feature.
+     * @return the feature
+     */
+    @SuppressWarnings("unused")
+    public ScLabeler getLabeler() {
+        return this.mLabeler;
+    }
+
 
     // ***************************************************************************************
     // Public properties
@@ -1165,7 +1260,7 @@ public abstract class ScGauge extends ScDrawer
     @SuppressWarnings("unused")
     public void setHighValue(float value, float startRange, float endRange) {
         // Find the relative percentage
-        float percentage = this.findPercentage(value, startRange, endRange);
+        float percentage = ScGauge.valueToPercentage(value, startRange, endRange);
         // Call the base method
         this.setHighValue(percentage);
     }
@@ -1211,7 +1306,7 @@ public abstract class ScGauge extends ScDrawer
     @SuppressWarnings("unused")
     public void setLowValue(float value, float startRange, float endRange) {
         // Find the relative percentage
-        float percentage = this.findPercentage(value, startRange, endRange);
+        float percentage = ScGauge.valueToPercentage(value, startRange, endRange);
         // Call the base method
         this.setLowValue(percentage);
     }

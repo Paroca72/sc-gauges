@@ -15,7 +15,7 @@ import java.util.Arrays;
  * follow a straight line along the angle of the related first or last point of the path.
  *
  * @author Samuele Carassai
- * @version 3.0.0
+ * @version 3.1.0
  * @since 2016-05-26
  */
 public class ScWriter extends ScRepetitions {
@@ -235,7 +235,6 @@ public class ScWriter extends ScRepetitions {
         for (int index = 0, len = token.length(); index < len; index++) {
             // Draw before the paths
             if (currentPos < 0) {
-                //float offsetX = (this.getTextWidth(toFill) / (toFill.height() * 2));
                 canvas.drawText(
                         token,
                         index,
@@ -455,7 +454,8 @@ public class ScWriter extends ScRepetitions {
             if (this.mTokens != null)
                 super.setRepetitions(this.mTokens.length);
             else
-                this.onPropertyChange("tokens", values);
+                super.setRepetitions(0);
+            this.onPropertyChange("tokens", values);
         }
     }
 
@@ -531,6 +531,7 @@ public class ScWriter extends ScRepetitions {
 
             Paint painter = feature.getPainter();
             this.size = painter.getTextSize();
+            this.text = null;
 
             String[] tokens = feature.getTokens();
             if (tokens != null && repetition > 0 && repetition <= tokens.length)

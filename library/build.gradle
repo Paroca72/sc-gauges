@@ -4,13 +4,13 @@ apply plugin: 'android-maven'
 group='com.github.Paroca72'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 470
-        versionName '3.0.7'
+        versionCode 500
+        versionName '3.1.0'
     }
     buildTypes {
         release {
