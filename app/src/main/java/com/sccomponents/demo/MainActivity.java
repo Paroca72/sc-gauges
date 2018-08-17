@@ -33,18 +33,25 @@ public class MainActivity extends AppCompatActivity {
         ScArcGauge gauge = this.findViewById(R.id.gauge);
         gauge.setHighValue(80);
         gauge.setRecognizePathTouch(true);
+        gauge.setSnapToNotches(true);
 
         ScCopier base = gauge.getBase();
-        base.setWidths(50);
+        base.setWidths(30);
 
         ScCopier progress = gauge.getProgress();
-        progress.setWidths(50);
+        progress.setWidths(30);
         progress.setColors(Color.GREEN);
 
         ScLabeler labeler = gauge.getLabeler();
         labeler.setVisible(true);
         labeler.setColors(Color.BLUE);
         labeler.getPainter().setTextSize(80);
+
+        ScNotches notches = gauge.getNotches();
+        notches.setWidths(25);
+        notches.setHeights(50);
+        notches.setColors(Color.RED);
+        notches.setRepetitions(10);
     }
 
 }

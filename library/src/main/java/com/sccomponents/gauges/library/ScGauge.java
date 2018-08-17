@@ -621,8 +621,8 @@ public abstract class ScGauge extends ScDrawer
         // Check for snap to notches the new degrees value
         if (this.mSnapToNotches && this.mNotches != null) {
             // Get the current value and round at the closed notches value
-            this.mHighValue = this.mNotches.snapToRepetitions(this.mHighValue);
-            this.mLowValue = this.mNotches.snapToRepetitions(this.mLowValue);
+            this.mHighValue = this.snapToRepetitions(this.mHighValue);
+            this.mLowValue = this.snapToRepetitions(this.mLowValue);
         }
 
         this.mHighValueAnimated = this.mHighValue;
@@ -635,6 +635,24 @@ public abstract class ScGauge extends ScDrawer
 
     // ***************************************************************************************
     // Privates methods
+
+    /**
+     * Round the value near the closed notch.
+     * @param value the value to round
+     * @return      a rounded to notch value
+     */
+    @SuppressWarnings("unused")
+    public float snapToRepetitions(float value) {
+        // Check for empty values
+        int notches = this.getNotches().getRepetitions();
+        if (notches == 0)
+            return value;
+
+        // Round at notches value
+        float step = 100 / notches;
+        float fixed = value + (step / 2);
+        return ((int)(fixed / step)) * step;
+    }
 
     /**
      * Define the threshold for the touch on path recognize.
@@ -710,7 +728,7 @@ public abstract class ScGauge extends ScDrawer
         // Check for snap to notches the new degrees value.
         if (this.mSnapToNotches && this.mNotches != null) {
             // Round at the closed notches value
-            value = this.mNotches.snapToRepetitions(value);
+            value = this.snapToRepetitions(value);
         }
 
         // Choice the value and the animation
@@ -833,7 +851,7 @@ public abstract class ScGauge extends ScDrawer
 
         // Check for snap to notches the new degrees value.
         if (this.mSnapToNotches && this.mNotches != null)
-            value = this.mNotches.snapToRepetitions(value);
+            value = this.snapToRepetitions(value);
 
         // If here mean that the pointer is untagged.
         // I will move the pointer to the new position but I will not change no values.

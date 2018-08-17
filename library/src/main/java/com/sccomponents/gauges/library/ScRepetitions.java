@@ -268,26 +268,6 @@ public abstract class ScRepetitions extends ScFeature {
     }
 
     /**
-     * Round the value near the closed notch.
-     * @param value the value to round
-     * @return      a rounded to notch value
-     */
-    @SuppressWarnings("unused")
-    public float snapToRepetitions(float value) {
-        // Check for empty values
-        if (this.mRepetitions == 0)
-            return value;
-
-        // Calc the delta angle and round at notches value
-        float length = this.getMeasure().getLength();
-        float deltaAngle = length / this.mRepetitions;
-        float position = Math.round(value / deltaAngle) * deltaAngle;
-
-        // Check and return the value
-        return position > length ? length : position;
-    }
-
-    /**
      * Implement a copy of this object
      * @param destination the destination object
      */
