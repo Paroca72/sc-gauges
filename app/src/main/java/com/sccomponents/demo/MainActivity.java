@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         gauge.setHighValue(80);
         gauge.setRecognizePathTouch(true);
         gauge.setSnapToNotches(true);
+        gauge.setAngleSweep(270);
 
         ScCopier base = gauge.getBase();
         base.setWidths(30);
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         notches.setWidths(25);
         notches.setHeights(50);
         notches.setColors(Color.RED);
-        notches.setRepetitions(10);
+        notches.setSpaceBetweenRepetitions(200);
     }
 
 }

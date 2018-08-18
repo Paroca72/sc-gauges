@@ -234,15 +234,19 @@ public abstract class ScRepetitions extends ScFeature {
      */
     @SuppressWarnings("unused")
     public float getDistance(int repetition) {
-        // Check for zero value
+        // Check for zero value and limits
+        if (repetition < 0) repetition = 0;
+
         if (this.mRepetitions == 0 || repetition == 0)
-            return this.mRepetitionOffset;
+        return this.mRepetitionOffset;
 
         // Check for auto-calculated repetitions.
-        if (this.mSpaceBetween > 0.0f)
+        if (this.mSpaceBetween > 0.0f) {
+            // Check the repetition limits and give back the position
+            if (repetition > this.mPositions.length) repetition = this.mPositions.length;
             return this.mPositions[repetition - 1] + this.mRepetitionOffset;
 
-        else {
+        } else {
             // Correct the repetition number if needs
             repetition -= 1;
             int repetitions = this.mRepetitions -
