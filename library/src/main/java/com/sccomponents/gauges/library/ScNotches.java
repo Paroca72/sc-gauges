@@ -402,6 +402,36 @@ public class ScNotches extends ScRepetitions {
             super.copy(destination);
     }
 
+    /**
+     * Round the value near the closed notch.
+     * @param value the value to round
+     * @return      a rounded to notch value
+     */
+    @SuppressWarnings("unused")
+    public float snapToNotches(float value) {
+        // Holders
+        int notches = this.getRepetitions();
+        float distance = notches == 0 ? value: Float.MAX_VALUE;
+
+        // Check all points
+        for (int index = 1; index <= notches + 1; index ++) {
+            // Get the current notch value
+            float current = this.getDistance(index);
+
+            // Calculate the deltas
+            float deltaDistance =  Math.abs(distance - value);
+            float deltaCurrent = Math.abs(current - value);
+
+            // Check
+            if (deltaCurrent < deltaDistance)
+                distance = current;
+            if (deltaCurrent > deltaDistance)
+                break;
+        }
+
+        return distance;
+    }
+
 
     // ***************************************************************************************
     // Public properties
