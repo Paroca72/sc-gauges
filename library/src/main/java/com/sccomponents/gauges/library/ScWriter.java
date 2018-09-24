@@ -1,6 +1,7 @@
 package com.sccomponents.gauges.library;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -26,10 +27,16 @@ public class ScWriter extends ScRepetitions {
     private String[] mTokens;
     private boolean mBending;
     private boolean mConsiderFontMetrics;
+    private int mBackground;
+    private int mPadding;
 
+    private float[] mFirstPoint;
     private float[] mGenericPoint;
+    private float[] mLastPoint;
+
     private Rect mGenericRect;
     private TokenInfo mRepetitionInfo;
+    private Paint mBackgroundPaint;
 
 
     /****************************************************************************************
@@ -44,9 +51,13 @@ public class ScWriter extends ScRepetitions {
         // Init
         this.mConsiderFontMetrics = true;
         this.mBending = false;
-        this.mRepetitionInfo = new TokenInfo();
+        this.mBackground = Color.TRANSPARENT;
+        this.mPadding = 0;
 
+        this.mRepetitionInfo = new TokenInfo();
+        this.mFirstPoint = new float[2];
         this.mGenericPoint = new float[2];
+        this.mLastPoint = new float[2];
         this.mGenericRect = new Rect();
 
         // Update the painter
@@ -54,6 +65,10 @@ public class ScWriter extends ScRepetitions {
         painter.setStrokeWidth(0.0f);
         painter.setTextSize(30.0f);
         painter.setStyle(Paint.Style.FILL);
+
+        this.mBackgroundPaint = new Paint();
+        this.mBackgroundPaint.setStyle(Paint.Style.FILL);
+        this.mBackgroundPaint.setColor(this.mBackground);
     }
 
 
@@ -156,20 +171,20 @@ public class ScWriter extends ScRepetitions {
     }
 
     /**
-     * Get the text with using the current painter
+     * Get the text bounds using the current painter
      * @param text  the source
      * @param start the position to start
      * @param end   the position where finish
-     * @return the width
+     * @return the bounds
      */
-    private int getTextWidth(String text, int start, int end) {
+    private Rect getTextBounds(String text, int start, int end) {
         // Holders
         Paint paint = this.getPainter();
         Rect rect = this.mGenericRect;
 
         // Get the measure of the text
         paint.getTextBounds(text, start, end, rect);
-        return rect.width();
+        return rect;
     }
 
     /**
@@ -178,7 +193,7 @@ public class ScWriter extends ScRepetitions {
      * @return the width
      */
     private int getTextWidth(String text) {
-        return this.getTextWidth(text, 0, text.length());
+        return this.getTextBounds(text, 0, text.length()).width();
     }
 
     /**
@@ -204,6 +219,42 @@ public class ScWriter extends ScRepetitions {
     // Draw methods
 
     /**
+     * Draw a rectangle as a background
+     * @param canvas where to draw
+     * @param bounds the rectangle to draw
+     */
+    private void drawBackground(Canvas canvas, Rect bounds, float letterSpacing) {
+        // Draw the background just if needs
+        if (this.mBackgroundPaint.getColor() != Color.TRANSPARENT) {
+            float offsetY = bounds.height();
+            canvas.drawRect(
+                    bounds.left - (letterSpacing / 2 + this.mPadding),
+                    bounds.top - offsetY - this.mPadding,
+                    bounds.right + (letterSpacing / 2 + this.mPadding),
+                    bounds.bottom - offsetY + this.mPadding,
+                    this.mBackgroundPaint
+            );
+        }
+    }
+
+    /**
+     * Draw raw text on canvas
+     * @param canvas where to draw
+     * @param token  what to draw
+     * @param bounds the drawing position
+     */
+    private void drawText(Canvas canvas, char token, Rect bounds) {
+        // Draw the text
+        Paint painter = this.getPainter();
+        canvas.drawText(
+                Character.toString(token),
+                bounds.left,
+                bounds.top,
+                painter
+        );
+    }
+
+    /**
      * Draw some text on the passed path.
      * Can draw on multi contours and before and after the path. If before of after it will
      * follow a straight line along the angle of the related first or last point of the path.
@@ -215,8 +266,8 @@ public class ScWriter extends ScRepetitions {
      * @param angle    the start angle
      * @param offsetY  the vertical offset
      */
-    private void drawTextOnPath(Canvas canvas, String token,
-                                float distance, float angle, float offsetY) {
+    private void drawTextOnPath(Canvas canvas, String token, float distance,
+                                float offsetY, float angle, boolean drawBackground) {
         // The text align must fixed to left and restore at the end of this procedure
         Paint painter = this.getPainter();
         Paint.Align oldAlign = painter.getTextAlign();
@@ -224,61 +275,65 @@ public class ScWriter extends ScRepetitions {
 
         // Holders
         float currentPos = distance;
-        float letterSpacing = 3.0f;
+        float letterSpacing = 4.0f;
 
         // Get the last point info of the whole path
-        float[] lastPoint = new float[2];
         float pathLength = this.getMeasure().getLength();
-        float lastPointAngle = this.getPointAndAngle(pathLength, lastPoint);
+        float lastPointAngle = this.getPointAndAngle(pathLength, this.mLastPoint);
 
         // Draw chars per chars
         for (int index = 0, len = token.length(); index < len; index++) {
+            // Save the canvas status
+            canvas.save();
+
+            // Holder
+            char currentChar = token.charAt(index);
+            Rect textBounds = this.getTextBounds(token, index, index + 1);
+
             // Draw before the paths
             if (currentPos < 0) {
-                canvas.drawText(
-                        token,
-                        index,
-                        index + 1,
-                        this.mGenericPoint[0] + currentPos,
-                        this.mGenericPoint[1] + offsetY,
-                        painter
-                );
+                // Fix the bounds
+                int x = (int)(this.mFirstPoint[0] + currentPos);
+                int y = (int)(this.mFirstPoint[1] + offsetY);
+                textBounds.offset(x, y);
 
             } else {
-                // Reset the canvas rotation
-                canvas.save();
-                canvas.rotate(-angle, this.mGenericPoint[0], this.mGenericPoint[1]);
-
                 // Draw on path
                 Path path = this.getMeasure().getPath(currentPos);
                 if (path != null) {
-                    float offsetX = this.getMeasure().getContourDistance(currentPos);
-                    canvas.drawTextOnPath(
-                            "" + token.charAt(index),
-                            path,
-                            offsetX,
-                            offsetY,
-                            painter);
+                    // Rotate on the original point
+                    canvas.rotate(-angle, this.mFirstPoint[0], this.mFirstPoint[1]);
+
+                    // Rotate on the current point
+                    float currentAngle = this.getPointAndAngle(currentPos, this.mGenericPoint);
+                    canvas.rotate(currentAngle, this.mGenericPoint[0], this.mGenericPoint[1]);
+
+                    // Fix the bounds offset
+                    int x = (int)(this.mGenericPoint[0]);
+                    int y = (int)(this.mGenericPoint[1] + offsetY);
+                    textBounds.offset(x, y);
+
                 } else {
                     // Draw after path
-                    canvas.rotate(lastPointAngle, lastPoint[0], lastPoint[1]);
-                    canvas.drawText(
-                            token,
-                            index,
-                            index + 1,
-                            lastPoint[0] + currentPos - pathLength,
-                            lastPoint[1] + offsetY,
-                            painter
-                    );
+                    int x = (int)(this.mLastPoint[0] + currentPos - pathLength);
+                    int y = (int)(this.mLastPoint[1] + offsetY);
+                    textBounds.offset(x, y);
 
+                    // Adjust rotation
+                    canvas.rotate(lastPointAngle, this.mLastPoint[0], this.mLastPoint[1]);
                 }
-
-                // Restore the previous canvas state
-                canvas.restore();
             }
 
+            // Draw
+            if (drawBackground)
+                this.drawBackground(canvas, textBounds, letterSpacing);
+            else
+                this.drawText(canvas, currentChar, textBounds);
+
             // Increase the current position
-            currentPos += this.getTextWidth(token, index, index + 1) + letterSpacing;
+            currentPos += textBounds.width() + letterSpacing;
+            // Restore the previous canvas state
+            canvas.restore();
         }
 
         // Restore the alignment
@@ -293,16 +348,29 @@ public class ScWriter extends ScRepetitions {
      * @param y      the point
      * @param angle  the angle
      */
-    private void drawToken(Canvas canvas, String token, float x, float y, float angle) {
+    private void drawToken(Canvas canvas, String token, float x, float y,
+                           float angle, boolean drawBackground) {
         // Holders
         Rect bounds = this.getBounds(token);
+        int offsetY = bounds.centerY();
 
         // Save the state and rotate
         canvas.save();
-        canvas.rotate(angle, x, y - bounds.centerY());
+        canvas.rotate(angle, x, y - offsetY);
 
-        // Draw and restore
-        canvas.drawText(token, x, y, this.getPainter());
+        // Draw
+        if (drawBackground) {
+            // Fix the offset
+            x += this.getHorizontalOffset(token);
+            y += offsetY * 2;
+            bounds.offset((int)x, (int)y);
+
+            // Draw
+            this.drawBackground(canvas, bounds, 0);
+        } else
+            canvas.drawText(token, x, y, this.getPainter());
+
+        // Restore the canvas status
         canvas.restore();
     }
 
@@ -311,9 +379,9 @@ public class ScWriter extends ScRepetitions {
      * @param canvas the canvas where draw
      * @param info   the token info
      */
-    private void drawToken(Canvas canvas, TokenInfo info) {
+    private void drawToken(Canvas canvas, TokenInfo info, boolean drawBackground) {
         // Get the current point and save the current canvas status
-        this.getPoint(info.distance, this.mGenericPoint);
+        this.getPoint(info.distance, this.mFirstPoint);
 
         // Holders
         Rect bounds = this.getBounds(info.text);
@@ -326,6 +394,9 @@ public class ScWriter extends ScRepetitions {
         Paint painter = this.getPainter();
         painter.setTextSize(info.size);
 
+        // Background
+        this.mBackgroundPaint.setColor(this.mBackground);
+
         // Draw one line per time
         for (String token : rows) {
             // Draw
@@ -336,17 +407,19 @@ public class ScWriter extends ScRepetitions {
                         canvas,
                         token,
                         distance,
+                        offsetY + singleRowHeight,
                         info.tangent,
-                        offsetY
+                        drawBackground
                 );
             } else
                 // Unbending
                 this.drawToken(
                         canvas,
                         token,
-                        this.mGenericPoint[0],
-                        this.mGenericPoint[1] + offsetY,
-                        info.angle
+                        this.mFirstPoint[0],
+                        this.mFirstPoint[1] + offsetY,
+                        info.angle,
+                        drawBackground
                 );
 
             // Adjust vertical offset
@@ -382,8 +455,10 @@ public class ScWriter extends ScRepetitions {
         TokenInfo tokenInfo = (TokenInfo) info;
         String text = tokenInfo.text;
 
-        if (text != null && text.length() > 0)
-            this.drawToken(canvas, tokenInfo);
+        if (text != null && text.length() > 0) {
+            this.drawToken(canvas, tokenInfo, true);
+            this.drawToken(canvas, tokenInfo, false);
+        }
     }
 
     /**
@@ -459,6 +534,7 @@ public class ScWriter extends ScRepetitions {
         }
     }
 
+
     /**
      * Return true if the text is bending.
      * @return the bending status
@@ -479,6 +555,7 @@ public class ScWriter extends ScRepetitions {
             this.onPropertyChange("bending", value);
         }
     }
+
 
     /**
      * Return true if the offset calculation consider the font metrics too.
@@ -502,6 +579,49 @@ public class ScWriter extends ScRepetitions {
     }
 
 
+    /**
+     * Return the color of the background.
+     * @return the background color
+     */
+    @SuppressWarnings("unused")
+    public int getBackground() {
+        return this.mBackground;
+    }
+
+    /**
+     * Set the color of the background.
+     * @param value the background color
+     */
+    @SuppressWarnings("unused")
+    public void setBackground(int value) {
+        if (this.mBackground != value) {
+            this.mBackground = value;
+            this.onPropertyChange("background", value);
+        }
+    }
+
+    /**
+     * Return the padding value than will apply to the background.
+     * @return the padding value
+     */
+    @SuppressWarnings("unused")
+    public int getPadding() {
+        return this.mPadding;
+    }
+
+    /**
+     * Set the padding value than will apply to the background.
+     * @param value the padding value
+     */
+    @SuppressWarnings("unused")
+    public void setPadding(int value) {
+        if (this.mPadding != value) {
+            this.mPadding = value;
+            this.onPropertyChange("padding", value);
+        }
+    }
+
+
     // ***************************************************************************************
     // Public classes and methods
 
@@ -517,6 +637,8 @@ public class ScWriter extends ScRepetitions {
         public String text;
         public float size;
         public boolean bending;
+        public int background;
+        public int padding;
 
         // ***************************************************************************************
         // Public methods
@@ -528,10 +650,13 @@ public class ScWriter extends ScRepetitions {
             // Reset
             this.source = feature;
             this.bending = feature.getBending();
+            this.background = feature.getBackground();
+            this.padding = feature.getPadding();
 
             Paint painter = feature.getPainter();
             this.size = painter.getTextSize();
             this.text = null;
+            this.background = Color.TRANSPARENT;
 
             String[] tokens = feature.getTokens();
             if (tokens != null && repetition > 0 && repetition <= tokens.length)

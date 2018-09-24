@@ -53,6 +53,14 @@ public class MainActivity extends AppCompatActivity {
         notches.setHeights(50);
         notches.setColors(Color.RED);
         notches.setSpaceBetweenRepetitions(200);
+
+        ScWriter writer = gauge.getWriter();
+        writer.setTokens("1111111\n2222222222", "22222222", "333333", "44444444444");
+        //writer.setBending(true);
+        //writer.setPosition(ScFeature.Positions.OUTSIDE);
+        writer.setBackground(Color.WHITE);
+        writer.setPadding(10);
+        writer.getPainter().setTextAlign(Paint.Align.CENTER);
     }
 
 }
