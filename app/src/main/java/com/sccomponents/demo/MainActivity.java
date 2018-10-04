@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         labeler.setVisible(true);
         labeler.setColors(Color.BLUE);
         labeler.getPainter().setTextSize(80);
+        labeler.setBackground(Color.YELLOW);
 
         ScNotches notches = gauge.getNotches();
         notches.setWidths(25);
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         ScWriter writer = gauge.getWriter();
         writer.setTokens("1111111\n2222222222", "22222222", "333333", "44444444444");
         //writer.setBending(true);
-        //writer.setPosition(ScFeature.Positions.OUTSIDE);
+        writer.setPosition(ScFeature.Positions.OUTSIDE);
         writer.setBackground(Color.WHITE);
         writer.setPadding(10);
         writer.getPainter().setTextAlign(Paint.Align.CENTER);
