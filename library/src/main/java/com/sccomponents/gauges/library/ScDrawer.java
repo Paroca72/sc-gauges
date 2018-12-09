@@ -753,7 +753,7 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Find the feature searching by tag.
+     * Find the first feature searching by tag.
      * If found something return the first element found.
      * If the tag param is null return the first feature found avoid the comparison check.
      * @param tag   the tag reference
@@ -768,7 +768,7 @@ public abstract class ScDrawer extends ScBase {
     }
 
     /**
-     * Find the feature searching by the class.
+     * Find the first feature searching by the class.
      * If found something return the first element found.
      * If the class param is null return the first feature found avoid the comparison check.
      * @param classRef  the class reference

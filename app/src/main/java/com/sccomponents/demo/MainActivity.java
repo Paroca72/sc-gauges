@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.sccomponents.codes.demo.R;
 import com.sccomponents.gauges.library.ScArcGauge;
@@ -30,38 +31,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ScArcGauge gauge = this.findViewById(R.id.gauge);
-        gauge.setHighValue(80);
-        gauge.setRecognizePathTouch(true);
-        gauge.setSnapToNotches(true);
-        gauge.setAngleSweep(270);
+        // Find the components
+        final ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
+        assert gauge != null;
 
-        ScCopier base = gauge.getBase();
-        base.setWidths(30);
+        final TextView counter = (TextView) this.findViewById(R.id.counter);
+        assert counter != null;
 
-        ScCopier progress = gauge.getProgress();
-        progress.setWidths(30);
-        progress.setColors(Color.GREEN);
+        // Clear all default features from the gauge
+        gauge.removeAllFeatures();
 
-        ScLabeler labeler = gauge.getLabeler();
-        labeler.setVisible(true);
-        labeler.setColors(Color.BLUE);
-        labeler.getPainter().setTextSize(80);
-        labeler.setBackground(Color.YELLOW);
+        // Create the base notches.
+        ScNotches base = (ScNotches) gauge.addFeature(ScNotches.class);
+        base.setTag(ScGauge.BASE_IDENTIFIER);
+        base.setPosition(ScFeature.Positions.INSIDE);
+        base.setRepetitions(40);
+        base.setWidths(10);
+        base.setHeights(10, 120);
+        base.setColors(Color.parseColor("#dbdfe6"));
 
-        ScNotches notches = gauge.getNotches();
-        notches.setWidths(25);
-        notches.setHeights(50);
-        notches.setColors(Color.RED);
-        notches.setSpaceBetweenRepetitions(200);
+        // Create the progress notches.
+        ScNotches progress = (ScNotches) gauge.addFeature(ScNotches.class);
+        progress.setTag(ScGauge.PROGRESS_IDENTIFIER);
+        progress.setColors(
+                Color.parseColor("#0BA60A"),
+                Color.parseColor("#FEF301"),
+                Color.parseColor("#EA0C01")
+        );
 
-        ScWriter writer = gauge.getWriter();
-        writer.setTokens("1111111\n2222222222", "22222222", "333333", "44444444444");
-        //writer.setBending(true);
-        writer.setPosition(ScFeature.Positions.OUTSIDE);
-        writer.setBackground(Color.WHITE);
-        writer.setPadding(10);
-        writer.getPainter().setTextAlign(Paint.Align.CENTER);
+        // Set the value
+        gauge.setHighValue(12000, 0, 13000);
+
+        // Each time I will change the value I must write it inside the counter text.
+        gauge.setOnEventListener(new ScGauge.OnEventListener() {
+            @Override
+            public void onValueChange(float lowValue, float highValue, boolean isRunning) {
+                // Write the value
+                int value = (int) ScGauge.percentageToValue(highValue, 0, 13000);
+                counter.setText(Integer.toString(value));
+            }
+        });
     }
 
 }

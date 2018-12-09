@@ -271,7 +271,7 @@ public abstract class ScGauge extends ScDrawer
             );
             return color != 0.0 ? new int[] { color }: null;
         } else
-            return null;
+            return colors;
     }
 
     /**

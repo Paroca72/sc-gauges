@@ -90,9 +90,14 @@ public abstract class ScBase extends View {
      */
     @SuppressWarnings("unused")
     public static float valueRangeLimit(float value, float startValue, float endValue) {
+        // Holders
+        float min = Math.min(startValue, endValue);
+        float max = Math.max(startValue, endValue);
+
         // If is over the limit return the normalized value
-        if (value < Math.min(startValue, endValue)) return Math.min(startValue, endValue);
-        if (value > Math.max(startValue, endValue)) return Math.max(startValue, endValue);
+        if (value < min) return min;
+        if (value > max) return max;
+
         // Else return the original value
         return value;
     }
