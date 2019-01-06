@@ -35,42 +35,11 @@ public class MainActivity extends AppCompatActivity {
         final ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
         assert gauge != null;
 
-        final TextView counter = (TextView) this.findViewById(R.id.counter);
-        assert counter != null;
+        ScWriter writer = gauge.getWriter();
+        //writer.setConsiderFontMetrics(false);
+        writer.setInterline(1.2f);
+        writer.setTokens("Text\nText", "Text\nText", "Text\nText");
 
-        // Clear all default features from the gauge
-        gauge.removeAllFeatures();
-
-        // Create the base notches.
-        ScNotches base = (ScNotches) gauge.addFeature(ScNotches.class);
-        base.setTag(ScGauge.BASE_IDENTIFIER);
-        base.setPosition(ScFeature.Positions.INSIDE);
-        base.setRepetitions(40);
-        base.setWidths(10);
-        base.setHeights(10, 120);
-        base.setColors(Color.parseColor("#dbdfe6"));
-
-        // Create the progress notches.
-        ScNotches progress = (ScNotches) gauge.addFeature(ScNotches.class);
-        progress.setTag(ScGauge.PROGRESS_IDENTIFIER);
-        progress.setColors(
-                Color.parseColor("#0BA60A"),
-                Color.parseColor("#FEF301"),
-                Color.parseColor("#EA0C01")
-        );
-
-        // Set the value
-        gauge.setHighValue(12000, 0, 13000);
-
-        // Each time I will change the value I must write it inside the counter text.
-        gauge.setOnEventListener(new ScGauge.OnEventListener() {
-            @Override
-            public void onValueChange(float lowValue, float highValue, boolean isRunning) {
-                // Write the value
-                int value = (int) ScGauge.percentageToValue(highValue, 0, 13000);
-                counter.setText(Integer.toString(value));
-            }
-        });
     }
 
 }

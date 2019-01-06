@@ -8,49 +8,19 @@
 
     <FrameLayout
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:background="#f5f5f5">
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
             xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:padding="10dp"
             sc:sccAngleStart="-180"
-            sc:sccAngleSweep="90"
+            sc:sccAngleSweep="180"
             />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="right"
-            android:layout_gravity="bottom|right"
-            android:layout_marginRight="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#b6c2d5"
-                android:textSize="20dp"
-                android:text="speedometer"
-                android:gravity="center"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/counter"
-                android:textColor="#787b80"
-                android:textSize="40dp"
-                android:textStyle="bold"
-                android:text="0"
-                android:gravity="center"
-                android:paddingLeft="10dp"/>
-
-        </LinearLayout>
 
     </FrameLayout>
 

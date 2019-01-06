@@ -29,6 +29,7 @@ public class ScWriter extends ScRepetitions {
     private boolean mConsiderFontMetrics;
     private int mBackground;
     private int mPadding;
+    private float mInterline;
 
     private float[] mFirstPoint;
     private float[] mGenericPoint;
@@ -53,6 +54,7 @@ public class ScWriter extends ScRepetitions {
         this.mBending = false;
         this.mBackground = Color.TRANSPARENT;
         this.mPadding = 0;
+        this.mInterline = 1.0f;
 
         this.mRepetitionInfo = new TokenInfo();
         this.mFirstPoint = new float[2];
@@ -394,6 +396,9 @@ public class ScWriter extends ScRepetitions {
         Paint painter = this.getPainter();
         painter.setTextSize(info.size);
 
+        // Interline for multi-rows text
+        singleRowHeight += info.size * this.mInterline - info.size;
+
         // Background
         this.mBackgroundPaint.setColor(this.mBackground);
 
@@ -618,6 +623,34 @@ public class ScWriter extends ScRepetitions {
         if (this.mPadding != value) {
             this.mPadding = value;
             this.onPropertyChange("padding", value);
+        }
+    }
+
+
+    /**
+     * Return the interline value between the rows.
+     * Will apply only in multi rows texts.
+     * The value is expressed in ratio respect the font size.
+     * The default value is 1.0
+     * @return the interline value
+     */
+    @SuppressWarnings("unused")
+    public float getInterline() {
+        return this.mInterline;
+    }
+
+    /**
+     * Return the interline value between the rows.
+     * Will apply only in multi rows texts.
+     * The value is expressed in ratio respect the font size.
+     * The default value is 1.0
+     * @param value the interline value
+     */
+    @SuppressWarnings("unused")
+    public void setInterline(float value) {
+        if (this.mInterline != value) {
+            this.mInterline = value;
+            this.onPropertyChange("interline", value);
         }
     }
 
