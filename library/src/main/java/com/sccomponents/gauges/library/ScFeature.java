@@ -386,7 +386,7 @@ public abstract class ScFeature {
                 this.mOnDrawListener.onDrawContour(info);
 
             // Check for visibility
-            if (!info.isVisible)
+            if (!info.visible)
                 continue;
 
             // Call the draw for the single contour
@@ -1063,7 +1063,7 @@ public abstract class ScFeature {
         public ScFeature source;
         public int contour;
         public ScFeature.Positions position;
-        public boolean isVisible = true;
+        public boolean visible = true;
 
         public float angle;
         public float[] scale;
@@ -1088,7 +1088,7 @@ public abstract class ScFeature {
 
             this.angle = 0.0f;
             this.position = feature.getPosition();
-            this.isVisible = feature.getVisible();
+            this.visible = feature.getVisible();
 
             this.scale[0] = 1.0f;
             this.scale[1] = 1.0f;

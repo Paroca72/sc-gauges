@@ -180,7 +180,7 @@ public abstract class ScRepetitions extends ScFeature {
                 this.mOnDrawListener.onDrawRepetition(info);
 
             // Check for visibility
-            if (!info.isVisible)
+            if (!info.visible)
                 continue;
 
             // Call the draw for the single repetition
@@ -471,7 +471,7 @@ public abstract class ScRepetitions extends ScFeature {
         public float tangent;
         public int color;
         public ScFeature.Positions position;
-        private boolean isVisible;
+        public boolean visible;
 
         public float[] offset;
         public float[] point;
@@ -513,7 +513,7 @@ public abstract class ScRepetitions extends ScFeature {
             this.angle = 0.0f;
             this.position = feature.getPosition();
             this.color = feature.getGradientColor(distance);
-            this.isVisible = !feature.isOverLimits(repetition) && feature.getVisible();
+            this.visible = !feature.isOverLimits(repetition) && feature.getVisible();
         }
 
     }

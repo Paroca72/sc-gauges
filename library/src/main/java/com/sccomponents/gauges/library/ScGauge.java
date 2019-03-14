@@ -285,7 +285,7 @@ public abstract class ScGauge extends ScDrawer
         float[] results = this
                 .splitToWidths(attrArray.getString(this.getAttributeId(prefix, name)));
         if (results == null) {
-            String shortName = prefix.substring(0, name.length() - 1);
+            String shortName = name.substring(0, name.length() - 1);
             float value = attrArray.getDimension(
                     this.getAttributeId(prefix, shortName),
                     0.0f
