@@ -205,6 +205,27 @@ public abstract class ScGauge extends ScDrawer
 
 
     // ***************************************************************************************
+    // Classes
+
+    class AnimationStarter implements Runnable {
+        ValueAnimator animator;
+        float lastValue;
+        float nextValue;
+
+        AnimationStarter(ValueAnimator animator, float lastValue, float nextValue) {
+            this.animator = animator;
+            this.lastValue = lastValue;
+            this.nextValue = nextValue;
+        }
+
+        public void run() {
+            this.animator.setFloatValues(this.lastValue, this.nextValue);
+            this.animator.start();
+        }
+    }
+
+
+    // ***************************************************************************************
     // Constructors
 
     public ScGauge(Context context) {
@@ -723,9 +744,10 @@ public abstract class ScGauge extends ScDrawer
 
         // Check if value is changed
         if (currValue != value) {
-            // Set and start animation
-            animator.setFloatValues(currValue, value);
-            animator.start();
+            // The animator should be started on a different thread to be sure to start
+            // when the gauges will finished to draw.
+            AnimationStarter starter = new AnimationStarter(animator, currValue, value);
+            this.post(starter);
         }
     }
 

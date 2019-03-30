@@ -3,13 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:sc="http://schemas.android.com/apk/res-auto"
-    android:background="#ffffff"
     android:gravity="center_vertical|center_horizontal">
 
     <FrameLayout
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="#f5f5f5">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
@@ -17,26 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="35dp"
-            sc:sccAngleStart="180"
-            sc:sccAngleSweep="180"
-            sc:sccStrokeColors="#03A409|#FFF506|#EB0100"
-            sc:sccStrokeWidth="32dp"
-            sc:sccStrokePosition="inside"
-            sc:sccNotchesHeight="20dp"
-            sc:sccNotchesWidth="2dp"
-            sc:sccNotchesPosition="inside"
-            sc:sccNotchesColor="#666666"
-            sc:sccTextAlign="center"/>
-
-        <ImageView
-            android:id="@+id/indicator"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:src="@drawable/indicator"
-            android:layout_marginLeft="40dp"
-            android:layout_marginBottom="9dp"/>
+            android:padding="50dp" />
 
     </FrameLayout>
 
