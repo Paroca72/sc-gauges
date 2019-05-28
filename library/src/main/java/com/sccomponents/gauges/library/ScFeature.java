@@ -77,6 +77,7 @@ public abstract class ScFeature {
     // Protected variable
 
     /** @hide */
+    @SuppressWarnings("WeakerAccess")
     protected Path mPath;
 
 
@@ -115,7 +116,7 @@ public abstract class ScFeature {
      * Constructor
      */
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public ScFeature() {
         // Init
         this.mColorsMode = ColorsMode.GRADIENT;
@@ -157,7 +158,7 @@ public abstract class ScFeature {
      * @param contour   the contour index
      * @return          the contour drawing info
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected ContourInfo getContourInfo(int contour) {
         this.mContourInfo.reset(this, contour);
         return this.mContourInfo;
@@ -168,7 +169,7 @@ public abstract class ScFeature {
      * @param canvas    where draw
      * @param info      the contour info
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused"})
     protected abstract void onDraw(Canvas canvas, ContourInfo info);
 
 
@@ -182,6 +183,7 @@ public abstract class ScFeature {
      * @param precision precision
      * @return the comparison result
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected int compare(float first, float second, int precision) {
         BigDecimal firstDecimal = new BigDecimal(first).setScale(precision, RoundingMode.FLOOR);
         BigDecimal secondDecimal = new BigDecimal(second).setScale(precision, RoundingMode.FLOOR);
@@ -193,6 +195,7 @@ public abstract class ScFeature {
      * @param second second number
      * @return the comparison result
      */
+    @SuppressWarnings({"WeakerAccess"})
     protected int compare(float first, float second) {
         return this.compare(first, second, this.mFloatComparisonPrecision);
     }
@@ -215,6 +218,7 @@ public abstract class ScFeature {
      * @param value the value to limit
      * @return      the limited value
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected float range(float value) {
         // Check the limit
         if (this.compare(value, 0.0f) == -1) return 0.0f;
@@ -227,7 +231,7 @@ public abstract class ScFeature {
      * @param source      the source point to clone
      * @param destination the destination point
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected void clonePoint(float[] source, float[] destination) {
         destination[0] = source[0];
         destination[1] = source[1];
@@ -241,6 +245,7 @@ public abstract class ScFeature {
      * @param isSmooth  the type of calculation
      * @return          the color
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected int getColor(int[] colors, float ratio, boolean isSmooth) {
         // Check
         if (colors == null)
@@ -331,6 +336,7 @@ public abstract class ScFeature {
      * @param ratio         the ratio
      * @return              the value
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected String getString(String[] values, float ratio) {
         // Check
         if (values == null)
@@ -402,7 +408,7 @@ public abstract class ScFeature {
     /**
      * Free the double buffering bitmap memory and all the related objects.
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected void freeBitmapMemory() {
         // Free memory
         if (this.mCanvas != null)
@@ -436,7 +442,7 @@ public abstract class ScFeature {
      * @param contour the current contour
      * @return the measurer
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected ScPathMeasure getMeasure(int contour) {
         // Check the limit
         int len = this.mPathMeasure.getPaths().length;
@@ -468,7 +474,7 @@ public abstract class ScFeature {
      * the global measurer otherwise will back the measurer related at the current contour.
      * @return the measurer
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected ScPathMeasure getMeasure() {
         // Select the case
         if (this.mIsDrawing && this.mConsiderContours)
@@ -546,6 +552,7 @@ public abstract class ScFeature {
      * Apply a matrix to canvas before draw on it
      * @param matrix the matrix
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void applyMatrixToCanvas(Matrix matrix) {
         this.mMatrix = matrix;
     }
@@ -652,7 +659,7 @@ public abstract class ScFeature {
      * @param percentage the percentage of the path
      * @return the distance
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getDistance(float percentage) {
         // Holders
         float length = this.getMeasure().getLength();
@@ -672,7 +679,7 @@ public abstract class ScFeature {
      * @param length   force the height of the path
      * @return the color
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public int getGradientColor(float distance, float length) {
         return this.getColor(
                 this.mColors,
@@ -688,7 +695,7 @@ public abstract class ScFeature {
      * @param distance from the starting path
      * @return the color
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public int getGradientColor(float distance) {
         return this.getGradientColor(distance, this.getMeasure().getLength());
     }
@@ -707,7 +714,7 @@ public abstract class ScFeature {
      * Get the start limit distance from the path start
      * @return the distance
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getStartAtDistance() {
         return this.getDistance(this.mStartPercentage);
     }
@@ -716,7 +723,7 @@ public abstract class ScFeature {
      * Get the end limit distance from the path start
      * @return the distance
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getEndToDistance() {
         return this.getDistance(this.mEndPercentage);
     }

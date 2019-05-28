@@ -195,7 +195,7 @@ public class ScPointer extends ScNotches {
      * Note than this could be depend on the current position on the path.
      * @return   the max dimension
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getMaxDimension() {
         // Find the max dimension
         float width = this.getWidth(this.mDistance);
@@ -241,7 +241,7 @@ public class ScPointer extends ScNotches {
      * Set the halo width in pixel
      * @param value the width
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setHaloWidth(float value) {
         value = value < 0.0f ? 0.0f : value;
         if (this.mHaloWidth != value) {
@@ -264,7 +264,7 @@ public class ScPointer extends ScNotches {
      * Set the halo alpha
      * @param value the new alpha value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setHaloAlpha(int value) {
         // Check the limits
         if (value < 0) value = 0;
@@ -291,7 +291,7 @@ public class ScPointer extends ScNotches {
      * Set the pointer status.
      * @param value the new status
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setPressed(boolean value) {
         if (this.mPressed != value) {
             this.mPressed = value;
@@ -303,7 +303,7 @@ public class ScPointer extends ScNotches {
      * Get the pointer status
      * @return the current status
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public boolean getPressed() {
         return this.mPressed;
     }
@@ -315,7 +315,7 @@ public class ScPointer extends ScNotches {
     /**
      * This is a structure to hold the feature information before draw it
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public class PointerInfo extends NotchInfo {
 
         // ***************************************************************************************

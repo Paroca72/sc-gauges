@@ -131,7 +131,6 @@ public class ScLabeler extends ScWriter {
      * Set the string tokens to draw on path.
      * @param values the tokens list
      */
-    @SuppressWarnings("all")
     @Override
     public void setTokens(String... values) {
         if (!Arrays.equals(this.mTokens, values)) {
@@ -179,7 +178,7 @@ public class ScLabeler extends ScWriter {
      * @param value the value to format
      * @return the formatted value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public String getFormattedValue(float value) {
         // Check the pattern and format
         String pattern = this.mFormat == null || this.mFormat.isEmpty() ? "%.1f": this.mFormat;
@@ -222,7 +221,7 @@ public class ScLabeler extends ScWriter {
      * The format pattern will applied using the android Formatter.
      * @param value the format pattern
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setFormat(String value) {
         // Store the value
         if (!this.equals(this.mFormat, value)) {
@@ -248,7 +247,7 @@ public class ScLabeler extends ScWriter {
      * at the same position of the progress end.
      * @param value the status
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setLinkedToProgress(boolean value) {
         // Store the value
         if (this.mLinkedToProgress != value) {
@@ -263,7 +262,7 @@ public class ScLabeler extends ScWriter {
      * at the same position of the progress end.
      * @return the status
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public boolean getLinkedToProgress() {
         return this.mLinkedToProgress;
     }
@@ -288,6 +287,7 @@ public class ScLabeler extends ScWriter {
         // ***************************************************************************************
         // Constructor
 
+        @SuppressWarnings({"WeakerAccess"})
         public LabelInfo() {
             this.mGenericPoint = new float[2];
         }

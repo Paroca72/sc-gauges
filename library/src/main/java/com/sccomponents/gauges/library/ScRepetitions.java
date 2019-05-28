@@ -37,7 +37,7 @@ public abstract class ScRepetitions extends ScFeature {
      * Constructor
      */
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public ScRepetitions() {
         // Init
         super();
@@ -98,6 +98,7 @@ public abstract class ScRepetitions extends ScFeature {
      * @return the repetitions
      * @hide
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected float[] calculateRepetitions() {
         // If no value return the default value
         if (this.mSpaceBetween <= 0.0f)
@@ -142,6 +143,7 @@ public abstract class ScRepetitions extends ScFeature {
      * @param info      the current repetition info
      * @hide
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected void drawRepetition(Canvas canvas, RepetitionInfo info) {
         // Rotate, translate and scale
         canvas.rotate(info.tangent, info.point[0], info.point[1]);
@@ -163,6 +165,7 @@ public abstract class ScRepetitions extends ScFeature {
      * @param contour   the current contour index
      * @hide
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     protected void drawRepetitions(Canvas canvas, int contour) {
         // Calculate the repetitions positions if needs
         if (this.mSpaceBetween > 0) {
@@ -232,7 +235,7 @@ public abstract class ScRepetitions extends ScFeature {
      * @param repetition    the percentage of the path
      * @return              the distance
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getDistance(int repetition) {
         // Check for zero value and limits
         if (repetition < 0) repetition = 0;
@@ -264,7 +267,7 @@ public abstract class ScRepetitions extends ScFeature {
      * @param   repetition the current repetition
      * @return  if over the global limits
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public boolean isOverLimits(int repetition) {
         float distance = this.getDistance(repetition);
         return this.compare(distance, this.getStartAtDistance()) == -1 ||
@@ -311,7 +314,7 @@ public abstract class ScRepetitions extends ScFeature {
      * Can be: INSIDE, MIDDLE and OUTSIDE.
      * @param value the edges type
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setEdges(Positions value) {
         if (this.mEdges != value) {
             this.mEdges = value;
@@ -323,7 +326,7 @@ public abstract class ScRepetitions extends ScFeature {
      * Get the edges type.
      * @return the edges type
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public Positions getEdges() { return this.mEdges; }
 
 
@@ -346,7 +349,7 @@ public abstract class ScRepetitions extends ScFeature {
      * Get the repetitions count.
      * @return get the repetitions number
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public int getRepetitions() {
         return this.mRepetitions;
     }
@@ -403,7 +406,7 @@ public abstract class ScRepetitions extends ScFeature {
      * This property will affect on the value return by the getDistance method.
      * @param value the new setting
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setRepetitionOffset(float value) {
         if (this.mRepetitionOffset != value) {
             this.mRepetitionOffset = value;
@@ -443,7 +446,7 @@ public abstract class ScRepetitions extends ScFeature {
      * Set the draw listener to call.
      * @param listener the linked method to call
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setOnDrawRepetitionListener(OnDrawRepetitionListener listener) {
         this.mOnDrawListener = listener;
     }
@@ -455,7 +458,7 @@ public abstract class ScRepetitions extends ScFeature {
     /**
      * This is a structure to hold the feature information before draw it
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public class RepetitionInfo {
 
         // ***************************************************************************************

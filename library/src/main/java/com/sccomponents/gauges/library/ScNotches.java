@@ -67,7 +67,7 @@ public class ScNotches extends ScRepetitions {
     // ***************************************************************************************
     // Constructor
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public ScNotches() {
         // Super
         super();
@@ -101,8 +101,8 @@ public class ScNotches extends ScRepetitions {
             return;
 
         // Adjust the first point
-        this.mFirstPoint[0] -= info.bitmap.getWidth() / 2;
-        this.mFirstPoint[1] -= info.bitmap.getHeight() / 2;
+        this.mFirstPoint[0] -= info.bitmap.getWidth() / 2.0f;
+        this.mFirstPoint[1] -= info.bitmap.getHeight() / 2.0f;
 
         // Scale the original bitmap
         Bitmap scaled = info.bitmap;
@@ -312,7 +312,7 @@ public class ScNotches extends ScRepetitions {
      * @param length force the length of the path
      * @return the width
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getWidth(float distance, float length) {
         return this.getValue(
                 this.mWidths,
@@ -329,7 +329,7 @@ public class ScNotches extends ScRepetitions {
      * @param distance from the path start
      * @return the color
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getWidth(float distance) {
         return this.getWidth(distance, this.getMeasure().getLength());
     }
@@ -357,7 +357,7 @@ public class ScNotches extends ScRepetitions {
      * @param distance the distance
      * @return the height
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getHeight(float distance) {
         return this.getValue(
                 this.mHeights,
@@ -407,7 +407,7 @@ public class ScNotches extends ScRepetitions {
      * @param value the value to round
      * @return      a rounded to notch value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float snapToNotches(float value) {
         // Holders
         int notches = this.getRepetitions();
@@ -440,7 +440,7 @@ public class ScNotches extends ScRepetitions {
      * Set the current bitmap.
      * @param value the new bitmap
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setBitmap(Bitmap value) {
         this.mBitmap = value;
         this.onPropertyChange("bitmap", value);
@@ -450,7 +450,7 @@ public class ScNotches extends ScRepetitions {
      * Get the current bitmap
      * @return the current bitmap
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public Bitmap getBitmap() {
         return this.mBitmap;
     }
@@ -495,7 +495,7 @@ public class ScNotches extends ScRepetitions {
      * Get the current stroke widths
      * @return the current stroke widths
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float[] getWidths() {
         return this.mWidths;
     }
@@ -506,7 +506,7 @@ public class ScNotches extends ScRepetitions {
      * You can have two way for manage the width of the path: SMOOTH or ROUGH.
      * @param value the new width filling mode
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setWidthsMode(WidthsMode value) {
         if (this.mWidthsMode != value) {
             this.mWidthsMode = value;
@@ -539,7 +539,7 @@ public class ScNotches extends ScRepetitions {
     /**
      * @return the notches height
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float[] getHeights() {
         return this.mHeights;
     }
@@ -550,7 +550,7 @@ public class ScNotches extends ScRepetitions {
      * You can have two way for calculate the lengths of the path: SMOOTH or ROUGH.
      * @param value the new height calculation mode
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setHeightsMode(HeightsMode value) {
         if (this.mHeightsMode != value) {
             this.mHeightsMode = value;
@@ -572,7 +572,7 @@ public class ScNotches extends ScRepetitions {
      * Set the notches type.
      * @param value the notches type
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setType(NotchTypes value) {
         if (this.mType != value) {
             this.mType = value;

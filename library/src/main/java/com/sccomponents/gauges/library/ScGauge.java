@@ -1173,7 +1173,6 @@ public abstract class ScGauge extends ScDrawer
      * @param endValue      the range ending value
      * @return              the value
      */
-    @SuppressWarnings("all")
     public static float percentageToValue(float percentage, float startValue, float endValue) {
         // Calculate the delta range
         float min = Math.min(startValue, endValue);

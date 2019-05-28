@@ -37,7 +37,7 @@ public class ScPathMeasure extends PathMeasure {
     // ***************************************************************************************
     // Constructor
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public ScPathMeasure() {
         // Super
         super();
@@ -47,7 +47,7 @@ public class ScPathMeasure extends PathMeasure {
         this.mGenericMeasure = new PathMeasure();
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public ScPathMeasure(Path path, boolean forceClosed) {
         // Super
         super(path, forceClosed);
@@ -103,7 +103,8 @@ public class ScPathMeasure extends PathMeasure {
         } while (this.mGenericMeasure.nextContour());
 
         // Hold the paths as array
-        this.mPaths = list.toArray(new Path[list.size()]);
+        Path[] buffer = new Path[list.size()];
+        this.mPaths = list.toArray(buffer);
     }
 
     /**
@@ -323,7 +324,7 @@ public class ScPathMeasure extends PathMeasure {
      * Get the source path, between all contours, where the distance fall.
      * @return a Path
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public Path getPath(float distance) {
         // Check domain
         if (distance < 0.0f)
@@ -377,7 +378,7 @@ public class ScPathMeasure extends PathMeasure {
      * Divide the current path in an array of contours.
      * @return an array of Path
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public Path[] getPaths() {
         return this.mPaths;
     }
@@ -390,7 +391,7 @@ public class ScPathMeasure extends PathMeasure {
      * of path for find the right path boundaries.
      * @return the path boundaries
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public RectF getBounds() {
         return this.mBounds;
     }
@@ -404,7 +405,7 @@ public class ScPathMeasure extends PathMeasure {
      * @param threshold the threshold to define the checking area
      * @return          return -1 if the point is not on the path else the distance of the point from start
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public int getDistance(float x, float y, float threshold) {
         // Find the rectangle around the point
         float left = x - threshold;

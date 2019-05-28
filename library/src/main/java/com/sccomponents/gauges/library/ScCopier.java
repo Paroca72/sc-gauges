@@ -248,7 +248,7 @@ public class ScCopier extends ScFeature {
      * Draw a copy of the source path on the canvas.
      * @param canvas the destination canvas
      */
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unused"})
     private void drawCopy(Canvas canvas, ContourInfo info) {
         // Check if needs to redraw the bitmap
         if (this.mShader == null) {
@@ -280,7 +280,7 @@ public class ScCopier extends ScFeature {
      * @param length force the length of the path
      * @return the width
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getWidth(float distance, float length) {
         return this.getValue(
                 this.mWidths,
@@ -297,7 +297,7 @@ public class ScCopier extends ScFeature {
      * @param distance from the path start
      * @return the color
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float getWidth(float distance) {
         return this.getWidth(distance, this.getMeasure().getLength());
     }
@@ -322,7 +322,7 @@ public class ScCopier extends ScFeature {
      * Get the current stroke widths
      * @return the current stroke widths
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public float[] getWidths() {
         return this.mWidths;
     }
@@ -333,7 +333,7 @@ public class ScCopier extends ScFeature {
      * You can have two way for manage the width of the path: SMOOTH or ROUGH.
      * @param value the new width filling mode
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setWidthsMode(WidthsMode value) {
         if (this.mWidthsMode != value) {
             this.mWidthsMode = value;

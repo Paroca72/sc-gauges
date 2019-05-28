@@ -74,7 +74,6 @@ public class ScArcGauge extends ScGauge {
      * @param attrs     the attribute set
      * @param defStyle  the style
      */
-    @SuppressWarnings("all")
     private void init(Context context, AttributeSet attrs, int defStyle) {
         // Get the attributes list
         final TypedArray attrArray = context

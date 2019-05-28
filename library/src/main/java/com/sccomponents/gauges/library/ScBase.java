@@ -110,7 +110,6 @@ public abstract class ScBase extends View {
      * @param endValue      the end value
      * @return              the normalized value
      */
-    @SuppressWarnings("all")
     public static int valueRangeLimit(int value, int startValue, int endValue) {
         return (int) ScBase.valueRangeLimit((float) value, (float) startValue, (float) endValue);
     }
@@ -156,7 +155,6 @@ public abstract class ScBase extends View {
      * @param holdOrigin    if false reset the rectangle on its origin
      * @return              the new inflated rectangle
      */
-    @SuppressWarnings("all")
     public static RectF inflateRect(RectF source, float value, boolean holdOrigin) {
         // Create a copy of the rect
         RectF dest = new RectF(source);

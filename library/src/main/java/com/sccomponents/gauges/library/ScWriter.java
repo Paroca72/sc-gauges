@@ -143,7 +143,7 @@ public class ScWriter extends ScRepetitions {
         int singleRowHeight = bounds.height() / rows;
 
         if (info.position == Positions.MIDDLE)
-            return singleRowHeight - bounds.height() / 2;
+            return singleRowHeight - bounds.height() / 2.0f;
 
         if (info.position == Positions.OUTSIDE)
             return singleRowHeight - bounds.height();
@@ -389,7 +389,7 @@ public class ScWriter extends ScRepetitions {
         Rect bounds = this.getBounds(info.text);
         String[] rows = this.getTextRows(info.text);
 
-        float singleRowHeight = bounds.height() / rows.length;
+        float singleRowHeight = ((float) bounds.height()) / rows.length;
         float offsetY = this.getVerticalOffset(info) - this.getFontMetricsOffset(info);
 
         // Font size

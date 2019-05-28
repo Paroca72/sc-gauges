@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         progress.setWidths(8);
         progress.setColors(Color.parseColor("#00ff00"));
 
+        ScLabeler labeler = gauge.getLabeler();
+        labeler.setVisible(true);
+        labeler.setBending(true);
+        
         gauge.setAngleStart(0);
         gauge.setAngleSweep(270);
         gauge.setHighValue(10);
