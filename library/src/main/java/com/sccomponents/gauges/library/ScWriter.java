@@ -44,7 +44,7 @@ public class ScWriter extends ScRepetitions {
      * Constructor
      */
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public ScWriter() {
         // Super
         super();
@@ -527,7 +527,7 @@ public class ScWriter extends ScRepetitions {
      * Set the string tokens to draw on path.
      * @param values the tokens list
      */
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unused"})
     public void setTokens(String... values) {
         if (!Arrays.equals(this.mTokens, values)) {
             this.mTokens = values;
@@ -544,7 +544,7 @@ public class ScWriter extends ScRepetitions {
      * Return true if the text is bending.
      * @return the bending status
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public boolean getBending() {
         return this.mBending;
     }
@@ -575,7 +575,7 @@ public class ScWriter extends ScRepetitions {
      * Set true if want that the offset calculation consider the font metrics too.
      * @param value the current status
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setConsiderFontMetrics(boolean value) {
         if (this.mConsiderFontMetrics != value) {
             this.mConsiderFontMetrics = value;
@@ -588,7 +588,7 @@ public class ScWriter extends ScRepetitions {
      * Return the color of the background.
      * @return the background color
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public int getBackground() {
         return this.mBackground;
     }
@@ -609,7 +609,7 @@ public class ScWriter extends ScRepetitions {
      * Return the padding value than will apply to the background.
      * @return the padding value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public int getPadding() {
         return this.mPadding;
     }
@@ -661,6 +661,7 @@ public class ScWriter extends ScRepetitions {
     /**
      * This is a structure to hold the feature information before draw it
      */
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public class TokenInfo extends RepetitionInfo {
 
         // ***************************************************************************************
