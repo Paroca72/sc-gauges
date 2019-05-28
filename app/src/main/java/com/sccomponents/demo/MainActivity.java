@@ -53,8 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
         ScLabeler labeler = gauge.getLabeler();
         labeler.setVisible(true);
-        labeler.setBending(true);
-        
+        //labeler.setBending(true);
+        labeler.setBackground(Color.parseColor("#ffff00"));
+        labeler.getPainter().setTextSize(60);
+        labeler.getPainter().setTextAlign(Paint.Align.LEFT);
+
         gauge.setAngleStart(0);
         gauge.setAngleSweep(270);
         gauge.setHighValue(10);

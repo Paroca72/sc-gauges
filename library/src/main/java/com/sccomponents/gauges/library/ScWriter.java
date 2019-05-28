@@ -199,19 +199,40 @@ public class ScWriter extends ScRepetitions {
     }
 
     /**
+     * Passed the font size calculate the letters spacing
+     * @return the letter spacing
+     */
+    private float getLetterSpacing() {
+        float letterSpacing = this.getPainter().getTextSize() / 3.0f;
+        return letterSpacing < 1.0f ? 1.0f: letterSpacing;
+    }
+
+    /**
      * Get the horizontal offset where start to draw the text considering the current
      * painter alignment.
      * @param text the source text
      * @return the start position
      */
     private float getHorizontalOffset(String text) {
+        // Holder
+        Paint.Align align = this.getPainter().getTextAlign();
+
+        // Check for default value
+        if (align == Paint.Align.LEFT)
+            return 0.0f;
+
+        // Correct for bending
+        float width = this.getTextWidth(text);
+        if (this.getBending() && text.length() > 1)
+            width += this.getLetterSpacing() * (text.length() - 2);
+
         // Calculate the start position considering the painter text align
-        switch (this.getPainter().getTextAlign()) {
+        switch (align) {
             case CENTER:
-                return -this.getTextWidth(text) / 2.0f;
+                return -width / 2.0f;
 
             case RIGHT:
-                return -this.getTextWidth(text);
+                return -width;
         }
         return 0.0f;
     }
@@ -277,7 +298,8 @@ public class ScWriter extends ScRepetitions {
 
         // Holders
         float currentPos = distance;
-        float letterSpacing = 4.0f;
+        int textHeight = this.getTextBounds(token, 0, token.length()).height();
+        float letterSpacing = this.getLetterSpacing();
 
         // Get the last point info of the whole path
         float pathLength = this.getMeasure().getLength();
@@ -291,6 +313,7 @@ public class ScWriter extends ScRepetitions {
             // Holder
             char currentChar = token.charAt(index);
             Rect textBounds = this.getTextBounds(token, index, index + 1);
+            textBounds.top = textBounds.bottom - textHeight;
 
             // Draw before the paths
             if (currentPos < 0) {
@@ -334,6 +357,7 @@ public class ScWriter extends ScRepetitions {
 
             // Increase the current position
             currentPos += textBounds.width() + letterSpacing;
+
             // Restore the previous canvas state
             canvas.restore();
         }
@@ -364,7 +388,7 @@ public class ScWriter extends ScRepetitions {
         if (drawBackground) {
             // Fix the offset
             x += this.getHorizontalOffset(token);
-            y += offsetY * 2;
+            y += this.getPainter().getTextAlign() == Paint.Align.LEFT ? 0.0f: offsetY * 2;
             bounds.offset((int)x, (int)y);
 
             // Draw
