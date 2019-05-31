@@ -30,6 +30,7 @@ public class ScWriter extends ScRepetitions {
     private int mBackground;
     private int mPadding;
     private float mInterline;
+    private float mLetterSpacing;
 
     private float[] mFirstPoint;
     private float[] mGenericPoint;
@@ -55,6 +56,7 @@ public class ScWriter extends ScRepetitions {
         this.mBackground = Color.TRANSPARENT;
         this.mPadding = 0;
         this.mInterline = 1.0f;
+        this.mLetterSpacing = 0.3f;
 
         this.mRepetitionInfo = new TokenInfo();
         this.mFirstPoint = new float[2];
@@ -202,8 +204,8 @@ public class ScWriter extends ScRepetitions {
      * Passed the font size calculate the letters spacing
      * @return the letter spacing
      */
-    private float getLetterSpacing() {
-        float letterSpacing = this.getPainter().getTextSize() / 3.0f;
+    private float getInternalLetterSpacing() {
+        float letterSpacing = this.getPainter().getTextSize() * this.mLetterSpacing;
         return letterSpacing < 1.0f ? 1.0f: letterSpacing;
     }
 
@@ -224,7 +226,7 @@ public class ScWriter extends ScRepetitions {
         // Correct for bending
         float width = this.getTextWidth(text);
         if (this.getBending() && text.length() > 1)
-            width += this.getLetterSpacing() * (text.length() - 2);
+            width += this.getInternalLetterSpacing() * (text.length() - 2);
 
         // Calculate the start position considering the painter text align
         switch (align) {
@@ -299,7 +301,7 @@ public class ScWriter extends ScRepetitions {
         // Holders
         float currentPos = distance;
         int textHeight = this.getTextBounds(token, 0, token.length()).height();
-        float letterSpacing = this.getLetterSpacing();
+        float letterSpacing = this.getInternalLetterSpacing();
 
         // Get the last point info of the whole path
         float pathLength = this.getMeasure().getLength();
@@ -675,6 +677,34 @@ public class ScWriter extends ScRepetitions {
         if (this.mInterline != value) {
             this.mInterline = value;
             this.onPropertyChange("interline", value);
+        }
+    }
+
+
+    /**
+     * Return the spacing value between the text letters.
+     * The value is expressed in ratio respect the font size.
+     * Note that this setting have effect only when <code>bending</code> is <code>true</code>.
+     * The default value is 0.3
+     * @return the spacing value
+     */
+    @SuppressWarnings("unused")
+    public float getLetterSpacing() {
+        return this.mLetterSpacing;
+    }
+
+    /**
+     * Set the spacing value between the text letters.
+     * The value is expressed in ratio respect the font size.
+     * Note that this setting have effect only when <code>bending</code> is <code>true</code>.
+     * The default value is 0.3
+     * @param value the spacing value
+     */
+    @SuppressWarnings("unused")
+    public void setLetterSpacing(float value) {
+        if (this.mLetterSpacing != value) {
+            this.mLetterSpacing = value;
+            this.onPropertyChange("letterSpacing", value);
         }
     }
 

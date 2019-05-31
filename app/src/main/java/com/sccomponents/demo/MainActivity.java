@@ -39,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
         ScCopier base = gauge.getBase();
         base.setColors(Color.parseColor("#ff0000"));
-        base.setWidths(60);
+        base.setWidths(100);
 
         ScCopier progress = gauge.getProgress();
-        progress.setWidths(60);
+        progress.setWidths(100);
         progress.setColors(Color.parseColor("#00ff00"));
 
         ScNotches notches = gauge.getNotches();
@@ -55,8 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
         ScLabeler labeler = gauge.getLabeler();
         labeler.setVisible(true);
-        //labeler.setBending(true);
-        labeler.setBackground(Color.parseColor("#ffff00"));
+        labeler.setBending(true);
+        labeler.setLetterSpacing(0.3f);
+        //labeler.setBackground(Color.parseColor("#ffff00"));
         labeler.getPainter().setTextSize(60);
         labeler.getPainter().setTextAlign(Paint.Align.RIGHT);
         labeler.setPosition(ScFeature.Positions.MIDDLE);
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         gauge.setAngleStart(0);
         gauge.setAngleSweep(270);
         gauge.setHighValue(10);
+        //gauge.setPadding(30, 30, 30, 30);
     }
 
 }
