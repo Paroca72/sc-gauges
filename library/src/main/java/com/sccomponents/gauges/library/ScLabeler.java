@@ -47,7 +47,6 @@ public class ScLabeler extends ScWriter {
         this.mFormat = null;
         this.mRepetitionInfo = new LabelInfo();
 
-        this.setPosition(Positions.INSIDE);
         this.getPainter().setTextAlign(Paint.Align.CENTER);
     }
 
