@@ -148,8 +148,5 @@
     <orderEntry type="library" name="Gradle: com.android.support:support-media-compat:26.1.0@aar" level="project" />
     <orderEntry type="module" module-name="library" />
     <orderEntry type="module" module-name="library" />
-    <orderEntry type="module" module-name="library" />
-    <orderEntry type="module" module-name="library" />
-    <orderEntry type="module" module-name="library" />
   </component>
 </module>

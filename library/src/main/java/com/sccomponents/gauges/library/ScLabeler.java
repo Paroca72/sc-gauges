@@ -2,6 +2,7 @@ package com.sccomponents.gauges.library;
 
 import android.graphics.Paint;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 
@@ -165,23 +166,15 @@ public class ScLabeler extends ScWriter {
      * @param value the value to format
      * @return the formatted value
      */
-    @SuppressWarnings("unused")
-    public String getFormattedValue(String value) {
-        // Check the pattern and format
-        String pattern = this.mFormat == null || this.mFormat.isEmpty() ? "%s": this.mFormat;
-        return String.format(pattern, value);
-    }
-
-    /**
-     * Get a formatted value using the format patter defined in settings.
-     * @param value the value to format
-     * @return the formatted value
-     */
     @SuppressWarnings({"unused", "WeakerAccess"})
-    public String getFormattedValue(float value) {
+    public String getFormattedNumber(float value) {
         // Check the pattern and format
-        String pattern = this.mFormat == null || this.mFormat.isEmpty() ? "%.1f": this.mFormat;
-        return String.format(pattern, value);
+        if (this.mFormat == null || this.mFormat.isEmpty())
+            return Float.toString(value);
+
+        // Else
+        DecimalFormat formatter = new DecimalFormat(this.mFormat);
+        return formatter.format(value);
     }
 
 
@@ -313,7 +306,7 @@ public class ScLabeler extends ScWriter {
 
             // If linked to progress
             if (feature.getLinkedToProgress())
-                this.text = feature.getFormattedValue(percentage);
+                this.text = feature.getFormattedNumber(percentage);
 
             // Find the center as the point on path
             this.point[0] = this.mGenericPoint[0];

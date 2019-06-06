@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         labeler.getPainter().setTextSize(60);
         labeler.getPainter().setTextAlign(Paint.Align.RIGHT);
         labeler.setPosition(ScFeature.Positions.MIDDLE);
+        labeler.setFormat("0");
 
         gauge.setAngleStart(0);
         gauge.setAngleSweep(270);

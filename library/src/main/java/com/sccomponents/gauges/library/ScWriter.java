@@ -522,6 +522,10 @@ public class ScWriter extends ScRepetitions {
 
         destination.setBending(this.mBending);
         destination.setConsiderFontMetrics(this.mConsiderFontMetrics);
+        destination.setBackground(this.mBackground);
+        destination.setPadding(this.mPadding);
+        destination.setInterline(this.mInterline);
+        destination.setLetterSpacing(this.mLetterSpacing);
     }
 
     /**
