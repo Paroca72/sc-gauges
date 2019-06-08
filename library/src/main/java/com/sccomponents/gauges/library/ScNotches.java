@@ -596,7 +596,7 @@ public class ScNotches extends ScRepetitions {
     /**
      * This is a structure to hold the feature information before draw it
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public class NotchInfo extends RepetitionInfo {
 
         // ***************************************************************************************

@@ -845,7 +845,7 @@ public abstract class ScDrawer extends ScBase {
 
         // Call the event if need
         if (this.mOnPathTouchListener != null) {
-            this.mOnPathTouchListener.onTouch(distance);
+            this.mOnPathTouchListener.onTouch(this, distance);
         }
     }
 
@@ -858,7 +858,7 @@ public abstract class ScDrawer extends ScBase {
 
         // Call the event if need
         if (this.mOnPathTouchListener != null) {
-            this.mOnPathTouchListener.onRelease();
+            this.mOnPathTouchListener.onRelease(this);
         }
     }
 
@@ -869,7 +869,7 @@ public abstract class ScDrawer extends ScBase {
     protected void onPathSlide(float distance) {
         // Call the event if need
         if (this.mOnPathTouchListener != null) {
-            this.mOnPathTouchListener.onSlide(distance);
+            this.mOnPathTouchListener.onSlide(this, distance);
         }
     }
 
@@ -1074,21 +1074,24 @@ public abstract class ScDrawer extends ScBase {
 
         /**
          * Called when the path is touched.
+         * @param drawer the source object
          * @param distance the distance from the path start
          */
-        void onTouch(float distance);
+        void onTouch(ScDrawer drawer, float distance);
 
         /**
          * Called when the user release the pressure.
+         * @param drawer the source object
          */
-        void onRelease();
+        void onRelease(ScDrawer drawer);
 
         /**
          * Called when the user move the pressure on the screen.
          * This called only if before had a onTouch event.
+         * @param drawer the source object
          * @param distance the distance from the path start
          */
-        void onSlide(float distance);
+        void onSlide(ScDrawer drawer, float distance);
     }
 
     /**

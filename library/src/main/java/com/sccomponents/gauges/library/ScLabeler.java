@@ -213,7 +213,7 @@ public class ScLabeler extends ScWriter {
      * The format pattern will applied using the android Formatter.
      * @param value the format pattern
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setFormat(String value) {
         // Store the value
         if (!this.equals(this.mFormat, value)) {

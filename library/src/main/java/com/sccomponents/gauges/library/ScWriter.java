@@ -627,7 +627,7 @@ public class ScWriter extends ScRepetitions {
      * Set the color of the background.
      * @param value the background color
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setBackground(int value) {
         if (this.mBackground != value) {
             this.mBackground = value;
@@ -648,7 +648,7 @@ public class ScWriter extends ScRepetitions {
      * Set the padding value than will apply to the background.
      * @param value the padding value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setPadding(int value) {
         if (this.mPadding != value) {
             this.mPadding = value;
@@ -676,7 +676,7 @@ public class ScWriter extends ScRepetitions {
      * The default value is 1.0
      * @param value the interline value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setInterline(float value) {
         if (this.mInterline != value) {
             this.mInterline = value;

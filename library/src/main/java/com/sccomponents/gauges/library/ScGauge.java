@@ -180,7 +180,7 @@ public abstract class ScGauge extends ScDrawer
     private ScFeature.OnDrawContourListener proxyFeatureDrawListener =
             new ScFeature.OnDrawContourListener() {
                 @Override
-                public void onDrawContour(ScFeature.ContourInfo info) {
+                public void onDrawContour(ScFeature source, ScFeature.ContourInfo info) {
                     callOnDrawContourEvent(info);
                 }
             };
@@ -189,7 +189,7 @@ public abstract class ScGauge extends ScDrawer
     private ScRepetitions.OnDrawRepetitionListener proxyRepetitionsDrawListener =
             new ScRepetitions.OnDrawRepetitionListener() {
                 @Override
-                public void onDrawRepetition(ScRepetitions.RepetitionInfo info) {
+                public void onDrawRepetition(ScRepetitions source, ScRepetitions.RepetitionInfo info) {
                     callOnDrawRepetitionEvent(info);
                 }
             };
@@ -886,7 +886,7 @@ public abstract class ScGauge extends ScDrawer
      */
     private void callOnDrawContourEvent(ScFeature.ContourInfo info) {
         if (this.mOnDrawListener != null)
-            this.mOnDrawListener.onDrawContour(info);
+            this.mOnDrawListener.onDrawContour(this, info);
     }
 
     /**
@@ -895,7 +895,7 @@ public abstract class ScGauge extends ScDrawer
      */
     private void callOnDrawRepetitionEvent(ScRepetitions.RepetitionInfo info) {
         if (this.mOnDrawListener != null)
-            this.mOnDrawListener.onDrawRepetition(info);
+            this.mOnDrawListener.onDrawRepetition(this, info);
     }
 
     /**
@@ -919,6 +919,7 @@ public abstract class ScGauge extends ScDrawer
         // Manage the listener
         if (this.mOnEventListener != null) {
             this.mOnEventListener.onValueChange(
+                    this,
                     this.mLowValueAnimated,
                     this.mHighValueAnimated,
                     animation.isRunning()
@@ -955,7 +956,7 @@ public abstract class ScGauge extends ScDrawer
      * @param value the new value
      */
     @Override
-    public void onPropertyChanged(String name, Object value) {
+    public void onPropertyChanged(ScFeature feature, String name, Object value) {
         invalidate();
     }
 
@@ -1458,7 +1459,7 @@ public abstract class ScGauge extends ScDrawer
          * @param lowValue  the current low value
          * @param highValue the current high value
          */
-        void onValueChange(float lowValue, float highValue, boolean isRunning);
+        void onValueChange(ScGauge gauge, float lowValue, float highValue, boolean isRunning);
 
     }
 
@@ -1479,15 +1480,17 @@ public abstract class ScGauge extends ScDrawer
 
         /**
          * Called before draw the contour.
+         * @param gauge the source object
          * @param info the feature info
          */
-        void onDrawContour(ScFeature.ContourInfo info);
+        void onDrawContour(ScGauge gauge, ScFeature.ContourInfo info);
 
         /**
          * Called before draw the repetition.
+         * @param gauge the source object
          * @param info the feature info
          */
-        void onDrawRepetition(ScRepetitions.RepetitionInfo info);
+        void onDrawRepetition(ScGauge gauge, ScRepetitions.RepetitionInfo info);
 
     }
 

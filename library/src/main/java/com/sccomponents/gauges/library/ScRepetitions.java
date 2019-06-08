@@ -180,7 +180,7 @@ public abstract class ScRepetitions extends ScFeature {
 
             // Call the base listener
             if (this.mOnDrawListener != null)
-                this.mOnDrawListener.onDrawRepetition(info);
+                this.mOnDrawListener.onDrawRepetition(this, info);
 
             // Check for visibility
             if (!info.visible)
@@ -436,9 +436,10 @@ public abstract class ScRepetitions extends ScFeature {
 
         /**
          * Called before draw the repetition.
+         * @param repetition the source object
          * @param info the feature info
          */
-        void onDrawRepetition(RepetitionInfo info);
+        void onDrawRepetition(ScRepetitions repetition, RepetitionInfo info);
 
     }
 
