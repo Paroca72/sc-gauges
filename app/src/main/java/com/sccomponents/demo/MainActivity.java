@@ -34,39 +34,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Find the components
-        final ScArcGauge gauge = (ScArcGauge) this.findViewById(R.id.gauge);
+        final ScArcGauge gauge = this.findViewById(R.id.gauge);
         assert gauge != null;
 
-        ScCopier base = gauge.getBase();
-        base.setColors(Color.parseColor("#ff0000"));
-        base.setWidths(100);
 
-        ScCopier progress = gauge.getProgress();
-        progress.setWidths(100);
-        progress.setColors(Color.parseColor("#00ff00"));
-
-        ScNotches notches = gauge.getNotches();
-        notches.setRepetitions(11);
-        notches.setWidths(10);
-        notches.setHeights(10);
-        notches.setColors(Color.parseColor("#000000"));
-        notches.setPosition(ScFeature.Positions.MIDDLE);
-        gauge.bringOnTop(notches);
-
-        ScLabeler labeler = gauge.getLabeler();
-        labeler.setVisible(true);
-        labeler.setBending(true);
-        labeler.setLetterSpacing(0.3f);
-        //labeler.setBackground(Color.parseColor("#ffff00"));
-        labeler.getPainter().setTextSize(60);
-        labeler.getPainter().setTextAlign(Paint.Align.RIGHT);
-        labeler.setPosition(ScFeature.Positions.MIDDLE);
-        labeler.setFormat("0");
-
-        gauge.setAngleStart(0);
-        gauge.setAngleSweep(270);
-        gauge.setHighValue(10);
-        //gauge.setPadding(30, 30, 30, 30);
     }
 
 }

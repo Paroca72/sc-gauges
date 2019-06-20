@@ -2,20 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:sc="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical|center_horizontal">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="#000000">
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
-            xmlns:sc="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="50dp" />
+            android:layout_marginTop="50dp"
+            android:padding="10dp"
+            app:scPathTouchable="true"
+            app:sccAngleStart="270"
+            app:sccNotchesHeight="10dp"
+            app:sccNotchesWidth="10dp"
+            app:sccProgressColor="#3DB8B7"
+            app:sccProgressRoundedCap="true"
+            app:sccProgressWidth="8dp"
+            app:sccSnapToNotches="true"
+            app:sccStrokeColor="#f5f5f5"
+            app:sccStrokeWidth="20dp"
+            />
 
     </FrameLayout>
 

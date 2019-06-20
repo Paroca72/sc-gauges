@@ -159,7 +159,16 @@ public class ScCopier extends ScFeature {
         }
 
         // Clone the source path adjusting the y position
-        for (float distance = fixedStart; distance < fixedEnd; distance++) {
+        float distance = fixedStart;
+        boolean running = true;
+
+        while (running) {
+            // Check for exit
+            if (distance > fixedEnd) {
+                distance = fixedEnd;
+                running = false;
+            }
+
             // Fix the distance as the return way check is different and
             // calculate the right point position on the path.
             float fixedDistance = isReturn ? startFrom - distance : distance;
@@ -172,6 +181,9 @@ public class ScCopier extends ScFeature {
             else
                 // Draw a line
                 path.lineTo(this.mFirstPoint[0], this.mFirstPoint[1]);
+
+            // Next step
+            distance ++;
         }
 
         // Conjunction with arc
