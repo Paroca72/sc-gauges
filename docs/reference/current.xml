@@ -1,5 +1,5 @@
 <api>
-<package name="com.sccomponents.codes.gauges"
+<package name="com.sccomponents.gauges.library"
 >
 <class name="ScArcGauge"
  extends="com.sccomponents.gauges.library.ScGauge"
@@ -339,6 +339,56 @@
  visibility="public"
 >
 </constructor>
+<method name="getWidth"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="distance" type="float">
+</parameter>
+<parameter name="length" type="float">
+</parameter>
+</method>
+<method name="getWidth"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="distance" type="float">
+</parameter>
+</method>
+<method name="getWidths"
+ return="float[]"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getWidthsMode"
+ return="com.sccomponents.gauges.library.ScFeature.WidthsMode"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="onDraw"
  return="void"
  abstract="false"
@@ -352,6 +402,32 @@
 <parameter name="canvas" type="android.graphics.Canvas">
 </parameter>
 <parameter name="info" type="com.sccomponents.gauges.library.ScFeature.ContourInfo">
+</parameter>
+</method>
+<method name="setWidths"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="values" type="float...">
+</parameter>
+</method>
+<method name="setWidthsMode"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="com.sccomponents.gauges.library.ScFeature.WidthsMode">
 </parameter>
 </method>
 </class>
@@ -537,6 +613,17 @@
 <parameter name="threshold" type="float">
 </parameter>
 </method>
+<method name="getDoubleBuffering"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getFillingArea"
  return="com.sccomponents.gauges.library.ScDrawer.FillingArea"
  abstract="false"
@@ -673,6 +760,19 @@
  visibility="public"
 >
 <parameter name="feature" type="com.sccomponents.gauges.library.ScFeature">
+</parameter>
+</method>
+<method name="setDoubleBuffering"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="boolean">
 </parameter>
 </method>
 <method name="setFillingArea"
@@ -850,6 +950,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="drawer" type="com.sccomponents.gauges.library.ScDrawer">
+</parameter>
 </method>
 <method name="onSlide"
  return="void"
@@ -861,6 +963,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="drawer" type="com.sccomponents.gauges.library.ScDrawer">
+</parameter>
 <parameter name="distance" type="float">
 </parameter>
 </method>
@@ -874,6 +978,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="drawer" type="com.sccomponents.gauges.library.ScDrawer">
+</parameter>
 <parameter name="distance" type="float">
 </parameter>
 </method>
@@ -922,38 +1028,6 @@
 <parameter name="destination" type="float[]">
 </parameter>
 </method>
-<method name="compare"
- return="int"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="first" type="float">
-</parameter>
-<parameter name="second" type="float">
-</parameter>
-<parameter name="precision" type="int">
-</parameter>
-</method>
-<method name="compare"
- return="int"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="protected"
->
-<parameter name="first" type="float">
-</parameter>
-<parameter name="second" type="float">
-</parameter>
-</method>
 <method name="copy"
  return="void"
  abstract="false"
@@ -994,6 +1068,17 @@
 </parameter>
 <parameter name="b" type="java.lang.String">
 </parameter>
+</method>
+<method name="freeBitmapMemory"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
 </method>
 <method name="getAngle"
  return="float"
@@ -1084,8 +1169,8 @@
 <parameter name="percentage" type="float">
 </parameter>
 </method>
-<method name="getEdges"
- return="com.sccomponents.gauges.library.ScFeature.Positions"
+<method name="getDoubleBuffering"
+ return="boolean"
  abstract="false"
  native="false"
  synchronized="false"
@@ -1108,17 +1193,6 @@
 </method>
 <method name="getEndToDistance"
  return="float"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getFloatComparisonPrecision"
- return="int"
  abstract="false"
  native="false"
  synchronized="false"
@@ -1254,6 +1328,21 @@
  visibility="public"
 >
 </method>
+<method name="getString"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="values" type="java.lang.String[]">
+</parameter>
+<parameter name="ratio" type="float">
+</parameter>
+</method>
 <method name="getTag"
  return="java.lang.String"
  abstract="false"
@@ -1299,56 +1388,6 @@
 </method>
 <method name="getVisible"
  return="boolean"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getWidth"
- return="float"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="distance" type="float">
-</parameter>
-<parameter name="length" type="float">
-</parameter>
-</method>
-<method name="getWidth"
- return="float"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="distance" type="float">
-</parameter>
-</method>
-<method name="getWidths"
- return="float[]"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</method>
-<method name="getWidthsMode"
- return="com.sccomponents.gauges.library.ScFeature.WidthsMode"
  abstract="false"
  native="false"
  synchronized="false"
@@ -1447,7 +1486,7 @@
 <parameter name="value" type="boolean">
 </parameter>
 </method>
-<method name="setEdges"
+<method name="setDoubleBuffering"
  return="void"
  abstract="false"
  native="false"
@@ -1457,7 +1496,7 @@
  deprecated="not deprecated"
  visibility="public"
 >
-<parameter name="value" type="com.sccomponents.gauges.library.ScFeature.Positions">
+<parameter name="value" type="boolean">
 </parameter>
 </method>
 <method name="setEndTo"
@@ -1471,19 +1510,6 @@
  visibility="public"
 >
 <parameter name="percentage" type="float">
-</parameter>
-</method>
-<method name="setFloatComparisonPrecision"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="value" type="int">
 </parameter>
 </method>
 <method name="setOnDrawContourListener"
@@ -1590,32 +1616,6 @@
 <parameter name="value" type="boolean">
 </parameter>
 </method>
-<method name="setWidths"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="values" type="float...">
-</parameter>
-</method>
-<method name="setWidthsMode"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="value" type="com.sccomponents.gauges.library.ScFeature.WidthsMode">
-</parameter>
-</method>
 </class>
 <class name="ScFeature.ColorsMode"
  extends="java.lang.Enum"
@@ -1701,16 +1701,6 @@
  visibility="public"
 >
 </field>
-<field name="isVisible"
- type="boolean"
- transient="false"
- volatile="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-</field>
 <field name="offset"
  type="float[]"
  transient="false"
@@ -1753,6 +1743,16 @@
  visibility="public"
 >
 </field>
+<field name="visible"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
 </class>
 <interface name="ScFeature.OnDrawContourListener"
  abstract="true"
@@ -1771,6 +1771,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="feature" type="com.sccomponents.gauges.library.ScFeature">
+</parameter>
 <parameter name="info" type="com.sccomponents.gauges.library.ScFeature.ContourInfo">
 </parameter>
 </method>
@@ -1792,6 +1794,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="feature" type="com.sccomponents.gauges.library.ScFeature">
+</parameter>
 <parameter name="name" type="java.lang.String">
 </parameter>
 <parameter name="value" type="java.lang.Object">
@@ -1980,6 +1984,17 @@
  visibility="public"
 >
 </method>
+<method name="getLabeler"
+ return="com.sccomponents.gauges.library.ScLabeler"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getLowPointer"
  return="com.sccomponents.gauges.library.ScPointer"
  abstract="false"
@@ -2093,6 +2108,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="feature" type="com.sccomponents.gauges.library.ScFeature">
+</parameter>
 <parameter name="name" type="java.lang.String">
 </parameter>
 <parameter name="value" type="java.lang.Object">
@@ -2240,6 +2257,36 @@
 <parameter name="value" type="boolean">
 </parameter>
 </method>
+<method name="snapToNotches"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
+</parameter>
+</method>
+<method name="valueToPercentage"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
+</parameter>
+<parameter name="startRange" type="float">
+</parameter>
+<parameter name="endRange" type="float">
+</parameter>
+</method>
 <field name="BASE_IDENTIFIER"
  type="java.lang.String"
  transient="false"
@@ -2256,6 +2303,17 @@
  transient="false"
  volatile="false"
  value="&quot;ScGauge_Pointer_High&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="LABELER_IDENTIFIER"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;ScGauge_Labeler&quot;"
  static="true"
  final="true"
  deprecated="not deprecated"
@@ -2324,6 +2382,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="gauge" type="com.sccomponents.gauges.library.ScGauge">
+</parameter>
 <parameter name="info" type="com.sccomponents.gauges.library.ScFeature.ContourInfo">
 </parameter>
 </method>
@@ -2337,6 +2397,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="gauge" type="com.sccomponents.gauges.library.ScGauge">
+</parameter>
 <parameter name="info" type="com.sccomponents.gauges.library.ScRepetitions.RepetitionInfo">
 </parameter>
 </method>
@@ -2358,6 +2420,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="gauge" type="com.sccomponents.gauges.library.ScGauge">
+</parameter>
 <parameter name="lowValue" type="float">
 </parameter>
 <parameter name="highValue" type="float">
@@ -2398,6 +2462,165 @@
  visibility="public"
 >
 </method>
+</class>
+<class name="ScLabeler"
+ extends="com.sccomponents.gauges.library.ScWriter"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="ScLabeler"
+ type="com.sccomponents.gauges.library.ScLabeler"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="copy"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="destination" type="com.sccomponents.gauges.library.ScLabeler">
+</parameter>
+</method>
+<method name="getDistance"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getFormat"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getFormattedNumber"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
+</parameter>
+</method>
+<method name="getLinkedToProgress"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setDistance"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
+</parameter>
+</method>
+<method name="setFormat"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="java.lang.String">
+</parameter>
+</method>
+<method name="setLinkedToProgress"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="boolean">
+</parameter>
+</method>
+</class>
+<class name="ScLabeler.LabelInfo"
+ extends="com.sccomponents.gauges.library.ScWriter.TokenInfo"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="LabelInfo"
+ type="com.sccomponents.gauges.library.ScLabeler.LabelInfo"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="reset"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="feature" type="com.sccomponents.gauges.library.ScLabeler">
+</parameter>
+<parameter name="contour" type="int">
+</parameter>
+<parameter name="repetition" type="int">
+</parameter>
+</method>
+<field name="source"
+ type="com.sccomponents.gauges.library.ScLabeler"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
 </class>
 <class name="ScNotches"
  extends="com.sccomponents.gauges.library.ScRepetitions"
@@ -2513,6 +2736,21 @@
 >
 <parameter name="distance" type="float">
 </parameter>
+<parameter name="length" type="float">
+</parameter>
+</method>
+<method name="getHeight"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="distance" type="float">
+</parameter>
 </method>
 <method name="getHeights"
  return="float[]"
@@ -2538,6 +2776,56 @@
 </method>
 <method name="getType"
  return="com.sccomponents.gauges.library.ScNotches.NotchTypes"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getWidth"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="distance" type="float">
+</parameter>
+<parameter name="length" type="float">
+</parameter>
+</method>
+<method name="getWidth"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="distance" type="float">
+</parameter>
+</method>
+<method name="getWidths"
+ return="float[]"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getWidthsMode"
+ return="com.sccomponents.gauges.library.ScFeature.WidthsMode"
  abstract="false"
  native="false"
  synchronized="false"
@@ -2610,6 +2898,45 @@
  visibility="public"
 >
 <parameter name="value" type="com.sccomponents.gauges.library.ScNotches.NotchTypes">
+</parameter>
+</method>
+<method name="setWidths"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="values" type="float...">
+</parameter>
+</method>
+<method name="setWidthsMode"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="com.sccomponents.gauges.library.ScFeature.WidthsMode">
+</parameter>
+</method>
+<method name="snapToNotches"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
 </parameter>
 </method>
 </class>
@@ -2711,6 +3038,16 @@
 </field>
 <field name="type"
  type="com.sccomponents.gauges.library.ScNotches.NotchTypes"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="width"
+ type="float"
  transient="false"
  volatile="false"
  static="false"
@@ -2823,7 +3160,7 @@
 </parameter>
 </method>
 <method name="getDistance"
- return="int"
+ return="float"
  abstract="false"
  native="false"
  synchronized="false"
@@ -2919,6 +3256,17 @@
 <parameter name="destination" type="com.sccomponents.gauges.library.ScPointer">
 </parameter>
 </method>
+<method name="getDistance"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getHaloAlpha"
  return="int"
  abstract="false"
@@ -2963,8 +3311,8 @@
  visibility="public"
 >
 </method>
-<method name="getValue"
- return="float"
+<method name="setDistance"
+ return="void"
  abstract="false"
  native="false"
  synchronized="false"
@@ -2973,6 +3321,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="value" type="float">
+</parameter>
 </method>
 <method name="setHaloAlpha"
  return="void"
@@ -3011,19 +3361,6 @@
  visibility="public"
 >
 <parameter name="value" type="boolean">
-</parameter>
-</method>
-<method name="setValue"
- return="void"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="value" type="float">
 </parameter>
 </method>
 </class>
@@ -3123,6 +3460,17 @@
 <parameter name="repetition" type="int">
 </parameter>
 </method>
+<method name="getEdges"
+ return="com.sccomponents.gauges.library.ScFeature.Positions"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getLastRepetitionOnPathEnd"
  return="boolean"
  abstract="false"
@@ -3210,6 +3558,19 @@
 <parameter name="info" type="com.sccomponents.gauges.library.ScRepetitions.RepetitionInfo">
 </parameter>
 </method>
+<method name="setEdges"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="com.sccomponents.gauges.library.ScFeature.Positions">
+</parameter>
+</method>
 <method name="setLastRepetitionOnPathEnd"
  return="void"
  abstract="false"
@@ -3275,19 +3636,6 @@
 <parameter name="value" type="float">
 </parameter>
 </method>
-<method name="snapToRepetitions"
- return="float"
- abstract="false"
- native="false"
- synchronized="false"
- static="false"
- final="false"
- deprecated="not deprecated"
- visibility="public"
->
-<parameter name="value" type="float">
-</parameter>
-</method>
 </class>
 <interface name="ScRepetitions.OnDrawRepetitionListener"
  abstract="true"
@@ -3306,6 +3654,8 @@
  deprecated="not deprecated"
  visibility="public"
 >
+<parameter name="repetition" type="com.sccomponents.gauges.library.ScRepetitions">
+</parameter>
 <parameter name="info" type="com.sccomponents.gauges.library.ScRepetitions.RepetitionInfo">
 </parameter>
 </method>
@@ -3446,8 +3796,8 @@
  visibility="public"
 >
 </field>
-<field name="width"
- type="float"
+<field name="visible"
+ type="boolean"
  transient="false"
  volatile="false"
  static="false"
@@ -3486,6 +3836,17 @@
 <parameter name="destination" type="com.sccomponents.gauges.library.ScWriter">
 </parameter>
 </method>
+<method name="getBackground"
+ return="int"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
 <method name="getBending"
  return="boolean"
  abstract="false"
@@ -3499,6 +3860,39 @@
 </method>
 <method name="getConsiderFontMetrics"
  return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getInterline"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getLetterSpacing"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getPadding"
+ return="int"
  abstract="false"
  native="false"
  synchronized="false"
@@ -3534,6 +3928,19 @@
 <parameter name="info" type="com.sccomponents.gauges.library.ScRepetitions.RepetitionInfo">
 </parameter>
 </method>
+<method name="setBackground"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="int">
+</parameter>
+</method>
 <method name="setBending"
  return="void"
  abstract="false"
@@ -3558,6 +3965,45 @@
  visibility="public"
 >
 <parameter name="value" type="boolean">
+</parameter>
+</method>
+<method name="setInterline"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
+</parameter>
+</method>
+<method name="setLetterSpacing"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="float">
+</parameter>
+</method>
+<method name="setPadding"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="int">
 </parameter>
 </method>
 <method name="setTokens"
@@ -3607,8 +4053,28 @@
 <parameter name="repetition" type="int">
 </parameter>
 </method>
+<field name="background"
+ type="int"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
 <field name="bending"
  type="boolean"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="padding"
+ type="int"
  transient="false"
  volatile="false"
  static="false"
