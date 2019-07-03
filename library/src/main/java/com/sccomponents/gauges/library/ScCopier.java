@@ -76,6 +76,18 @@ public class ScCopier extends ScFeature {
     // Private methods
 
     /**
+     * Move a point considering an angle
+     * @param point    the point to move
+     * @param distance the distance
+     * @param angle    the angle
+     */
+    private void movePoint(float[] point, float distance, float angle) {
+        double radiant = Math.toRadians(angle);
+        point[0] += distance * Math.cos(radiant);
+        point[1] += distance * Math.sin(radiant);
+    }
+
+    /**
      * Get the point on the path given the distance from the start and apply the offset
      * by the line position respect to the path.
      */
@@ -87,18 +99,6 @@ public class ScCopier extends ScFeature {
         // Get the center and calc the rectangle area
         float angle = this.getPointAndAngle(distance, point);
         this.movePoint(point, halfWidth, angle + 90 * multiplier);
-    }
-
-    /**
-     * Move a point considering an angle
-     * @param point    the point to move
-     * @param distance the distance
-     * @param angle    the angle
-     */
-    private void movePoint(float[] point, float distance, float angle) {
-        double radiant = Math.toRadians(angle);
-        point[0] += distance * Math.cos(radiant);
-        point[1] += distance * Math.sin(radiant);
     }
 
     /**
@@ -164,7 +164,7 @@ public class ScCopier extends ScFeature {
 
         while (running) {
             // Check for exit
-            if (distance > fixedEnd) {
+            if (Float.compare(distance, fixedEnd) == 1) {
                 distance = fixedEnd;
                 running = false;
             }
@@ -322,7 +322,7 @@ public class ScCopier extends ScFeature {
      * Set the current stroke widths
      * @param values the new stroke widths
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setWidths(float... values) {
         if (!Arrays.equals(this.mWidths, values)) {
             this.mWidths = values;
@@ -405,16 +405,6 @@ public class ScCopier extends ScFeature {
     }
 
     /**
-     * Set the path
-     * @param value the painter
-     */
-    @Override
-    public void setPath(Path value) {
-        super.setPath(value);
-        this.onPropertyChange("path", value);
-    }
-
-    /**
      * The draw method to override in the inherited classes.
      * @param canvas where draw
      * @param info   the contour info
@@ -452,7 +442,7 @@ public class ScCopier extends ScFeature {
     protected void onPropertyChange(String name, Object value) {
         // Consider to redraw the shader
         String[] properties = new String[] {
-                "path", "paint", "colors", "colorsMode", "considerContours",
+                "paint", "colors", "colorsMode", "considerContours",
                 "position", "widths", "widthsMode"
         };
         boolean contains = Arrays.asList(properties).contains(name);

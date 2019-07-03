@@ -1,13 +1,13 @@
 package com.sccomponents.gauges.library;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class extends the ScFeature give to it the possibility to manage the repetitions.
@@ -23,7 +23,7 @@ public abstract class ScRepetitions extends ScFeature {
 
     private int mRepetitions;
     private float mSpaceBetween;
-    private float[] mPositions;
+    private boolean mSpaceBetweenAsPercentage;
     private float mRepetitionOffset;
     private boolean mLastRepetitionOnPathEnd;
     private RepetitionInfo mRepetitionInfo;
@@ -45,7 +45,7 @@ public abstract class ScRepetitions extends ScFeature {
         // Repetitions
         this.mRepetitions = 0;
         this.mSpaceBetween = 0.0f;
-        this.mPositions = new float[]{};
+        this.mSpaceBetweenAsPercentage = true;
         this.mRepetitionOffset = 0;
         this.mLastRepetitionOnPathEnd = true;
         this.mEdges = Positions.MIDDLE;
@@ -94,45 +94,47 @@ public abstract class ScRepetitions extends ScFeature {
     // Private methods
 
     /**
-     * Calculate the number of repetition considering the space between them in pixel.
-     * @return the repetitions
-     * @hide
+     * return a float with one digits precision
+     * @param value number
+     * @return rounded float
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
-    protected float[] calculateRepetitions() {
-        // If no value return the default value
-        if (this.mSpaceBetween <= 0.0f)
-            return new float[]{};
+    private float toRoundedFloat(float value) {
+        return new BigDecimal(value)
+                .setScale(2, RoundingMode.FLOOR)
+                .floatValue();
+    }
 
-        // Holders
-        float length = this.getMeasure().getLength();
-        float currentPosition = -this.mSpaceBetween;
-        List<Float> repetitions = new ArrayList<>();
+    /**
+     * Convert the space between always in pixel since could be treat as percentage.
+     * This is always calculate in every cases: set repetitions ot set space between.
+     * @return the pixels
+     */
+    private float getSpaceBetweenInPixels() {
+        // Check for space between
+        if (this.mSpaceBetween > 0.0f) {
+            // Treat as percentage
+            if (this.mSpaceBetweenAsPercentage)
+                return (this.getMeasure().getLength() * this.mSpaceBetween) / 100.0f;
 
-        // Start calculate
-        while (true) {
-            // Adjust the current position and check
-            currentPosition += this.mSpaceBetween;
-            if (this.compare(currentPosition, length) == 1) break;
-
-            // Store the value
-            float floor = new BigDecimal(currentPosition)
-                    .setScale(1, RoundingMode.FLOOR)
-                    .floatValue();
-            repetitions.add(floor);
+            // Treat as pixels
+            return this.mSpaceBetween;
         }
 
-        // Check for last
-        if (this.mLastRepetitionOnPathEnd)
-            repetitions.add(length);
+        // Check the repetitions
+        if (this.mRepetitions == 1)
+            return this.getMeasure().getLength();
 
-        // Convert to primitive
-        float[] primitive = new float[repetitions.size()];
-        for(int index = 0, len = repetitions.size(); index < len; index ++)
-            primitive[index] = repetitions.get(index);
+        if (this.mRepetitions > 1) {
+            // Fix the repetition count.
+            int repetitions = this.mRepetitions -
+                    (this.mLastRepetitionOnPathEnd && !this.getMeasure().isClosed() ? 1: 0);
 
-        // Return
-        return primitive;
+            // Calculate the percentage of the path length
+            return this.getMeasure().getLength() / (float) repetitions;
+        }
+
+        // Not found
+        return 0.0f;
     }
 
     /**
@@ -167,14 +169,15 @@ public abstract class ScRepetitions extends ScFeature {
      */
     @SuppressWarnings({"unused", "WeakerAccess"})
     protected void drawRepetitions(Canvas canvas, int contour) {
-        // Calculate the repetitions positions if needs
-        if (this.mSpaceBetween > 0) {
-            this.mPositions = this.calculateRepetitions();
-            this.mRepetitions = this.mPositions.length;
-        }
+        // Holders
+        float spaceBetween = this.getSpaceBetweenInPixels();
+        float len = this.getMeasure().getLength();
+        float distance = this.mRepetitionOffset;
+        int repetition = 1;
 
-        // Cycle all repetition
-        for (int repetition = 1; repetition <= this.mRepetitions; repetition++) {
+        // All the path length
+        while (spaceBetween > 0 &&
+                this.toRoundedFloat(distance) <= this.toRoundedFloat(len)) {
             // Get the drawing info
             RepetitionInfo info = this.getRepetitionInfo(contour, repetition);
 
@@ -183,13 +186,16 @@ public abstract class ScRepetitions extends ScFeature {
                 this.mOnDrawListener.onDrawRepetition(this, info);
 
             // Check for visibility
-            if (!info.visible)
-                continue;
+            if (info.visible) {
+                // Call the draw for the single repetition
+                canvas.save();
+                this.drawRepetition(canvas, info);
+                canvas.restore();
+            }
 
-            // Call the draw for the single repetition
-            canvas.save();
-            this.drawRepetition(canvas, info);
-            canvas.restore();
+            // Increase all triggers
+            distance += spaceBetween;
+            repetition += 1;
         }
     }
 
@@ -221,13 +227,13 @@ public abstract class ScRepetitions extends ScFeature {
      * @hide
      */
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, Path path, Matrix matrix) {
         // Check for repetition
         if (this.mRepetitions == 0 && this.mSpaceBetween == 0)
             return ;
 
         // Call the super
-        super.draw(canvas);
+        super.draw(canvas, path, matrix);
     }
 
     /**
@@ -237,29 +243,23 @@ public abstract class ScRepetitions extends ScFeature {
      */
     @SuppressWarnings({"unused", "WeakerAccess"})
     public float getDistance(int repetition) {
-        // Check for zero value and limits
-        if (repetition < 0) repetition = 0;
+        return this.getSpaceBetweenInPixels() * (repetition - 1);
+    }
 
-        if (this.mRepetitions == 0 || repetition == 0)
-        return this.mRepetitionOffset;
+    /**
+     * Check if a repetition if over the limits
+     * @param   distance the current distance from the path start
+     * @return  if over the global limits
+     */
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    public boolean isOverLimits(float distance) {
+        // Limit precision
+        float position = this.toRoundedFloat(distance);
+        float start = this.toRoundedFloat(this.getStartAtDistance());
+        float end = this.toRoundedFloat(this.getEndToDistance());
 
-        // Check for auto-calculated repetitions.
-        if (this.mSpaceBetween > 0.0f) {
-            // Check the repetition limits and give back the position
-            if (repetition > this.mPositions.length) repetition = this.mPositions.length;
-            return this.mPositions[repetition - 1] + this.mRepetitionOffset;
-
-        } else {
-            // Correct the repetition number if needs
-            repetition -= 1;
-            int repetitions = this.mRepetitions -
-                    (this.mLastRepetitionOnPathEnd && !this.getMeasure().isClosed() ? 1: 0);
-
-            // Convert the repetition in a percentage
-            float percentage = repetitions <= 0?
-                    0.0f: this.range(100.0f / repetitions * repetition);
-            return this.getDistance(percentage) + this.mRepetitionOffset;
-        }
+        // Compare
+        return position < start || position > end;
     }
 
     /**
@@ -267,11 +267,10 @@ public abstract class ScRepetitions extends ScFeature {
      * @param   repetition the current repetition
      * @return  if over the global limits
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public boolean isOverLimits(int repetition) {
         float distance = this.getDistance(repetition);
-        return this.compare(distance, this.getStartAtDistance()) == -1 ||
-                this.compare(distance, this.getEndToDistance()) == 1;
+        return this.isOverLimits(distance);
     }
 
     /**
@@ -347,6 +346,7 @@ public abstract class ScRepetitions extends ScFeature {
 
     /**
      * Get the repetitions count.
+     * If space between is different by zero this always be zero.
      * @return get the repetitions number
      */
     @SuppressWarnings({"unused", "WeakerAccess"})
@@ -356,7 +356,8 @@ public abstract class ScRepetitions extends ScFeature {
 
 
     /**
-     * If true the last repetition distance from path start will be equal to the path height.
+     * If true the last repetition distance from path start will be equal to the path length.
+     * NOTE than this property have effect only if the space between is zero.
      * @param value the new setting
      */
     @SuppressWarnings("unused")
@@ -368,7 +369,7 @@ public abstract class ScRepetitions extends ScFeature {
     }
 
     /**
-     * If true the last repetition distance from path start will be equal to the path height.
+     * If true the last repetition distance from path start will be equal to the path legth.
      * @return true if the last repetition is on the path end
      */
     @SuppressWarnings("unused")
@@ -381,6 +382,7 @@ public abstract class ScRepetitions extends ScFeature {
      * Define the space between the repetitions.
      * Will considered only value over zero in other case will not consider as set. If set
      * the repetitions count will recalculate every time before draw.
+     * NOTE than this property exclude last repetition on path end property.
      * @param value the new space between repetition value
      */
     @SuppressWarnings("unused")
@@ -402,8 +404,36 @@ public abstract class ScRepetitions extends ScFeature {
 
 
     /**
+     * If true treat the space between repetition as percentage of the global path len.
+     * If false the space between will consider as pixels length.
+     * The reason of this property is the needs to keep the proportionality of the space between
+     * repetition also after scale the drawing canvas.
+     * @param value the new setting
+     */
+    @SuppressWarnings("unused")
+    public void setSpaceBetweenAsPercentage(boolean value) {
+        if (this.mSpaceBetweenAsPercentage != value) {
+            this.mSpaceBetweenAsPercentage = value;
+            this.onPropertyChange("spaceBetweenAsPercentage", value);
+        }
+    }
+
+    /**
+     * If true treat the space between repetition as percentage of the global path len.
+     * If false the space between will consider as pixels length.
+     * The reason of this property is the needs to keep the proportionality of the space between
+     * repetition also after scale the drawing canvas.
+     * @return the status
+     */
+    @SuppressWarnings("unused")
+    public boolean getSpaceBetweenAsPercentage() {
+        return this.mSpaceBetweenAsPercentage;
+    }
+
+
+    /**
      * Set the global repetition offset.
-     * This property will affect on the value return by the getDistance method.
+     * This property will affect on the value return by the getPositionOnPath method.
      * @param value the new setting
      */
     @SuppressWarnings({"unused", "WeakerAccess"})
@@ -416,7 +446,7 @@ public abstract class ScRepetitions extends ScFeature {
 
     /**
      * Get the global repetition offset.
-     * This property will affect on the value return by the getDistance method.
+     * This property will affect on the value return by the getPositionOnPath method.
      * @return true if the last repetition is on the path end
      */
     @SuppressWarnings("unused")
@@ -481,6 +511,7 @@ public abstract class ScRepetitions extends ScFeature {
         public float[] point;
         public float[] scale;
 
+
         // ***************************************************************************************
         // Constructor
 
@@ -517,7 +548,7 @@ public abstract class ScRepetitions extends ScFeature {
             this.angle = 0.0f;
             this.position = feature.getPosition();
             this.color = feature.getGradientColor(distance);
-            this.visible = !feature.isOverLimits(repetition) && feature.getVisible();
+            this.visible = !feature.isOverLimits(distance) && feature.getVisible();
         }
 
     }

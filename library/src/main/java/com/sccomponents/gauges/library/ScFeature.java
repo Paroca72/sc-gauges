@@ -9,9 +9,8 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.Log;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
+
 
 /**
  * Create a base feature for draw on a given path.
@@ -34,12 +33,6 @@ import java.util.Arrays;
  * @since 2016-05-26
  */
 public abstract class ScFeature {
-
-    // ***************************************************************************************
-    // Constants
-
-    private static final int DEFAULT_PRECISION = 2;
-
 
     // ***************************************************************************************
     // Enumerators
@@ -74,14 +67,6 @@ public abstract class ScFeature {
 
 
     // ***************************************************************************************
-    // Protected variable
-
-    /** @hide */
-    @SuppressWarnings("WeakerAccess")
-    protected Path mPath;
-
-
-    // ***************************************************************************************
     // Private variable
 
     private ScPathMeasure mPathMeasure;
@@ -97,10 +82,8 @@ public abstract class ScFeature {
     private int mContourIndex;
     private boolean mIsDrawing;
     private ContourInfo mContourInfo;
-    private int mFloatComparisonPrecision;
     private Bitmap mBuffer;
     private Canvas mCanvas;
-    private Matrix mMatrix;
     private boolean mDoubleBuffering;
 
     // Listeners
@@ -108,7 +91,6 @@ public abstract class ScFeature {
     private OnPropertyChangedListener mOnPropertyChangedListener;
 
     // Generic holder
-    private ScPathMeasure[] mContoursMeasurer;
     private float[] mGenericTangent;
 
 
@@ -132,11 +114,10 @@ public abstract class ScFeature {
 
         this.mContourIndex = 1;
         this.mConsiderContours = false;
-        this.mContoursMeasurer = null;
 
-        this.mFloatComparisonPrecision = DEFAULT_PRECISION;
         this.mBuffer = null;
         this.mCanvas = new Canvas();
+        this.mPathMeasure = new ScPathMeasure();
         this.mDoubleBuffering = true;
 
         // Create the painter
@@ -177,30 +158,6 @@ public abstract class ScFeature {
     // Private methods
 
     /**
-     * Compare two float given the decimal precision
-     * @param first first number
-     * @param second second number
-     * @param precision precision
-     * @return the comparison result
-     */
-    @SuppressWarnings({"unused", "WeakerAccess"})
-    protected int compare(float first, float second, int precision) {
-        BigDecimal firstDecimal = new BigDecimal(first).setScale(precision, RoundingMode.FLOOR);
-        BigDecimal secondDecimal = new BigDecimal(second).setScale(precision, RoundingMode.FLOOR);
-        return firstDecimal.compareTo(secondDecimal);
-    }
-
-    /**
-     * @param first first number
-     * @param second second number
-     * @return the comparison result
-     */
-    @SuppressWarnings({"WeakerAccess"})
-    protected int compare(float first, float second) {
-        return this.compare(first, second, this.mFloatComparisonPrecision);
-    }
-
-    /**
      * Check if two strings are equal considering the null too.
      * @param a first
      * @param b second
@@ -221,8 +178,8 @@ public abstract class ScFeature {
     @SuppressWarnings({"unused", "WeakerAccess"})
     protected float range(float value) {
         // Check the limit
-        if (this.compare(value, 0.0f) == -1) return 0.0f;
-        if (this.compare(value, 100.0f) == 1) return 100.0f;
+        if (Float.compare(value, 0.0f) == -1) return 0.0f;
+        if (Float.compare(value, 100.0f) == 1) return 100.0f;
         return value;
     }
 
@@ -373,13 +330,13 @@ public abstract class ScFeature {
 
     /**
      * Draw all contours.
-     * @param canvas   where to draw
-     * @param contours the contours list
+     * @param canvas where to draw
      */
-    private void drawContours(Canvas canvas, Path[] contours) {
+    private void drawContours(Canvas canvas) {
         // Cycle all contours
-        for (int contour = 1; contour <= contours.length; contour++) {
-            // Save the current contour index as I need to have it globally.
+        int contour = 1;
+        do {
+            // Save the current contour index as need to have it globally.
             // The current contour will used to get the current path measurer in case we treat
             // the path in separate contours.
             this.mContourIndex = contour;
@@ -399,7 +356,8 @@ public abstract class ScFeature {
             canvas.save();
             this.drawContour(canvas, info);
             canvas.restore();
-        }
+
+        } while (this.mPathMeasure.nextContour());
 
         // Reset the contour index
         this.mContourIndex = 1;
@@ -444,28 +402,13 @@ public abstract class ScFeature {
      */
     @SuppressWarnings({"unused", "WeakerAccess"})
     protected ScPathMeasure getMeasure(int contour) {
-        // Check the limit
-        int len = this.mPathMeasure.getPaths().length;
-        if (contour < 0 || contour > len)
+        // Move the contour and check the limit
+        float result = this.mPathMeasure.moveToContour(contour);
+        if (result == -1)
             throw new IndexOutOfBoundsException();
 
-        // Fix the base 0
-        contour--;
-
-        // Create the holder if not already created
-        if (this.mContoursMeasurer == null)
-            this.mContoursMeasurer = new ScPathMeasure[len];
-
-        // Check if already exists
-        if (this.mContoursMeasurer[contour] == null) {
-            // Store the new measurer
-            Path path = this.mPathMeasure.getPaths()[contour];
-            ScPathMeasure measurer = new ScPathMeasure(path, false);
-            this.mContoursMeasurer[contour] = measurer;
-        }
-
         // Return the contour measurer
-        return this.mContoursMeasurer[contour];
+        return this.mPathMeasure;
     }
 
     /**
@@ -549,22 +492,14 @@ public abstract class ScFeature {
     }
 
     /**
-     * Apply a matrix to canvas before draw on it
-     * @param matrix the matrix
-     */
-    @SuppressWarnings({"unused", "WeakerAccess"})
-    public void applyMatrixToCanvas(Matrix matrix) {
-        this.mMatrix = matrix;
-    }
-
-    /**
      * Draw something on the canvas.
      * @param canvas where draw
+     * @param matrix to apply at canvas
      */
     @SuppressWarnings("unused")
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, Path path, Matrix matrix) {
         // Check the domain
-        if (canvas == null || !this.mVisible || this.mPath == null)
+        if (canvas == null || !this.mVisible || path == null)
             return;
 
         // Is drawing
@@ -572,6 +507,10 @@ public abstract class ScFeature {
 
         // Redraw only if request
         if (this.mBuffer == null) {
+            // Reset measurer
+            // Reset
+            this.mPathMeasure.setPath(path, false);
+
             // Try to create the bitmap for double buffering
             if (this.mDoubleBuffering)
                 this.mBuffer = this.createBitmap(canvas);
@@ -585,17 +524,14 @@ public abstract class ScFeature {
                 this.mCanvas = canvas;
 
             // Apply the matrix
-            this.mCanvas.setMatrix(this.mMatrix);
+            this.mCanvas.setMatrix(matrix);
 
             // If the have only one color inside the colors array set it directly on the painter
             if (this.mColors != null && this.mColors.length == 1)
                 this.mPaint.setColor(this.mColors[0]);
 
             // Draw the contours
-            this.mPathMeasure.setPath(this.mPath, false);
-            Path[] contours = this.mConsiderContours ?
-                    this.mPathMeasure.getPaths() : new Path[]{this.mPath};
-            this.drawContours(this.mCanvas, contours);
+            this.drawContours(this.mCanvas);
         }
 
         // Draw the buffer on the canvas only if exists
@@ -607,13 +543,21 @@ public abstract class ScFeature {
     }
 
     /**
+     * Draw something on the canvas.
+     * @param canvas where draw
+     */
+    @SuppressWarnings("unused")
+    public void draw(Canvas canvas, Path path) {
+        this.draw(canvas, path, null);
+    }
+
+    /**
      * Refresh the feature measure.
      */
     @SuppressWarnings("unused")
     public void refresh() {
         // Force redraw
         this.freeBitmapMemory();
-        this.mContoursMeasurer = null;
     }
 
     /**
@@ -728,17 +672,6 @@ public abstract class ScFeature {
         return this.getDistance(this.mEndPercentage);
     }
 
-    /**
-     * Set the path
-     * @param value the painter
-     */
-    @SuppressWarnings("unused")
-    public void setPath(Path value) {
-        this.mPath = value;
-        this.mPathMeasure = new ScPathMeasure(this.mPath, false);
-        this.onPropertyChange("path", value);
-    }
-
 
     // ***************************************************************************************
     // Getter and setter
@@ -757,7 +690,7 @@ public abstract class ScFeature {
      * Get the painter
      * @return the painter
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public Paint getPainter() {
         return this.mPaint;
     }
@@ -823,7 +756,7 @@ public abstract class ScFeature {
      * Set the visibility
      * @param value the visibility
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused"})
     public void setVisible(boolean value) {
         if (this.mVisible != value) {
             this.mVisible = value;
@@ -845,7 +778,7 @@ public abstract class ScFeature {
      * Set the current stroke colors
      * @param values the new stroke colors
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused"})
     public void setColors(int... values) {
         if (!Arrays.equals(this.mColors, values)) {
             this.mColors = values;
@@ -977,29 +910,6 @@ public abstract class ScFeature {
     @SuppressWarnings("unused")
     public Positions getPosition() {
         return this.mPosition;
-    }
-
-
-    /**
-     * Set the float comparison precision.
-     * As default is 2 decimal.
-     * @param value the new precision
-     */
-    @SuppressWarnings("unused")
-    public void setFloatComparisonPrecision(int value) {
-        if (this.mFloatComparisonPrecision != value) {
-            this.mFloatComparisonPrecision = value;
-            this.onPropertyChange("floatComparisonPrecision", value);
-        }
-    }
-
-    /**
-     * Get the float comparison precision.
-     * @return the current precision
-     */
-    @SuppressWarnings("unused")
-    public int getFloatComparisonPrecision() {
-        return this.mFloatComparisonPrecision;
     }
 
 

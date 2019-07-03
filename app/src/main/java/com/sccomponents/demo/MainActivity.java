@@ -9,6 +9,8 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import com.sccomponents.gauges.library.ScFeature;
 import com.sccomponents.gauges.library.ScGauge;
 import com.sccomponents.gauges.library.ScLabeler;
 import com.sccomponents.gauges.library.ScNotches;
+import com.sccomponents.gauges.library.ScPathMeasure;
 import com.sccomponents.gauges.library.ScPointer;
 import com.sccomponents.gauges.library.ScRepetitions;
 import com.sccomponents.gauges.library.ScWriter;
@@ -37,7 +40,21 @@ public class MainActivity extends AppCompatActivity {
         final ScArcGauge gauge = this.findViewById(R.id.gauge);
         assert gauge != null;
 
+        gauge.setRecognizePathTouch(true);
+        //gauge.removeFeature(gauge.getProgress());
 
+        //final ScNotches notches = gauge.getNotches();
+        //notches.setWidths(10);
+        //notches.setHeights(50);
+        //notches.setLastRepetitionOnPathEnd(true);
+        //notches.setRepetitions(10);
+        //notches.setColors(Color.RED);
+
+        ScPointer pointer = gauge.getHighPointer();
+        pointer.setVisible(true);
+        pointer.setWidths(50);
+        pointer.setHeights(50);
+        pointer.setColors(Color.RED);
     }
 
 }

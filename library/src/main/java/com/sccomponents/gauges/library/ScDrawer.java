@@ -333,7 +333,7 @@ public abstract class ScDrawer extends ScBase {
      * Draw all the features
      * @param canvas the canvas where draw
      */
-    private void drawFeatures(Canvas canvas, Matrix matrix) {
+    private void drawFeatures(Canvas canvas, Path path, Matrix matrix) {
         // Check for empty values
         if (this.mFeatures != null) {
             // Cycle all features
@@ -342,8 +342,7 @@ public abstract class ScDrawer extends ScBase {
                 if (feature != null) {
                     //Call the draw methods.
                     feature.setDoubleBuffering(this.mDoubleBuffering);
-                    feature.applyMatrixToCanvas(matrix);
-                    feature.draw(canvas);
+                    feature.draw(canvas, path, matrix);
                 }
         }
     }
@@ -358,12 +357,12 @@ public abstract class ScDrawer extends ScBase {
         this.mCopyPath.set(this.mPath);
         this.scalePath(this.mCopyPath, this.mAreaScale.x, this.mAreaScale.y);
         this.mCopyPath.offset(
-                this.mVirtualArea.left + this.getPaddingLeft(),
-                this.mVirtualArea.top + this.getPaddingTop()
+            this.mVirtualArea.left + this.getPaddingLeft(),
+            this.mVirtualArea.top + this.getPaddingTop()
         );
 
         // Draw the features
-        this.drawFeatures(canvas, null);
+        this.drawFeatures(canvas, this.mCopyPath, null);
     }
 
     /**
@@ -384,7 +383,7 @@ public abstract class ScDrawer extends ScBase {
         );
 
         // Draw all features
-        this.drawFeatures(canvas, this.mMatrix);
+        this.drawFeatures(canvas, this.mCopyPath, this.mMatrix);
     }
 
 
@@ -618,7 +617,7 @@ public abstract class ScDrawer extends ScBase {
      */
     @SuppressWarnings("unused")
     protected float getDistance(float x, float y, float threshold) {
-        return this.mPathMeasure.getDistance(x, y, threshold);
+        return this.mPathMeasure.getPositionOnPath(x, y, threshold);
     }
 
     /**
@@ -672,7 +671,6 @@ public abstract class ScDrawer extends ScBase {
         try {
             // Try to instantiate a new class
             ScFeature feature = (ScFeature) classRef.newInstance();
-            feature.setPath(this.mCopyPath);
 
             // Call the base method and return the new object
             this.addFeature(feature);
@@ -1028,10 +1026,8 @@ public abstract class ScDrawer extends ScBase {
     @SuppressWarnings("unused")
     public void setRecognizePathTouch(boolean value) {
         // Check if value is changed
-        if (this.mRecognizePathTouch != value) {
+        if (this.mRecognizePathTouch != value)
             this.mRecognizePathTouch = value;
-            this.invalidate();
-        }
     }
 
     /**

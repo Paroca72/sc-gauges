@@ -583,7 +583,7 @@ public class ScWriter extends ScRepetitions {
      * Set true to have a bending text.
      * @param value the bending status
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setBending(boolean value) {
         if (this.mBending != value) {
             this.mBending = value;
@@ -704,7 +704,7 @@ public class ScWriter extends ScRepetitions {
      * The default value is 0.3
      * @param value the spacing value
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setLetterSpacing(float value) {
         if (this.mLetterSpacing != value) {
             this.mLetterSpacing = value;
