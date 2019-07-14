@@ -7,22 +7,21 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000000">
+        android:layout_height="match_parent">
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:layout_margin="10dp"
-            app:sccAngleStart="135"
-            app:sccAngleSweep="270"
-            app:sccStrokeColor="#F5F5F5"
-            app:sccStrokeWidth="6dp"
+            android:padding="10dp"
+            app:sccAngleStart="0"
+            app:sccAngleSweep="360"
+            app:sccStrokeColor="#333333"
+            app:sccStrokeWidth="10dp"
             app:sccValue="70"
-            app:sccProgressColor="#ff0000"
-            app:sccProgressWidth="6dp"
+            app:sccProgressWidth="10dp"
+            app:sccProgressColors="#0000ff|#ff0000|#00ff00"
             />
 
     </FrameLayout>

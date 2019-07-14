@@ -10,7 +10,7 @@ import java.util.Arrays;
  * Draw a label on the path at certain distance from the path start.
  *
  * @author Samuele Carassai
- * @version 3.1.0
+ * @version 3.5.0
  * @since 2018-08-13
  */
 public class ScLabeler extends ScWriter {
@@ -213,7 +213,7 @@ public class ScLabeler extends ScWriter {
      * The format pattern will applied using the android Formatter.
      * @param value the format pattern
      */
-    @SuppressWarnings({"unused"})
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setFormat(String value) {
         // Store the value
         if (!this.equals(this.mFormat, value)) {

@@ -100,7 +100,7 @@ import java.util.List;
  * </p>
  *
  * @author Samuele Carassai
- * @version 3.1.0
+ * @version 3.5.0
  * @since 2016-05-26
  * -----------------------------------------------------------------------------------------------
  */
@@ -170,6 +170,7 @@ public abstract class ScGauge extends ScDrawer
 
     private ValueAnimator mHighValueAnimator;
     private ValueAnimator mLowValueAnimator;
+    private AnimationStarter mAnimatorStarter;
 
     private ScPointer mSelectedPointer;
 
@@ -208,19 +209,27 @@ public abstract class ScGauge extends ScDrawer
     // Classes
 
     class AnimationStarter implements Runnable {
-        ValueAnimator animator;
-        float lastValue;
-        float nextValue;
+        private ValueAnimator animator;
+        private float lastValue;
+        private float nextValue;
 
-        AnimationStarter(ValueAnimator animator, float lastValue, float nextValue) {
+        public void set(ValueAnimator animator, float lastValue, float nextValue) {
             this.animator = animator;
             this.lastValue = lastValue;
             this.nextValue = nextValue;
         }
 
         public void run() {
+            // Check for empty values
+            if (this.animator == null)
+                return ;
+
+            // Update the value to reach
             this.animator.setFloatValues(this.lastValue, this.nextValue);
-            this.animator.start();
+
+            // Start if not already running
+            if (!this.animator.isRunning())
+                this.animator.start();
         }
     }
 
@@ -633,6 +642,8 @@ public abstract class ScGauge extends ScDrawer
         this.mLowValueAnimator.setInterpolator(new DecelerateInterpolator());
         this.mLowValueAnimator.addUpdateListener(this.proxyAnimatorUpdateListener);
 
+        this.mAnimatorStarter = new AnimationStarter();
+
         //--------------------------------------------------
         // INTERNAL
 
@@ -734,6 +745,10 @@ public abstract class ScGauge extends ScDrawer
             value = this.snapToNotches(value);
         }
 
+        // Set the duration
+        this.mHighValueAnimator.setDuration(this.mDuration);
+        this.mLowValueAnimator.setDuration(this.mDuration);
+
         // Choice the value and the animation
         float currValue = treatLowValue ? this.mLowValueAnimated : this.mHighValueAnimated;
         ValueAnimator animator = treatLowValue ? this.mLowValueAnimator : this.mHighValueAnimator;
@@ -746,8 +761,8 @@ public abstract class ScGauge extends ScDrawer
         if (currValue != value) {
             // The animator should be started on a different thread to be sure to start
             // when the gauges will finished to draw.
-            AnimationStarter starter = new AnimationStarter(animator, currValue, value);
-            this.post(starter);
+            this.mAnimatorStarter.set(animator, currValue, value);
+            this.post(this.mAnimatorStarter);
         }
     }
 
@@ -1427,12 +1442,8 @@ public abstract class ScGauge extends ScDrawer
     @SuppressWarnings("unused")
     public void setDuration(int value) {
         // Check if value is changed
-        if (this.mDuration != value) {
-            // Set the animators
+        if (this.mDuration != value)
             this.mDuration = value;
-            this.mHighValueAnimator.setDuration(this.mDuration);
-            this.mLowValueAnimator.setDuration(this.mDuration);
-        }
     }
 
     /**

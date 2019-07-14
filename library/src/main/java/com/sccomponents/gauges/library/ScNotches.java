@@ -16,7 +16,7 @@ import java.util.Arrays;
  * All the notch are customizable before drawing it using the proper event.
  *
  * @author Samuele Carassai
- * @version 3.1.0
+ * @version 3.5.0
  * @since 2016-05-30
  */
 public class ScNotches extends ScRepetitions {

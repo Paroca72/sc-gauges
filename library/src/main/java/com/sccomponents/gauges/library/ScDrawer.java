@@ -44,7 +44,7 @@ import java.util.List;
  * </p>
  *
  * @author Samuele Carassai
- * @version 3.1.0
+ * @version 3.5.0
  * @since 2016-05-26
  */
 public abstract class ScDrawer extends ScBase {

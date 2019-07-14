@@ -16,7 +16,7 @@ import java.util.Arrays;
  * follow a straight line along the angle of the related first or last point of the path.
  *
  * @author Samuele Carassai
- * @version 3.1.0
+ * @version 3.5.0
  * @since 2016-05-26
  */
 public class ScWriter extends ScRepetitions {

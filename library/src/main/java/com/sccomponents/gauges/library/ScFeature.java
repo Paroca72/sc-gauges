@@ -29,9 +29,10 @@ import java.util.Arrays;
  * Also many method (eg: getPointAndAngle) will related to the current contour (and not the
  * global path) when called inside the drawing period.
  * @author Samuele Carassai
- * @version 3.1.0
+ * @version 3.5.0
  * @since 2016-05-26
  */
+@SuppressWarnings({"WeakerAccess"})
 public abstract class ScFeature {
 
     // ***************************************************************************************
@@ -98,7 +99,7 @@ public abstract class ScFeature {
      * Constructor
      */
 
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public ScFeature() {
         // Init
         this.mColorsMode = ColorsMode.GRADIENT;
@@ -139,7 +140,7 @@ public abstract class ScFeature {
      * @param contour   the contour index
      * @return          the contour drawing info
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected ContourInfo getContourInfo(int contour) {
         this.mContourInfo.reset(this, contour);
         return this.mContourInfo;
@@ -175,7 +176,7 @@ public abstract class ScFeature {
      * @param value the value to limit
      * @return      the limited value
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected float range(float value) {
         // Check the limit
         if (Float.compare(value, 0.0f) == -1) return 0.0f;
@@ -188,7 +189,7 @@ public abstract class ScFeature {
      * @param source      the source point to clone
      * @param destination the destination point
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected void clonePoint(float[] source, float[] destination) {
         destination[0] = source[0];
         destination[1] = source[1];
@@ -202,7 +203,7 @@ public abstract class ScFeature {
      * @param isSmooth  the type of calculation
      * @return          the color
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected int getColor(int[] colors, float ratio, boolean isSmooth) {
         // Check
         if (colors == null)
@@ -293,7 +294,7 @@ public abstract class ScFeature {
      * @param ratio         the ratio
      * @return              the value
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected String getString(String[] values, float ratio) {
         // Check
         if (values == null)
@@ -366,7 +367,7 @@ public abstract class ScFeature {
     /**
      * Free the double buffering bitmap memory and all the related objects.
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected void freeBitmapMemory() {
         // Free memory
         if (this.mCanvas != null)
@@ -386,7 +387,8 @@ public abstract class ScFeature {
      */
     protected void onPropertyChange(String name, Object value) {
         // Need to redraw the bitmap
-        this.freeBitmapMemory();
+        if (this.mDoubleBuffering)
+            this.freeBitmapMemory();
 
         // Listener
         if (this.mOnPropertyChangedListener != null)
@@ -400,7 +402,7 @@ public abstract class ScFeature {
      * @param contour the current contour
      * @return the measurer
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected ScPathMeasure getMeasure(int contour) {
         // Move the contour and check the limit
         float result = this.mPathMeasure.moveToContour(contour);
@@ -417,7 +419,7 @@ public abstract class ScFeature {
      * the global measurer otherwise will back the measurer related at the current contour.
      * @return the measurer
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     protected ScPathMeasure getMeasure() {
         // Select the case
         if (this.mIsDrawing && this.mConsiderContours)
@@ -603,7 +605,7 @@ public abstract class ScFeature {
      * @param percentage the percentage of the path
      * @return the distance
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public float getDistance(float percentage) {
         // Holders
         float length = this.getMeasure().getLength();
@@ -623,7 +625,7 @@ public abstract class ScFeature {
      * @param length   force the height of the path
      * @return the color
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public int getGradientColor(float distance, float length) {
         return this.getColor(
                 this.mColors,
@@ -639,7 +641,7 @@ public abstract class ScFeature {
      * @param distance from the starting path
      * @return the color
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public int getGradientColor(float distance) {
         return this.getGradientColor(distance, this.getMeasure().getLength());
     }
@@ -658,7 +660,7 @@ public abstract class ScFeature {
      * Get the start limit distance from the path start
      * @return the distance
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public float getStartAtDistance() {
         return this.getDistance(this.mStartPercentage);
     }
@@ -667,7 +669,7 @@ public abstract class ScFeature {
      * Get the end limit distance from the path start
      * @return the distance
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public float getEndToDistance() {
         return this.getDistance(this.mEndPercentage);
     }
@@ -690,7 +692,7 @@ public abstract class ScFeature {
      * Get the painter
      * @return the painter
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public Paint getPainter() {
         return this.mPaint;
     }
@@ -700,7 +702,7 @@ public abstract class ScFeature {
      * Set the tag. The tag is useful to find the features inside, for example, a ScGauge.
      * @param value the tag
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setTag(String value) {
         if (!this.equals(this.mTag, value)) {
             this.mTag = value;
@@ -712,7 +714,7 @@ public abstract class ScFeature {
      * Get the tag.
      * @return the tag
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public String getTag() {
         return this.mTag;
     }
@@ -728,10 +730,17 @@ public abstract class ScFeature {
      * activity. In these kind of cases its recommended to disable the double buffering.
      * @param value the status
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setDoubleBuffering(boolean value) {
         if (this.mDoubleBuffering != value) {
+            // Set
             this.mDoubleBuffering = value;
+
+            // If false free the memory
+            if (!this.mDoubleBuffering)
+                this.freeBitmapMemory();
+
+            // Event
             this.onPropertyChange("doubleBuffering", value);
         }
     }
@@ -768,7 +777,7 @@ public abstract class ScFeature {
      * Get the visibility
      * @return the visibility
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public boolean getVisible() {
         return this.mVisible;
     }
@@ -790,7 +799,7 @@ public abstract class ScFeature {
      * Get the current stroke colors
      * @return the current stroke colors
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public int[] getColors() {
         return this.mColors;
     }
@@ -801,7 +810,7 @@ public abstract class ScFeature {
      * You can have two way for draw the colors of the path: SOLID or GRADIENT.
      * @param value the new color filling mode
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setColorsMode(ColorsMode value) {
         if (this.mColorsMode != value) {
             this.mColorsMode = value;
@@ -824,7 +833,7 @@ public abstract class ScFeature {
      * The point before this percentage should not be considered.
      * @param percentage the percentage
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setStartAt(float percentage) {
         if (this.mStartPercentage != percentage) {
             this.mStartPercentage = this.range(percentage);
@@ -847,7 +856,7 @@ public abstract class ScFeature {
      * The point after this percentage should not be considered.
      * @param percentage the percentage
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setEndTo(float percentage) {
         if (this.mEndPercentage != percentage) {
             this.mEndPercentage = this.range(percentage);
@@ -871,7 +880,7 @@ public abstract class ScFeature {
      * will called for the number of the contours in path.
      * @param value default true
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setConsiderContours(boolean value) {
         if (this.mConsiderContours != value) {
             this.mConsiderContours = value;
@@ -885,7 +894,7 @@ public abstract class ScFeature {
      * will called for the number of the contours in path.
      * @return true if consider the whole path
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public boolean getConsiderContours() {
         return this.mConsiderContours;
     }
@@ -935,7 +944,7 @@ public abstract class ScFeature {
      * Set the draw listener to call.
      * @param listener the linked method to call
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setOnDrawContourListener(OnDrawContourListener listener) {
         this.mOnDrawListener = listener;
     }
@@ -961,7 +970,7 @@ public abstract class ScFeature {
      * Set the property change listener to call.
      * @param listener the linked method to call
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setOnPropertyChangedListener(OnPropertyChangedListener listener) {
         this.mOnPropertyChangedListener = listener;
     }
@@ -973,7 +982,7 @@ public abstract class ScFeature {
     /**
      * This is a structure to hold the feature information before draw a contour
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public class ContourInfo {
 
         // ***************************************************************************************

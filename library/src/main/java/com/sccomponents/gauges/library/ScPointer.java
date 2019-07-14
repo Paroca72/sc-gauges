@@ -7,7 +7,7 @@ import android.graphics.Paint;
  * Draw a pointer on the path at certain distance from the path start.
 
  * @author Samuele Carassai
- * @version 3.1.0
+ * @version 3.5.0
  * @since 2016-05-26
  */
 public class ScPointer extends ScNotches {
@@ -45,6 +45,7 @@ public class ScPointer extends ScNotches {
         super.setRepetitions(1);
         super.setLastRepetitionOnPathEnd(false);
         super.setType(NotchTypes.OVAL_FILLED);
+        super.setDoubleBuffering(false);
 
         this.mHaloWidth = ScPointer.DEFAULT_HALO_WIDTH;
         this.mHaloAlpha = ScPointer.DEFAULT_HALO_ALPHA;
@@ -169,6 +170,16 @@ public class ScPointer extends ScNotches {
         // Do nothing
     }
 
+    /**
+     * Disable this method
+     * @param value the status
+     */
+    @SuppressWarnings("unused")
+    @Override
+    public void setDoubleBuffering(boolean value) {
+        // Do nothing
+    }
+
 
     // ***************************************************************************************
     // Public methods
@@ -241,7 +252,7 @@ public class ScPointer extends ScNotches {
      * Set the halo width in pixel
      * @param value the width
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setHaloWidth(float value) {
         value = value < 0.0f ? 0.0f : value;
         if (this.mHaloWidth != value) {
@@ -264,7 +275,7 @@ public class ScPointer extends ScNotches {
      * Set the halo alpha
      * @param value the new alpha value
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public void setHaloAlpha(int value) {
         // Check the limits
         if (value < 0) value = 0;

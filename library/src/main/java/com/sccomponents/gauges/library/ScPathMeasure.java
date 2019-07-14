@@ -5,14 +5,18 @@ import android.graphics.PathMeasure;
 import android.graphics.RectF;
 import android.os.Build;
 
+
 /**
  * Extend the PathMeasure because the original class not consider the contours in its
  * totality.
+ * NOTE: About nearest found point this class work mostly on an points approximation of 1 pixel
+ * of the given path.
  *
  * @author Samuele Carassai
- * @version 4.0.0
+ * @version 3.5.0
  * @since 2016-05-26
  */
+@SuppressWarnings({"WeakerAccess"})
 public class ScPathMeasure extends PathMeasure {
 
     // ***************************************************************************************
@@ -20,6 +24,10 @@ public class ScPathMeasure extends PathMeasure {
 
     private Path mPath;
     private boolean mForceClosed;
+
+    private RectF mBounds;
+    private float mLength;
+    private float[][] mPathPoints;
 
     // For internal calculation
     private PathMeasure mGenericMeasure;
@@ -34,23 +42,98 @@ public class ScPathMeasure extends PathMeasure {
         super(path, forceClosed);
 
         // Init
-        this.mPath = path;
-        this.mForceClosed = forceClosed;
-        this.mGenericMeasure = new PathMeasure();
+        this.init(path, forceClosed);
     }
 
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public ScPathMeasure() {
         // Super
         super();
 
         // Init
-        this.mGenericMeasure = new PathMeasure();
+        this.init(null, false);
     }
 
 
     // ***************************************************************************************
     // Private methods
+
+    /**
+     * Get an approximation of 1 pixel of all the points inside the path.
+     * @return a points list: x, y, angle (degrees).
+     */
+    private float[][] getPathPoints() {
+        // Check for empty value
+        if (this.mPath == null || this.mPath.isEmpty())
+            return new float[][]{};
+
+        // Reset the path measurer
+        this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
+
+        // Get the array capacity and create an empty one
+        float length = this.mLength;
+        int fixedLength = (int) Math.ceil(length);
+
+        float[][] points = new float[fixedLength][4];
+        float[] point = new float[2];
+        float[] tangent = new float[2];
+
+        // Holders
+        boolean running = true;
+        float distance = 0;
+
+        // Cycle all the point of the path using an arbitrary increment
+        while (running) {
+            // Check for exit
+            if (Float.compare(distance, length) == 1) {
+                distance = length;
+                running = false;
+            }
+
+            // Find the tangent
+            this.mGenericMeasure.getPosTan(distance, point, tangent);
+
+            // Convert calculated angle to degrees
+            float angle = (float) Math.atan2(tangent[1], tangent[0]);
+            float degrees = (float) Math.toDegrees(angle);
+
+            // Assign
+            int position = (int) Math.floor(distance);
+            points[position][0] = point[0];
+            points[position][1] = point[1];
+            points[position][2] = degrees;
+
+            // Next point
+            distance += 1.0f;
+        }
+
+        // Return the global length
+        return points;
+    }
+
+    /**
+     * Get the length of a path considering all the contours.
+     * @return the path length
+     */
+    private float getGlobalLength() {
+        // Check for empty value
+        if (this.mPath == null || this.mPath.isEmpty())
+            return 0.0f;
+
+        // Reset
+        this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
+
+        // Cycle all the contours
+        float globalLen = 0.0f;
+        do {
+            // Increase the global length
+            globalLen += this.mGenericMeasure.getLength();
+
+        } while (this.mGenericMeasure.nextContour());
+
+        // Return the global length
+        return globalLen;
+    }
 
     /**
      * Get a segment from the current contour
@@ -74,49 +157,32 @@ public class ScPathMeasure extends PathMeasure {
     }
 
     /**
-     * Internal method to get the path contours info.
-     * @return the bounds area
+     * Get the path bounds considering all the contours.
+     * @return the path boundaries
      */
-    private RectF getContourBounds() {
-        // Check for empty values
+    private RectF getGlobalBounds() {
+        // Check for empty value
         if (this.mPath == null || this.mPath.isEmpty())
             return new RectF();
 
-        // Holders
-        RectF bounds = new RectF();
-        float[] point = new float[2];
-        boolean running = true;
-
-        float len = this.mGenericMeasure.getLength();
-        float distance = 0.0f;
-
-        // Reset the path and the bounds
+        // Reset
         this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
-        bounds.set(Float.MAX_VALUE, Float.MAX_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+        RectF bounds = new RectF(
+                Float.MAX_VALUE, Float.MAX_VALUE,
+                Float.MIN_VALUE, Float.MIN_VALUE
+        );
 
-        // Cycle all the point of the path using an arbitrary increment
-        while (running) {
-            // Check for exit
-            if (Float.compare(distance, len) == 1) {
-                distance = len;
-                running = false;
-            }
-
-            // Define the point holder and get the point
-            this.mGenericMeasure.getPosTan(distance, point, null);
-
+        // Cycle all the points in path
+        for (float[] point : this.mPathPoints) {
             // Check the position of the current point and update the bounds
             if (bounds.left > point[0]) bounds.left = point[0];
             if (bounds.right < point[0]) bounds.right = point[0];
 
             if (bounds.top > point[1]) bounds.top = point[1];
             if (bounds.bottom < point[1]) bounds.bottom = point[1];
-
-            // Next point
-            distance += 1.0f;
         }
 
-        // Return
+        // Else
         return bounds;
     }
 
@@ -132,70 +198,19 @@ public class ScPathMeasure extends PathMeasure {
     }
 
     /**
-     * Find the distance (from contour start) of point nearest to the passed one considering
-     * only the area defined by the threshold parameter. Noted that this method consider just
-     * the current contours.
-     * @param x         the x of point
-     * @param y         the y of point
-     * @param threshold the threshold to define the checking area
-     * @return          return [distanceFromPath, positionOnPath]
+     * Init all the class properties
      */
-    private float[] getContourDistance(float x, float y, float threshold) {
+    private void init(Path path, boolean forceClosed) {
+        // Keep the values
+        this.mPath = path;
+        this.mForceClosed = forceClosed;
+
         // Init
-        float[] info = new float[2];
-        info[0] = -1;
-        info[1] = -1;
-
-        float[] sourcePoint = new float[2];
-        sourcePoint[0] = x;
-        sourcePoint[1] = y;
-
-        // Find the rectangle around the point
-        RectF area = new RectF(
-                x - threshold, y - threshold,
-                x + threshold, y + threshold
-        );
-
-        // Reset the path
-        this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
-
-        // Holders
-        float[] currentPoint = new float[2];
-        float len = this.mGenericMeasure.getLength();
-        float currentPosition = 0;
-
-        // Cycle all the point of the path using an arbitrary increment
-        boolean running = true;
-        while (running) {
-            // Check for exit
-            if (currentPosition > len) {
-                currentPosition = len;
-                running = false;
-            }
-
-            // Get the points position on the path
-            this.mGenericMeasure.getPosTan(currentPosition, currentPoint, null);
-
-            // Check the point is contained within the referenced rectangle
-            if (area.contains(currentPoint[0], currentPoint[1])) {
-                // Calculate the distances from found point
-                float distance = this.getPointsDistance(sourcePoint, currentPoint);
-
-                // Check if must be assigned.
-                // If the distance is less save the current distance from path and the position
-                // on the path from the start.
-                if (info[0] == -1 || info[0] > distance) {
-                    info[0] = distance;
-                    info[1] = currentPosition;
-                }
-            }
-
-            // Next point
-            currentPosition += 1.0f;
-        }
-
-        // Return the distance
-        return info;
+        this.mPathPoints = null;
+        this.mGenericMeasure = new PathMeasure();
+        this.mLength = this.getGlobalLength();
+        this.mPathPoints = this.getPathPoints();
+        this.mBounds = this.getGlobalBounds();
     }
 
 
@@ -213,8 +228,8 @@ public class ScPathMeasure extends PathMeasure {
         super.setPath(path, forceClosed);
 
         // Init
-        this.mPath = path;
-        this.mForceClosed = forceClosed;
+        if (this.mPath == null || !this.mPath.equals(path))
+            this.init(path, forceClosed);
     }
 
     /**
@@ -224,19 +239,7 @@ public class ScPathMeasure extends PathMeasure {
      */
     @Override
     public float getLength() {
-        // Reset
-        this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
-
-        // Cycle all the contours
-        float globalLen = 0.0f;
-        do {
-            // Increase the global length
-            globalLen += this.mGenericMeasure.getLength();
-
-        } while (this.mGenericMeasure.nextContour());
-
-        // Return the global length
-        return globalLen;
+        return this.mLength;
     }
 
     /**
@@ -325,7 +328,7 @@ public class ScPathMeasure extends PathMeasure {
      * Get the source path, between all contours, where the distance fall.
      * @return a Path
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public Path getPath(float distance) {
         // Move on right contour
         float offset = this.moveToContour(distance);
@@ -388,7 +391,7 @@ public class ScPathMeasure extends PathMeasure {
      * @param index the index to find
      * @return the contour global distance from the path start
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public float moveToContour(int index) {
         // Reset
         this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
@@ -420,7 +423,7 @@ public class ScPathMeasure extends PathMeasure {
      * @param distance the distance from path start
      * @return the contour global distance from the path start
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public float moveToContour(float distance) {
         // Reset
         this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
@@ -451,24 +454,9 @@ public class ScPathMeasure extends PathMeasure {
      * of path for find the right path boundaries.
      * @return the path boundaries
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public RectF getBounds() {
-        // Holders
-        RectF globalBounds = new RectF();
-
-        // Reset
-        this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
-
-        // Cycle all the contours
-        do {
-            // Get the current contour bounds and sum to the global
-            RectF currentBounds = this.getContourBounds();
-            globalBounds.union(currentBounds);
-
-        } while (this.mGenericMeasure.nextContour());
-
-        // Else
-        return globalBounds;
+        return this.mBounds;
     }
 
     /**
@@ -480,37 +468,45 @@ public class ScPathMeasure extends PathMeasure {
      * @param threshold the threshold to define the checking area
      * @return          return -1 if the point is not on the path else the distance of the point from start
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
+    @SuppressWarnings({"unused"})
     public float getPositionOnPath(float x, float y, float threshold) {
-        // Reset
-        this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
+        // Store the source point
+        float[] sourcePoint = new float[2];
+        sourcePoint[0] = x;
+        sourcePoint[1] = y;
+
+        // Find the rectangle around the point
+        RectF area = new RectF(
+                x - threshold, y - threshold,
+                x + threshold, y + threshold
+        );
 
         // Holders
-        float distance = -1;
-        float nearest = -1;
-        float globalLen = 0.0f;
+        float nearest = 0.0f;
+        float position = -1;
 
-        // Cycle all the contours
-        do {
-            // Get the current contour nearest point to the passed coordinates
-            float[] info = this.getContourDistance(x, y, threshold);
+        // Cycle all points on path
+        for (int index = 0; index < this.mPathPoints.length; index ++) {
+            // Holders
+            float[] point = this.mPathPoints[index];
 
-            // Compare.
-            // The info position is relative to the contour so need to be globalized.
-            // 0 - Distance from path
-            // 1 - Position on path
-            if (nearest == -1 || info[0] > nearest) {
-                nearest = info[0];
-                distance = info[1] + globalLen;
+            // Check the point is contained within the referenced rectangle
+            if (area.contains(point[0], point[1])) {
+                // Calculate the distances from found point
+                float distance = this.getPointsDistance(sourcePoint, point);
+
+                // Check if must be assigned.
+                // If the distance is less save the current distance from path and the position
+                // on the path from the start.
+                if (position == -1 || nearest > distance) {
+                    nearest = distance;
+                    position = index;
+                }
             }
+        }
 
-            // Update the length
-            globalLen += this.mGenericMeasure.getLength();
-
-        } while (this.mGenericMeasure.nextContour());
-
-        // Return the distance from the path start
-        return distance;
+        // Return
+        return position > this.mLength ? this.mLength: position;
     }
 
     /**
@@ -539,4 +535,17 @@ public class ScPathMeasure extends PathMeasure {
         return this.getPositionOnPath(x, y, threshold) != -1;
     }
 
+    /**
+     * Get a path points approximation of 1 pixel.
+     * @return x, y and angle in degrees.
+     */
+    @SuppressWarnings({"unused"})
+    public float[][] getApproximation() {
+        // Must create a copy before return as could be changed
+        float[][] copy = new float[this.mPathPoints.length][3];
+        System.arraycopy(this.mPathPoints, 0, copy, 0, this.mPathPoints.length);
+
+        // Return the copy
+        return copy;
+    }
 }
