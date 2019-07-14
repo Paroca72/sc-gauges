@@ -21,7 +21,7 @@
             app:sccStrokeWidth="10dp"
             app:sccValue="70"
             app:sccProgressWidth="10dp"
-            app:sccProgressColors="#0000ff|#ff0000|#00ff00"
+            app:sccProgressColors="#ff0000|#00ff00"
             />
 
         <SeekBar

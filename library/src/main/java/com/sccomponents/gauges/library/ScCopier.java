@@ -311,13 +311,19 @@ public class ScCopier extends ScFeature {
     private Bitmap createBitmap(int canvasWidth, int canvasHeight) {
         // Holders
         float[][] points = this.getMeasure().getApproximation();
+        float length = points.length;
+
+        // If the path is closed could happen than the first point is equal to the last.
+        // Need to avoid this situation.
+        if (this.getMeasure().isClosed())
+            length -= 1;
 
         // Create the bitmap using the path boundaries and retrieve the canvas where draw
         Bitmap bitmap = Bitmap.createBitmap(canvasWidth, canvasHeight, Bitmap.Config.ARGB_8888);
         this.mGenericCanvas.setBitmap(bitmap);
 
         // Cycle all points of the path
-        for (int index = 0; index < points.length; index++) {
+        for (int index = 0; index < length; index++) {
             // Set the current painter color
             int color = this.getGradientColor(index);
             this.mGenericPaint.setColor(color);

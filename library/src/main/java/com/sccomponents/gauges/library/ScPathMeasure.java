@@ -5,6 +5,8 @@ import android.graphics.PathMeasure;
 import android.graphics.RectF;
 import android.os.Build;
 
+import java.util.Arrays;
+
 
 /**
  * Extend the PathMeasure because the original class not consider the contours in its
@@ -70,11 +72,12 @@ public class ScPathMeasure extends PathMeasure {
         // Reset the path measurer
         this.mGenericMeasure.setPath(this.mPath, this.mForceClosed);
 
-        // Get the array capacity and create an empty one
+        // Get the right length
         float length = this.mLength;
         int fixedLength = (int) Math.ceil(length);
 
-        float[][] points = new float[fixedLength][4];
+        // Get the array capacity and create an empty one
+        float[][] points = new float[fixedLength][3];
         float[] point = new float[2];
         float[] tangent = new float[2];
 
@@ -107,7 +110,7 @@ public class ScPathMeasure extends PathMeasure {
             distance += 1.0f;
         }
 
-        // Return the global length
+        // Return all the array
         return points;
     }
 
@@ -541,11 +544,7 @@ public class ScPathMeasure extends PathMeasure {
      */
     @SuppressWarnings({"unused"})
     public float[][] getApproximation() {
-        // Must create a copy before return as could be changed
-        float[][] copy = new float[this.mPathPoints.length][3];
-        System.arraycopy(this.mPathPoints, 0, copy, 0, this.mPathPoints.length);
-
-        // Return the copy
-        return copy;
+        // Return a copy
+        return Arrays.copyOf(this.mPathPoints, this.mPathPoints.length);
     }
 }

@@ -48,12 +48,15 @@ public class MainActivity extends AppCompatActivity {
         //gauge.removeFeature(gauge.getProgress());
         gauge.setHighValue(100);
 
-        final ScNotches notches = gauge.getNotches();
-        notches.setWidths(10);
-        notches.setHeights(50);
-        notches.setLastRepetitionOnPathEnd(true);
-        notches.setRepetitions(10);
-        notches.setColors(Color.RED);
+        ScCopier progress = gauge.getProgress();
+        //progress.setColors(Color.BLUE);
+
+        ScNotches notches = gauge.getNotches();
+//        notches.setWidths(10);
+//        notches.setHeights(50);
+//        notches.setLastRepetitionOnPathEnd(true);
+//        notches.setRepetitions(10);
+//        notches.setColors(Color.RED);
 
         ScPointer pointer = gauge.getHighPointer();
         //pointer.setVisible(true);
