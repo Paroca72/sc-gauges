@@ -387,8 +387,7 @@ public abstract class ScFeature {
      */
     protected void onPropertyChange(String name, Object value) {
         // Need to redraw the bitmap
-        if (this.mDoubleBuffering)
-            this.freeBitmapMemory();
+        this.freeBitmapMemory();
 
         // Listener
         if (this.mOnPropertyChangedListener != null)
@@ -560,6 +559,9 @@ public abstract class ScFeature {
     public void refresh() {
         // Force redraw
         this.freeBitmapMemory();
+
+        // Need to refresh the measure
+        this.mPathMeasure = new ScPathMeasure();
     }
 
     /**

@@ -42,26 +42,45 @@ public class MainActivity extends AppCompatActivity {
 
         gauge.setRecognizePathTouch(true);
         gauge.setDoubleBuffering(true);
-        gauge.setDuration(1000);
+        //gauge.setDuration(1000);
         //gauge.getBase().getPainter().setStrokeCap(Paint.Cap.ROUND);
         //gauge.getProgress().getPainter().setStrokeCap(Paint.Cap.ROUND);
         //gauge.removeFeature(gauge.getProgress());
         gauge.setHighValue(100);
 
-//        final ScNotches notches = gauge.getNotches();
-//        notches.setWidths(10);
-//        notches.setHeights(50);
-//        notches.setLastRepetitionOnPathEnd(true);
-//        notches.setRepetitions(10);
-//        notches.setColors(Color.RED);
+        final ScNotches notches = gauge.getNotches();
+        notches.setWidths(10);
+        notches.setHeights(50);
+        notches.setLastRepetitionOnPathEnd(true);
+        notches.setRepetitions(10);
+        notches.setColors(Color.RED);
 
         ScPointer pointer = gauge.getHighPointer();
-        pointer.setVisible(true);
+        //pointer.setVisible(true);
         pointer.setWidths(50);
         pointer.setHeights(50);
         pointer.setColors(Color.RED);
         pointer.setHaloWidth(25);
         pointer.setHaloAlpha(50);
+
+        SeekBar bar = this.findViewById(R.id.seekBar);
+        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                gauge.setPadding(i, i, i, i);
+                gauge.invalidate();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+        });
     }
 
 }

@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:padding="10dp"
+            android:padding="50dp"
             app:sccAngleStart="0"
             app:sccAngleSweep="360"
             app:sccStrokeColor="#333333"
@@ -23,6 +23,13 @@
             app:sccProgressWidth="10dp"
             app:sccProgressColors="#0000ff|#ff0000|#00ff00"
             />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:max="100" />
 
     </FrameLayout>
 
