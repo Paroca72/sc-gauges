@@ -15,13 +15,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:padding="50dp"
-            app:sccAngleStart="0"
-            app:sccAngleSweep="360"
+            app:sccAngleStart="135"
+            app:sccAngleSweep="270"
             app:sccStrokeColor="#333333"
             app:sccStrokeWidth="10dp"
             app:sccValue="70"
             app:sccProgressWidth="10dp"
-            app:sccProgressColors="#ff0000|#00ff00"
+            app:sccProgressColors="#00ff00"
             />
 
         <SeekBar

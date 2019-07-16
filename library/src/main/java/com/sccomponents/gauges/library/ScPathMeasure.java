@@ -75,6 +75,7 @@ public class ScPathMeasure extends PathMeasure {
         // Get the right length
         float length = this.mLength;
         int fixedLength = (int) Math.ceil(length);
+        float increment = length / fixedLength;
 
         // Get the array capacity and create an empty one
         float[][] points = new float[fixedLength][3];
@@ -82,16 +83,13 @@ public class ScPathMeasure extends PathMeasure {
         float[] tangent = new float[2];
 
         // Holders
-        boolean running = true;
         float distance = 0;
 
         // Cycle all the point of the path using an arbitrary increment
-        while (running) {
+        for (int index = 0; index < fixedLength; index ++) {
             // Check for exit
-            if (Float.compare(distance, length) == 1) {
+            if (Float.compare(distance, length) == 1)
                 distance = length;
-                running = false;
-            }
 
             // Find the tangent
             this.mGenericMeasure.getPosTan(distance, point, tangent);
@@ -101,13 +99,12 @@ public class ScPathMeasure extends PathMeasure {
             float degrees = (float) Math.toDegrees(angle);
 
             // Assign
-            int position = (int) Math.floor(distance);
-            points[position][0] = point[0];
-            points[position][1] = point[1];
-            points[position][2] = degrees;
+            points[index][0] = point[0];
+            points[index][1] = point[1];
+            points[index][2] = degrees;
 
             // Next point
-            distance += 1.0f;
+            distance += increment;
         }
 
         // Return all the array
