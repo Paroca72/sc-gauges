@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,11 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
         gauge.setRecognizePathTouch(true);
         gauge.setDoubleBuffering(true);
-        //gauge.setDuration(1000);
+        gauge.setDuration(1000);
         //gauge.getBase().getPainter().setStrokeCap(Paint.Cap.ROUND);
         //gauge.getProgress().getPainter().setStrokeCap(Paint.Cap.ROUND);
         //gauge.removeFeature(gauge.getProgress());
-        gauge.setHighValue(100);
+        gauge.setHighValue(90);
 
         //ScCopier progress = gauge.getProgress();
         //progress.setColors(Color.BLUE);
@@ -54,10 +55,11 @@ public class MainActivity extends AppCompatActivity {
         ScNotches notches = gauge.getNotches();
         notches.setWidths(10);
         notches.setHeights(50);
-        notches.setSpaceBetweenRepetitions(10);
-        //notches.setLastRepetitionOnPathEnd(false);
-        //notches.setRepetitions(10);
+        //notches.setSpaceBetweenRepetitions(16.667f);
+        notches.setLastRepetitionOnPathEnd(true);
+        notches.setRepetitions(10);
         notches.setColors(Color.RED);
+        notches.setPosition(ScFeature.Positions.INSIDE);
 
         ScPointer pointer = gauge.getHighPointer();
         //pointer.setVisible(true);
@@ -67,12 +69,24 @@ public class MainActivity extends AppCompatActivity {
         pointer.setHaloWidth(25);
         pointer.setHaloAlpha(50);
 
+        gauge.setOnEventListener(new ScGauge.OnEventListener() {
+            @Override
+            public void onValueChange(ScGauge gauge, float lowValue, float highValue, boolean isRunning) {
+                Log.i("VALUE",
+                        String.format("%s -> %s", highValue, gauge.getHighValue()));
+            }
+        });
+
+        // ------------------------------------------------------------------------
         SeekBar bar = this.findViewById(R.id.seekBar);
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                i *= 2;
                 gauge.setPadding(i, i, i, i);
                 gauge.invalidate();
+
+                gauge.setHighValue(i);
             }
 
             @Override

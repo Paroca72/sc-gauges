@@ -613,8 +613,7 @@ public abstract class ScGauge extends ScDrawer
         this.mLowValue = attrArray.getFloat(R.styleable.ScGauge_sccLowValue, 0.0f);
 
         if (this.mHighValue == 0.0f)
-            this.mHighValue = attrArray.getFloat(
-                    R.styleable.ScGauge_sccHighValue, 0.0f);
+            this.mHighValue = attrArray.getFloat(R.styleable.ScGauge_sccHighValue, 0.0f);
 
         this.mSnapToNotches = attrArray.getBoolean(
                 R.styleable.ScGauge_sccSnapToNotches, false);
@@ -746,8 +745,10 @@ public abstract class ScGauge extends ScDrawer
         }
 
         // Set the duration
-        this.mHighValueAnimator.setDuration(this.mDuration);
-        this.mLowValueAnimator.setDuration(this.mDuration);
+        if (this.mDuration >= 0) {
+            this.mHighValueAnimator.setDuration(this.mDuration);
+            this.mLowValueAnimator.setDuration(this.mDuration);
+        }
 
         // Choice the value and the animation
         float currValue = treatLowValue ? this.mLowValueAnimated : this.mHighValueAnimated;
@@ -919,14 +920,10 @@ public abstract class ScGauge extends ScDrawer
      */
     private void callOnAnimationUpdate(ValueAnimator animation) {
         // Get the current value
-        if (animation.equals(this.mHighValueAnimator)) {
+        if (animation.equals(this.mHighValueAnimator))
             this.mHighValueAnimated = (float) animation.getAnimatedValue();
-            if (!animation.isRunning()) this.mHighValue = this.mHighValueAnimated;
-        }
-        if (animation.equals(this.mLowValueAnimator)) {
+        if (animation.equals(this.mLowValueAnimator))
             this.mLowValueAnimated = (float) animation.getAnimatedValue();
-            if (!animation.isRunning()) this.mLowValue = this.mLowValueAnimated;
-        }
 
         // Refresh
         this.invalidate();
@@ -1434,10 +1431,11 @@ public abstract class ScGauge extends ScDrawer
 
 
     /**
-     * Set the pointer animation duration.
+     * Set the animation duration.
      * As exists two animator (low and high) for have a major granular control of the animations
      * you can access to them using {@link #getHighValueAnimator} and {@link #getLowValueAnimator}.
-     * @param value the duration in milliseconds
+     * If the duration minor than zero will not set and will considered the animator duration.
+     * @param value the duration in milliseconds.
      */
     @SuppressWarnings("unused")
     public void setDuration(int value) {
@@ -1447,7 +1445,7 @@ public abstract class ScGauge extends ScDrawer
     }
 
     /**
-     * Get the pointer animation duration.
+     * Get the animation duration.
      * @return the duration in milliseconds
      */
     @SuppressWarnings("unused")
