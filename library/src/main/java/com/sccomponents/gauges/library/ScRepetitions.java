@@ -247,7 +247,8 @@ public abstract class ScRepetitions extends ScFeature {
         if (this.mRepetitions > 0) {
             // Get the distance
             int repetitions = this.getFixedRepetitions();
-            distance = ((repetition - 1) * (length / repetitions));
+            if (repetitions != 0)
+                distance = ((repetition - 1) * (length / repetitions));
         }
 
         // If space between

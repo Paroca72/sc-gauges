@@ -30,6 +30,10 @@ import com.sccomponents.gauges.library.ScPointer;
 import com.sccomponents.gauges.library.ScRepetitions;
 import com.sccomponents.gauges.library.ScWriter;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -41,25 +45,41 @@ public class MainActivity extends AppCompatActivity {
         final ScArcGauge gauge = this.findViewById(R.id.gauge);
         assert gauge != null;
 
+        final float min = 0.0f;
+        final float max = 100.0f;
+        int repetitions = 17;
+
         gauge.setRecognizePathTouch(true);
         gauge.setDoubleBuffering(true);
         gauge.setDuration(1000);
         //gauge.getBase().getPainter().setStrokeCap(Paint.Cap.ROUND);
         //gauge.getProgress().getPainter().setStrokeCap(Paint.Cap.ROUND);
         //gauge.removeFeature(gauge.getProgress());
-        gauge.setHighValue(90);
+        gauge.setFillingArea(ScDrawer.FillingArea.NONE);
+        gauge.setHighValue(0.00001f);
+        gauge.setAngleStart(-0);
+        gauge.setAngleSweep(360);
 
         //ScCopier progress = gauge.getProgress();
         //progress.setColors(Color.BLUE);
 
         ScNotches notches = gauge.getNotches();
         notches.setWidths(10);
-        notches.setHeights(50);
+        notches.setHeights(100);
         //notches.setSpaceBetweenRepetitions(16.667f);
         notches.setLastRepetitionOnPathEnd(true);
-        notches.setRepetitions(10);
+        notches.setRepetitions(repetitions);
         notches.setColors(Color.RED);
         notches.setPosition(ScFeature.Positions.INSIDE);
+
+        ScNotches another = (ScNotches) gauge.addFeature(ScNotches.class);
+        another.setTag("ANOTHER");
+        another.setWidths(5);
+        another.setHeights(50);
+        notches.setLastRepetitionOnPathEnd(true);
+        another.setRepetitions((repetitions - 1) * 5 + 1);
+        another.setColors(Color.BLUE);
+        another.setPosition(ScFeature.Positions.INSIDE);
 
         ScPointer pointer = gauge.getHighPointer();
         //pointer.setVisible(true);
@@ -69,11 +89,51 @@ public class MainActivity extends AppCompatActivity {
         pointer.setHaloWidth(25);
         pointer.setHaloAlpha(50);
 
+        gauge.setOnDrawListener(new ScGauge.OnDrawListener() {
+            @Override
+            public void onDrawContour(ScGauge gauge, ScFeature.ContourInfo info) {
+                // NOP
+            }
+
+            @Override
+            public void onDrawRepetition(ScGauge gauge, ScRepetitions.RepetitionInfo info) {
+                if (info.source.getTag() == ScGauge.NOTCHES_IDENTIFIER) {
+                    Log.i("Notches", String.format("%s", info.tangent));
+                }
+            }
+        });
+        // ------------------------------------------------------------------------
+        final TextView textView = this.findViewById(R.id.text);
+        final TextView angleView = this.findViewById(R.id.angle);
+        final ImageView indicator = this.findViewById(R.id.indicator);
+
         gauge.setOnEventListener(new ScGauge.OnEventListener() {
             @Override
             public void onValueChange(ScGauge gauge, float lowValue, float highValue, boolean isRunning) {
-                Log.i("VALUE",
-                        String.format("%s -> %s", highValue, gauge.getHighValue()));
+                float angle = ((ScArcGauge) gauge).percentageToAngle(highValue);
+                textView.setText(String.format("%s", angle));
+
+                float value = ScGauge.percentageToValue(highValue, min, max);
+                angleView.setText(String.format("%s", value));
+
+                float fixed = angle - 126.0f;
+                //fixed = new BigDecimal(fixed)
+                //        .setScale(2, RoundingMode.HALF_DOWN)
+                //        .floatValue();
+                indicator.setRotation(fixed);
+            }
+        });
+
+        // ------------------------------------------------------------------------
+        Button increase = this.findViewById(R.id.btnIncrease);
+        increase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float currentValue = gauge.getHighValue(min, max) + 6.25f;
+                if (currentValue > max)
+                    currentValue = 0.0f;
+
+                gauge.setHighValue(currentValue, min, max);
             }
         });
 
@@ -85,8 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 i *= 2;
                 gauge.setPadding(i, i, i, i);
                 gauge.invalidate();
-
-                gauge.setHighValue(i);
             }
 
             @Override

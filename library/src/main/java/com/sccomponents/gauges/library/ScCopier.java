@@ -346,9 +346,13 @@ public class ScCopier extends ScFeature {
      * @param canvasHeight the height
      */
     private void createShader(int canvasWidth, int canvasHeight) {
-        Bitmap bitmap = this.createBitmap(canvasWidth, canvasHeight);
-        this.mShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        bitmap.recycle();
+        // Check for empty values
+        if (canvasWidth > 0 && canvasHeight > 0) {
+            // Create the shader and recycle the bitmap
+            Bitmap bitmap = this.createBitmap(canvasWidth, canvasHeight);
+            this.mShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            bitmap.recycle();
+        }
     }
 
     /**

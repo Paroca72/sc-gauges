@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,18 +12,43 @@
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
             android:layout_margin="0dp"
-            android:padding="50dp"
             android:background="#f5f5f5"
-            app:sccAngleStart="135"
-            app:sccAngleSweep="270"
-            app:sccStrokeColor="#333333"
-            app:sccStrokeWidth="10dp"
+            app:sccProgressColors="#0000FF00"
             app:sccProgressWidth="10dp"
-            app:sccProgressColors="#00ff00"
-            />
+            app:sccStrokeColor="#333333"
+            app:sccStrokeWidth="10dp" />
+
+        <ImageView
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/indicator" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:background="#ffffff"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/angle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+        </LinearLayout>
 
         <SeekBar
             android:id="@+id/seekBar"
@@ -30,6 +56,23 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:max="100" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:padding="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnIncrease"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Increase +10"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
 
     </FrameLayout>
 
