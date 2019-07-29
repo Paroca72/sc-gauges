@@ -97,11 +97,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawRepetition(ScGauge gauge, ScRepetitions.RepetitionInfo info) {
-                if (info.source.getTag() == ScGauge.NOTCHES_IDENTIFIER) {
-                    Log.i("Notches", String.format("%s", info.tangent));
-                }
             }
         });
+
         // ------------------------------------------------------------------------
         final TextView textView = this.findViewById(R.id.text);
         final TextView angleView = this.findViewById(R.id.angle);

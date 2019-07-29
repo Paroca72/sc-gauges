@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.os.Build;
 
 import java.util.Arrays;
 
@@ -351,7 +352,10 @@ public class ScCopier extends ScFeature {
             // Create the shader and recycle the bitmap
             Bitmap bitmap = this.createBitmap(canvasWidth, canvasHeight);
             this.mShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            bitmap.recycle();
+
+            // Recycle the bitmap
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+                bitmap.recycle();
         }
     }
 
