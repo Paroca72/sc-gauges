@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         gauge.setAngleStart(-0);
         gauge.setAngleSweep(360);
 
-        //ScCopier progress = gauge.getProgress();
-        //progress.setColors(Color.BLUE);
+        ScCopier progress = gauge.getProgress();
+        progress.setColors(Color.BLUE);
 
         ScNotches notches = gauge.getNotches();
         notches.setWidths(10);

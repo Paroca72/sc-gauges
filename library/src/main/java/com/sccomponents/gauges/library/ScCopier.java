@@ -36,7 +36,6 @@ public class ScCopier extends ScFeature {
 
     private boolean mIsVisible;
     private Path mAreaPath;
-    private BitmapShader mShader;
 
     private Paint mGenericPaint;
     private float[] mGenericPoint;
@@ -66,7 +65,6 @@ public class ScCopier extends ScFeature {
         this.mWidths = new float[]{0.0f};
         this.mWidthsMode = WidthsMode.SMOOTH;
         this.mAreaPath = new Path();
-        this.mShader = null;
         this.mIsVisible = false;
 
         this.mGenericPoint = new float[2];
@@ -346,17 +344,24 @@ public class ScCopier extends ScFeature {
      * @param canvasWidth  the width
      * @param canvasHeight the height
      */
-    private void createShader(int canvasWidth, int canvasHeight) {
+    private BitmapShader createShader(int canvasWidth, int canvasHeight) {
         // Check for empty values
         if (canvasWidth > 0 && canvasHeight > 0) {
             // Create the shader and recycle the bitmap
             Bitmap bitmap = this.createBitmap(canvasWidth, canvasHeight);
-            this.mShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
 
-            // Recycle the bitmap
+            // Recycle the bitmap.
+            // Over the OREO version the app crash apparently without cause if try to recycle
+            // the bitmap.
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
                 bitmap.recycle();
+
+            // Return
+            return shader;
         }
+        // Else
+        return null;
     }
 
     /**
@@ -383,15 +388,15 @@ public class ScCopier extends ScFeature {
         }
 
         // Check if needs to redraw the bitmap
+        Paint painter = this.getPainter();
         if (this.mNeedToRedrawShader) {
             // Trigger and shader
             this.mNeedToRedrawShader = false;
-            this.createShader(canvas.getWidth(), canvas.getHeight());
-        }
 
-        // Create a paint clone and set the shader
-        Paint painter = this.getPainter();
-        painter.setShader(this.mShader);
+            // Create the shader and apply to the painter
+            BitmapShader shader = this.createShader(canvas.getWidth(), canvas.getHeight());
+            painter.setShader(shader);
+        }
 
         // Draw
         canvas.drawPath(this.mAreaPath, painter);
