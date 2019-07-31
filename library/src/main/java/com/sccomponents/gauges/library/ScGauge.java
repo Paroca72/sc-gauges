@@ -853,7 +853,6 @@ public abstract class ScGauge extends ScDrawer
         if (pointer != null && pointer.getTag() != null &&
                 pointer.getTag().equalsIgnoreCase(ScGauge.LOW_POINTER_IDENTIFIER)) {
             // Set and exit
-            this.invalidate();
             this.mLowValue = value;
             this.setGenericValue(value, true);
             return;
@@ -863,7 +862,6 @@ public abstract class ScGauge extends ScDrawer
         if (pointer == null ||
                 (pointer.getTag() != null && pointer.getTag().equalsIgnoreCase(ScGauge.HIGH_POINTER_IDENTIFIER))) {
             // Set and exit
-            this.invalidate();
             this.mHighValue = value;
             this.setGenericValue(value, false);
             return;
@@ -919,11 +917,28 @@ public abstract class ScGauge extends ScDrawer
      * @param animation the animator
      */
     private void callOnAnimationUpdate(ValueAnimator animation) {
+        // Holders
+        boolean needToUpdate = false;
+        float currentValue = (float) animation.getAnimatedValue();
+
         // Get the current value
         if (animation.equals(this.mHighValueAnimator))
-            this.mHighValueAnimated = (float) animation.getAnimatedValue();
+            // If changed
+            if (currentValue != this.mHighValueAnimated) {
+                needToUpdate = true;
+                this.mHighValueAnimated = currentValue;
+            }
+
         if (animation.equals(this.mLowValueAnimator))
-            this.mLowValueAnimated = (float) animation.getAnimatedValue();
+            // If changed
+            if (currentValue != this.mLowValueAnimated) {
+                needToUpdate = true;
+                this.mLowValueAnimated = currentValue;
+            }
+
+        // Check
+        if (!needToUpdate)
+            return;
 
         // Refresh
         this.invalidate();
@@ -969,7 +984,7 @@ public abstract class ScGauge extends ScDrawer
      */
     @Override
     public void onPropertyChanged(ScFeature feature, String name, Object value) {
-        invalidate();
+        this.invalidate();
     }
 
 
