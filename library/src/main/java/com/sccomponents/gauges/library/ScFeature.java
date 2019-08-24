@@ -501,7 +501,8 @@ public abstract class ScFeature {
     @SuppressWarnings("unused")
     public void draw(Canvas canvas, Path path, Matrix matrix) {
         // Check the domain
-        if (canvas == null || !this.mVisible || path == null)
+        if (canvas == null || canvas.getWidth() == 0 || canvas.getHeight() == 0 ||
+                !this.mVisible || path == null)
             return;
 
         // Is drawing
