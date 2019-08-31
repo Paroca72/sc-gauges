@@ -371,9 +371,6 @@ public abstract class ScFeature {
     @SuppressWarnings({"unused"})
     protected void freeBitmapMemory() {
         // Free memory
-        if (this.mCanvas != null)
-            this.mCanvas.setBitmap(null);
-
         if (this.mBuffer != null)
             this.mBuffer.recycle();
 
@@ -527,7 +524,8 @@ public abstract class ScFeature {
                 this.mCanvas = canvas;
 
             // Apply the matrix
-            this.mCanvas.setMatrix(matrix);
+            if (matrix != null)
+                this.mCanvas.setMatrix(matrix);
 
             // If the have only one color inside the colors array set it directly on the painter
             if (this.mColors != null && this.mColors.length == 1)

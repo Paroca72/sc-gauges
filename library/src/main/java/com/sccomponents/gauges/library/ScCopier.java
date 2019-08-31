@@ -389,17 +389,24 @@ public class ScCopier extends ScFeature {
 
         // Check if needs to redraw the bitmap
         Paint painter = this.getPainter();
+
+        // Before Lollipop version must assigned the original paint
+        // to a clone due have displaying issue.
+        Paint clonePaint = painter;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            clonePaint = new Paint(painter);
+
+        // Check if needs to redraw the shader
         if (this.mNeedToRedrawShader) {
             // Trigger and shader
             this.mNeedToRedrawShader = false;
 
             // Create the shader and apply to the painter
             BitmapShader shader = this.createShader(canvas.getWidth(), canvas.getHeight());
-            painter.setShader(shader);
+            clonePaint.setShader(shader);
         }
 
-        // Draw
-        canvas.drawPath(this.mAreaPath, painter);
+        canvas.drawPath(this.mAreaPath, clonePaint);
     }
 
 

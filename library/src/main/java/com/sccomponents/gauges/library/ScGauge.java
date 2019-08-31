@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -645,9 +646,6 @@ public abstract class ScGauge extends ScDrawer
 
         //--------------------------------------------------
         // INTERNAL
-
-        // Disable the hardware acceleration as have problem with the shader
-        this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         // Check for snap to notches the new degrees value
         if (this.mSnapToNotches && this.mNotches != null) {
