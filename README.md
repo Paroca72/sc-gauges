@@ -49,7 +49,7 @@ Add the dependency
 ```java
 dependencies {
     ...
-    compile 'com.github.paroca72:sc-gauges:3.5.2'
+    compile 'com.github.paroca72:sc-gauges:3.5.3'
 }
 ```
 <br />
