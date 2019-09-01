@@ -3,10 +3,12 @@ package com.sccomponents.gauges.library;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Build;
@@ -403,9 +405,11 @@ public class ScCopier extends ScFeature {
 
             // Create the shader and apply to the painter
             BitmapShader shader = this.createShader(canvas.getWidth(), canvas.getHeight());
-            clonePaint.setShader(shader);
+            if (shader != null)
+                clonePaint.setShader(shader);
         }
 
+        // Draw the masked path
         canvas.drawPath(this.mAreaPath, clonePaint);
     }
 

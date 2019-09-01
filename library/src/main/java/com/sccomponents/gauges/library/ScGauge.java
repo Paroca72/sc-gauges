@@ -647,6 +647,11 @@ public abstract class ScGauge extends ScDrawer
         //--------------------------------------------------
         // INTERNAL
 
+        // Before Lollipop needs to disable the hardware acceleration as have
+        // problem with shader effect.
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
         // Check for snap to notches the new degrees value
         if (this.mSnapToNotches && this.mNotches != null) {
             // Get the current value and round at the closed notches value
