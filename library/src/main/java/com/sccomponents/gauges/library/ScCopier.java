@@ -3,12 +3,10 @@ package com.sccomponents.gauges.library;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Build;
@@ -39,6 +37,7 @@ public class ScCopier extends ScFeature {
     private boolean mIsVisible;
     private Path mAreaPath;
 
+    private BitmapShader mShader;
     private Paint mGenericPaint;
     private float[] mGenericPoint;
     private RectF mGenericRect;
@@ -351,16 +350,7 @@ public class ScCopier extends ScFeature {
         if (canvasWidth > 0 && canvasHeight > 0) {
             // Create the shader and recycle the bitmap
             Bitmap bitmap = this.createBitmap(canvasWidth, canvasHeight);
-            BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-
-            // Recycle the bitmap.
-            // Over the OREO version the app crash apparently without cause if try to recycle
-            // the bitmap.
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-                bitmap.recycle();
-
-            // Return
-            return shader;
+            return new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         }
         // Else
         return null;
@@ -391,12 +381,14 @@ public class ScCopier extends ScFeature {
 
         // Check if needs to redraw the bitmap
         Paint painter = this.getPainter();
+        Paint clone;
 
         // Before Lollipop version must assigned the original paint
         // to a clone due have displaying issue.
-        Paint clonePaint = painter;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            clonePaint = new Paint(painter);
+            clone = new Paint(painter);
+        else
+            clone = painter;
 
         // Check if needs to redraw the shader
         if (this.mNeedToRedrawShader) {
@@ -404,13 +396,14 @@ public class ScCopier extends ScFeature {
             this.mNeedToRedrawShader = false;
 
             // Create the shader and apply to the painter
-            BitmapShader shader = this.createShader(canvas.getWidth(), canvas.getHeight());
-            if (shader != null)
-                clonePaint.setShader(shader);
+            this.mShader = this.createShader(canvas.getWidth(), canvas.getHeight());
         }
 
+        if (this.mShader != null)
+            clone.setShader(this.mShader);
+
         // Draw the masked path
-        canvas.drawPath(this.mAreaPath, clonePaint);
+        canvas.drawPath(this.mAreaPath, clone);
     }
 
 
