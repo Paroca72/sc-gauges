@@ -506,7 +506,8 @@ public class ScPathMeasure extends PathMeasure {
         }
 
         // Return
-        return position > this.mLength ? this.mLength: position;
+        int fixedEnd = ((int) Math.ceil(this.mLength)) - 1;
+        return position >= fixedEnd ? this.mLength: position;
     }
 
     /**
