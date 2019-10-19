@@ -100,10 +100,6 @@ public class ScNotches extends ScRepetitions {
         if (info.bitmap == null)
             return;
 
-        // Adjust the first point
-        this.mFirstPoint[0] -= info.bitmap.getWidth() / 2.0f;
-        this.mFirstPoint[1] -= info.bitmap.getHeight() / 2.0f;
-
         // Scale the original bitmap
         Bitmap scaled = info.bitmap;
         if (info.width != 0 && info.height != 0)
@@ -112,6 +108,10 @@ public class ScNotches extends ScRepetitions {
                     (int) info.width,
                     (int) info.height,
                     false);
+
+        // Adjust the first point
+        this.mFirstPoint[0] -= scaled.getWidth() / 2.0f;
+        this.mFirstPoint[1] -= scaled.getHeight() / 2.0f;
 
         // Print the bitmap centered respect the point
         canvas.drawBitmap(scaled, this.mFirstPoint[0], this.mFirstPoint[1], null);
