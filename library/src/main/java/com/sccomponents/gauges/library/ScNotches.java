@@ -134,7 +134,7 @@ public class ScNotches extends ScRepetitions {
         canvas.drawLine(
                 this.mFirstPoint[0], this.mFirstPoint[1],
                 this.mSecondPoint[0], this.mSecondPoint[1],
-                this.getPainter()
+                paint
         );
     }
 
