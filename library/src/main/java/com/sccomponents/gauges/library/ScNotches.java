@@ -255,19 +255,19 @@ public class ScNotches extends ScRepetitions {
 
             // Draw a line
             case LINE:
-                this.drawLine(canvas, info, this.getPainter());
+                this.drawLine(canvas, info, painter);
                 break;
 
             // Draw a circle
             case OVAL:
             case OVAL_FILLED:
-                this.drawOval(canvas, info, this.getPainter());
+                this.drawOval(canvas, info, painter);
                 break;
 
             // Draw a square
             case RECTANGLE:
             case RECTANGLE_FILLED:
-                this.drawRectangle(canvas, info, this.getPainter());
+                this.drawRectangle(canvas, info, painter);
                 break;
         }
     }
