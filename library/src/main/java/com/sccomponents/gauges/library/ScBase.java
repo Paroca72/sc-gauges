@@ -15,7 +15,7 @@ import android.view.WindowManager;
  * This is a simpler collection of methods used from the inherited classes as utility.
  *
  * @author Samuele Carassai
- * @version 3.5.0
+ * @version 3.5.1
  * @since 2016-05-26
  */
 public abstract class ScBase extends View {
@@ -74,6 +74,21 @@ public abstract class ScBase extends View {
         DisplayMetrics metrics = this.getDisplayMetrics(this.getContext());
         // Calc the conversion by the screen density
         return dip * metrics.density;
+    }
+
+    /**
+     * Convert pixel to scaled pixel (sp)
+     * @param px    source pixel
+     * @return      scaled pixel
+     */
+    @SuppressWarnings("unused")
+    public float pixelToScaledPixel(float px) {
+        // Get the display metrics
+        DisplayMetrics metrics = this.getDisplayMetrics(this.getContext());
+
+        // Convert
+        float scaledDensity = metrics.scaledDensity;
+        return scaledDensity == 0 ? 0.0f: px / scaledDensity;
     }
 
 

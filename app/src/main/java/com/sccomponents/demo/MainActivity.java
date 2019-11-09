@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,127 +38,31 @@ import java.math.RoundingMode;
 
 public class MainActivity extends AppCompatActivity {
 
+    private int mAngle = 1;
+    private ScArcGauge mGauge = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Find the components
-        final ScArcGauge gauge = this.findViewById(R.id.gauge);
-        assert gauge != null;
-
-        final float min = 0.0f;
-        final float max = 100.0f;
-        int repetitions = 17;
-
-        gauge.setRecognizePathTouch(true);
-        gauge.setDoubleBuffering(true);
-        gauge.setDuration(1000);
-        //gauge.getBase().getPainter().setStrokeCap(Paint.Cap.ROUND);
-        //gauge.getProgress().getPainter().setStrokeCap(Paint.Cap.ROUND);
-        //gauge.removeFeature(gauge.getProgress());
-        gauge.setFillingArea(ScDrawer.FillingArea.NONE);
-        gauge.setHighValue(0.00001f);
-        gauge.setAngleStart(-0);
-        gauge.setAngleSweep(360);
-
-        ScCopier progress = gauge.getProgress();
-        progress.setColors(Color.BLUE, Color.YELLOW);
-        progress.setWidths(50, 80);
-        progress.getPainter().setStrokeCap(Paint.Cap.ROUND);
-
-        ScNotches notches = gauge.getNotches();
-        notches.setWidths(10);
-        notches.setHeights(100);
-        //notches.setSpaceBetweenRepetitions(16.667f);
-        notches.setLastRepetitionOnPathEnd(true);
-        notches.setRepetitions(repetitions);
-        notches.setColors(Color.RED);
-        notches.setPosition(ScFeature.Positions.INSIDE);
-
-        ScNotches another = (ScNotches) gauge.addFeature(ScNotches.class);
-        another.setTag("ANOTHER");
-        another.setWidths(5);
-        another.setHeights(50);
-        notches.setLastRepetitionOnPathEnd(true);
-        another.setRepetitions((repetitions - 1) * 5 + 1);
-        another.setColors(Color.BLUE);
-        another.setPosition(ScFeature.Positions.INSIDE);
-
-        ScPointer pointer = gauge.getHighPointer();
-        //pointer.setVisible(true);
-        pointer.setWidths(50);
-        pointer.setHeights(50);
-        pointer.setColors(Color.RED);
-        pointer.setHaloWidth(25);
-        pointer.setHaloAlpha(50);
-
-        gauge.setOnDrawListener(new ScGauge.OnDrawListener() {
-            @Override
-            public void onDrawContour(ScGauge gauge, ScFeature.ContourInfo info) {
-                // NOP
-            }
-
-            @Override
-            public void onDrawRepetition(ScGauge gauge, ScRepetitions.RepetitionInfo info) {
-            }
-        });
-
-        // ------------------------------------------------------------------------
-        final TextView textView = this.findViewById(R.id.text);
-        final TextView angleView = this.findViewById(R.id.angle);
-        final ImageView indicator = this.findViewById(R.id.indicator);
-
-        gauge.setOnEventListener(new ScGauge.OnEventListener() {
-            @Override
-            public void onValueChange(ScGauge gauge, float lowValue, float highValue, boolean isRunning) {
-                float angle = ((ScArcGauge) gauge).percentageToAngle(highValue);
-                textView.setText(String.format("%s", angle));
-
-                float value = ScGauge.percentageToValue(highValue, min, max);
-                angleView.setText(String.format("%s", value));
-
-                float fixed = angle - 126.0f;
-                //fixed = new BigDecimal(fixed)
-                //        .setScale(2, RoundingMode.HALF_DOWN)
-                //        .floatValue();
-                indicator.setRotation(fixed);
-            }
-        });
+        // Gauge
+        this.mGauge = this.findViewById(R.id.gauge);
 
         // ------------------------------------------------------------------------
         Button increase = this.findViewById(R.id.btnIncrease);
         increase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float currentValue = gauge.getHighValue(min, max) + 6.25f;
-                if (currentValue > max)
-                    currentValue = 0.0f;
+                // Increase angle
+                MainActivity.this.mGauge.setAngleStart(MainActivity.this.mAngle ++);
 
-                gauge.setHighValue(currentValue, min, max);
+                // Update the text
+                TextView text = MainActivity.this.findViewById(R.id.txtAngle);
+                text.setText(MainActivity.this.mAngle + "");
             }
         });
 
-        // ------------------------------------------------------------------------
-        SeekBar bar = this.findViewById(R.id.seekBar);
-        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                i *= 2;
-                gauge.setPadding(i, i, i, i);
-                gauge.invalidate();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // Do nothing
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // Do nothing
-            }
-        });
     }
 
 }

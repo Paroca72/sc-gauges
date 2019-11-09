@@ -12,50 +12,20 @@
 
         <com.sccomponents.gauges.library.ScArcGauge
             android:id="@+id/gauge"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            android:layout_margin="0dp"
-            android:background="#f5f5f5"
-            app:sccProgressColors="#0000FF00"
-            app:sccProgressWidth="10dp"
-            app:sccStrokeColor="#333333"
-            app:sccStrokeWidth="10dp" />
-
-        <ImageView
-            android:id="@+id/indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/indicator" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            android:background="#ffffff"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/angle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="" />
-
-        </LinearLayout>
-
-        <SeekBar
-            android:id="@+id/seekBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:max="100" />
+            android:layout_height="match_parent"
+            app:sccStrokeColor="#000000"
+            app:sccStrokeWidth="5dip"
+            app:sccNotches="10"
+            app:sccNotchesColor="#ff0000"
+            app:sccNotchesHeight="10dp"
+            app:sccNotchesWidth="5dip"
+            app:sccAngleSweep="360"
+            android:layout_gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -69,8 +39,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Increase +10"
+                android:text="Increase"
                 tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/txtAngle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText"
+                android:text="0" />
 
         </LinearLayout>
 

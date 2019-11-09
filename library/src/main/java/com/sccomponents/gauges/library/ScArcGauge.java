@@ -109,18 +109,16 @@ public class ScArcGauge extends ScGauge {
         Path path = new Path();
         RectF area = new RectF(0.0f, 0.0f, width, height);
 
-        // Draw the arc
-        path.addArc(area, this.mAngleStart, this.mAngleSweep);
+        // If the sweep angle if 360° must resolve a issue with addArc than not drawing proper on
+        // certains angle values.
+        if (this.mAngleSweep == 360.0f || this.mAngleSweep == -360.0f) {
+            // Draw the arc
+            path.addArc(area, this.mAngleStart, 359.99f);
+            path.close();
 
-        // If the sweep angle if 360° must resolve a issue with addArc than lost the starting
-        // angle. This issue happen only in version less than API 26.
-        if ((this.mAngleSweep == 360.0f || this.mAngleSweep == -360.0f) &&
-                android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // Create a transform and rotate the path on the starting angle
-            Matrix matrix = new Matrix();
-            matrix.postRotate(this.mAngleStart, area.centerX(), area.centerY());
-            path.transform(matrix);
-        }
+        } else
+            // Draw the arc
+            path.addArc(area, this.mAngleStart, this.mAngleSweep);
 
         // Return the path
         return path;

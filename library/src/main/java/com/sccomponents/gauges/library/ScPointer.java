@@ -104,6 +104,16 @@ public class ScPointer extends ScNotches {
     }
 
     /**
+     * Draw a triangle.
+     * @param canvas the canvas to draw
+     * @param info   the notch info
+     */
+    protected void drawTriangle(Canvas canvas, NotchInfo info, Paint paint) {
+        super.drawTriangle(canvas, info, paint);
+        super.drawTriangle(canvas, info, this.mHaloPaint);
+    }
+
+    /**
      * Draw method
      * @param canvas where to draw
      * @hide

@@ -2,8 +2,14 @@ package com.sccomponents.gauges.library;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import java.util.Arrays;
 
@@ -16,7 +22,7 @@ import java.util.Arrays;
  * All the notch are customizable before drawing it using the proper event.
  *
  * @author Samuele Carassai
- * @version 3.5.0
+ * @version 3.6.0
  * @since 2016-05-30
  */
 public class ScNotches extends ScRepetitions {
@@ -35,6 +41,8 @@ public class ScNotches extends ScRepetitions {
         OVAL_FILLED,
         RECTANGLE,
         RECTANGLE_FILLED,
+        TRIANGLE,
+        TRIANGLE_FILLED,
     }
 
     /**
@@ -57,10 +65,16 @@ public class ScNotches extends ScRepetitions {
 
     private NotchTypes mType;
     private Bitmap mBitmap;
+    private Drawable mDrawable;
 
+    private int mLastColor;
     private float[] mFirstPoint;
     private float[] mSecondPoint;
     private RectF mGenericRect;
+    private Path mGenericPath;
+    private Paint mGenericPaint;
+    private Canvas mGenericCanvas;
+
     private NotchInfo mRepetitionInfo;
 
 
@@ -81,9 +95,73 @@ public class ScNotches extends ScRepetitions {
         this.mType = NotchTypes.LINE;
         this.mRepetitionInfo = new NotchInfo();
 
+        this.mLastColor = Color.TRANSPARENT;
         this.mFirstPoint = new float[2];
         this.mSecondPoint = new float[2];
         this.mGenericRect = new RectF();
+        this.mGenericPath = new Path();
+        this.mGenericPaint = new Paint();
+        this.mGenericCanvas = new Canvas();
+    }
+
+
+    // ***************************************************************************************
+    // Utils methods
+
+    /**
+     * Convert a drawable to a bitmap
+     * @param drawable source
+     * @return the new bitmap
+     */
+    private Bitmap drawableToBitmap(Drawable drawable) {
+        // Check
+        if (drawable == null)
+            return null;
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0)
+            return null;
+
+        // Check for BitmapDrawable since have already the bitmap representation inside
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null)
+                return bitmapDrawable.getBitmap();
+        }
+
+        // Check the dimension
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        // Create the bitmap
+        this.mGenericCanvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, this.mGenericCanvas.getWidth(), this.mGenericCanvas.getHeight());
+        drawable.draw(this.mGenericCanvas);
+
+        // Return
+        return bitmap;
+    }
+
+    /**
+     * Change the color of given bitmap
+     * @param sourceBitmap source
+     * @param color new color
+     * @return new bitmap
+     */
+    private Bitmap changeBitmapColor(Bitmap sourceBitmap, int color) {
+        // Define the painter
+        ColorFilter filter = new LightingColorFilter(color, 1);
+        this.mGenericPaint.setColorFilter(filter);
+
+        // Copy the fixed color bitmap
+        Bitmap resultBitmap = sourceBitmap.copy(sourceBitmap.getConfig(), true);
+        this.mGenericCanvas.setBitmap(resultBitmap);
+        this.mGenericCanvas.drawBitmap(resultBitmap, 0, 0, this.mGenericPaint);
+
+        // Return
+        return resultBitmap;
     }
 
 
@@ -92,10 +170,11 @@ public class ScNotches extends ScRepetitions {
 
     /**
      * Draw on canvas a bitmap centered in the passed point.
+     * Change the color of the bitmap could be very expensive in term of performance.
      * @param canvas where to draw
      * @param info   the pointer info
      */
-    private void drawBitmap(Canvas canvas, NotchInfo info) {
+    private void drawBitmap(Canvas canvas, NotchInfo info, Paint paint) {
         // Check for empty values
         if (info.bitmap == null)
             return;
@@ -112,6 +191,16 @@ public class ScNotches extends ScRepetitions {
         // Adjust the first point
         this.mFirstPoint[0] -= scaled.getWidth() / 2.0f;
         this.mFirstPoint[1] -= scaled.getHeight() / 2.0f;
+
+        // Change the bitmap color only if needs
+        int currentColor = paint.getColor();
+        if (this.mLastColor != currentColor) {
+            // Save the last color
+            this.mLastColor = currentColor;
+
+            // Redraw the bitmap with the new color
+            scaled = this.changeBitmapColor(scaled, currentColor);
+        }
 
         // Print the bitmap centered respect the point
         canvas.drawBitmap(scaled, this.mFirstPoint[0], this.mFirstPoint[1], null);
@@ -134,7 +223,7 @@ public class ScNotches extends ScRepetitions {
         canvas.drawLine(
                 this.mFirstPoint[0], this.mFirstPoint[1],
                 this.mSecondPoint[0], this.mSecondPoint[1],
-                paint
+                this.getPainter()
         );
     }
 
@@ -175,6 +264,49 @@ public class ScNotches extends ScRepetitions {
         // Draw
         this.mGenericRect.set(left, top, right, bottom);
         canvas.drawOval(this.mGenericRect, paint);
+    }
+
+    /**
+     * Draw a triangle.
+     * @param canvas the canvas to draw
+     * @param info   the notch info
+     */
+    protected void drawTriangle(Canvas canvas, NotchInfo info, Paint paint) {
+        // Holder
+        float halfWidth = info.width / 2;
+        float halfHeight = info.height / 2;
+
+        float x = this.mFirstPoint[0];
+        float y = this.mFirstPoint[1];
+
+        // Create the shape path
+        this.mGenericPath.reset();
+
+        switch (info.position) {
+            case INSIDE:
+                this.mGenericPath.moveTo(x, y);
+                this.mGenericPath.lineTo(x + halfWidth, y - info.height);
+                this.mGenericPath.lineTo(x - halfWidth, y - info.height);
+                this.mGenericPath.lineTo(x, y);
+                break;
+
+            case MIDDLE:
+                this.mGenericPath.moveTo(x + halfWidth, y);
+                this.mGenericPath.lineTo(x - halfWidth, y - halfHeight);
+                this.mGenericPath.lineTo(x - halfWidth, y + halfHeight);
+                this.mGenericPath.lineTo(x, y);
+                break;
+
+            case OUTSIDE:
+                this.mGenericPath.moveTo(x, y);
+                this.mGenericPath.lineTo(x + halfWidth, y + info.height);
+                this.mGenericPath.lineTo(x - halfWidth, y + info.height);
+                this.mGenericPath.lineTo(x, y);
+                break;
+        }
+
+        // Draw
+        canvas.drawPath(this.mGenericPath, paint);
     }
 
     /**
@@ -223,7 +355,8 @@ public class ScNotches extends ScRepetitions {
         // Apply the current info settings to the painter
         boolean isFilled =
                 info.type == NotchTypes.OVAL_FILLED ||
-                        info.type == NotchTypes.RECTANGLE_FILLED;
+                        info.type == NotchTypes.RECTANGLE_FILLED ||
+                        info.type == NotchTypes.TRIANGLE_FILLED;
 
         Paint painter = this.getPainter();
         painter.setStyle(
@@ -250,7 +383,7 @@ public class ScNotches extends ScRepetitions {
         switch (info.type) {
             // Draw a bitmap
             case BITMAP:
-                this.drawBitmap(canvas, info);
+                this.drawBitmap(canvas, info, painter);
                 break;
 
             // Draw a line
@@ -268,6 +401,12 @@ public class ScNotches extends ScRepetitions {
             case RECTANGLE:
             case RECTANGLE_FILLED:
                 this.drawRectangle(canvas, info, painter);
+                break;
+
+            // Draw a triangle
+            case TRIANGLE:
+            case TRIANGLE_FILLED:
+                this.drawTriangle(canvas, info, painter);
                 break;
         }
     }
@@ -386,6 +525,7 @@ public class ScNotches extends ScRepetitions {
         destination.setHeightsMode(this.mHeightsMode);
         destination.setType(this.mType);
         destination.setBitmap(this.mBitmap);
+        destination.setDrawable(this.mDrawable);
     }
 
     /**
@@ -435,6 +575,38 @@ public class ScNotches extends ScRepetitions {
 
     // ***************************************************************************************
     // Public properties
+
+    /**
+     * Set the current drawable than will displayed as notch.
+     * This drawable will loaded as bitmap and can find the bitmap result calling
+     * <code>getBitmap</code> function.
+     * @param drawable the new resource
+     */
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    public void setDrawable(Drawable drawable) {
+        // Reload only if the resource is changed
+        if (this.mDrawable != drawable) {
+            // Assign the resource
+            this.mDrawable = drawable;
+
+            // Set bitmap
+            Bitmap bitmap = this.drawableToBitmap(drawable);
+            this.setBitmap(bitmap);
+
+            // Event
+            this.onPropertyChange("resource", drawable);
+        }
+    }
+
+    /**
+     * Get the current bitmap
+     * @return the current bitmap
+     */
+    @SuppressWarnings({"unused"})
+    public Drawable getResource() {
+        return this.mDrawable;
+    }
+
 
     /**
      * Set the current bitmap.
