@@ -67,7 +67,7 @@ public class ScWriter extends ScRepetitions {
         // Update the painter
         Paint painter = this.getPainter();
         painter.setStrokeWidth(0.0f);
-        painter.setTextSize(30.0f);
+        painter.setTextSize(0.0f);
         painter.setStyle(Paint.Style.FILL);
 
         this.mBackgroundPaint = new Paint();

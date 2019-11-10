@@ -76,21 +76,6 @@ public abstract class ScBase extends View {
         return dip * metrics.density;
     }
 
-    /**
-     * Convert pixel to scaled pixel (sp)
-     * @param px    source pixel
-     * @return      scaled pixel
-     */
-    @SuppressWarnings("unused")
-    public float pixelToScaledPixel(float px) {
-        // Get the display metrics
-        DisplayMetrics metrics = this.getDisplayMetrics(this.getContext());
-
-        // Convert
-        float scaledDensity = metrics.scaledDensity;
-        return scaledDensity == 0 ? 0.0f: px / scaledDensity;
-    }
-
 
     // ***************************************************************************************
     // Static methods

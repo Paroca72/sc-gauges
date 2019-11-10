@@ -264,6 +264,7 @@ public abstract class ScGauge extends ScDrawer
      * @param name      attribute name
      * @return          the Id
      */
+    @SuppressWarnings("all")
     private int getAttributeId(String prefix, String name) {
         // Holders
         Field[] allFields = R.styleable.class.getFields();
