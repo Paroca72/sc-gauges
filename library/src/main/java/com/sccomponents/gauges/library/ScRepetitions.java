@@ -17,7 +17,7 @@ import java.math.RoundingMode;
  * @since 2016-05-26
  */
 
-@SuppressWarnings({"WeakerAccess"})
+@SuppressWarnings("FieldMayBeFinal")
 public abstract class ScRepetitions extends ScFeature {
 
     // ***************************************************************************************
@@ -358,7 +358,10 @@ public abstract class ScRepetitions extends ScFeature {
      */
     @SuppressWarnings("unused")
     public void setRepetitions(int value) {
-        value = value < 0 ? 0: value;
+        // Exclude negative numbers
+        value = Math.max(value, 0);
+
+        // Apply
         if (this.mRepetitions != value) {
             this.mSpaceBetween = 0.0f;
             this.mRepetitions = value;
@@ -511,7 +514,7 @@ public abstract class ScRepetitions extends ScFeature {
     /**
      * This is a structure to hold the feature information before draw it
      */
-    @SuppressWarnings({"unused"})
+    @SuppressWarnings({"unused", "InnerClassMayBeStatic"})
     public class RepetitionInfo {
 
         // ***************************************************************************************

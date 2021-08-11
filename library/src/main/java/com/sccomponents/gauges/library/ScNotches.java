@@ -25,6 +25,7 @@ import java.util.Arrays;
  * @version 3.6.0
  * @since 2016-05-30
  */
+@SuppressWarnings("FieldMayBeFinal")
 public class ScNotches extends ScRepetitions {
 
     // ***************************************************************************************

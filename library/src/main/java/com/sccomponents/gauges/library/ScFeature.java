@@ -32,7 +32,7 @@ import java.util.Arrays;
  * @version 3.5.0
  * @since 2016-05-26
  */
-@SuppressWarnings({"WeakerAccess"})
+@SuppressWarnings({"FieldMayBeFinal"})
 public abstract class ScFeature {
 
     // ***************************************************************************************
@@ -256,7 +256,7 @@ public abstract class ScFeature {
      * @param defaultValue  the default value
      * @return              the value
      */
-    @SuppressWarnings("all")
+    @SuppressWarnings("SameParameterValue")
     protected float getValue(float[] values, float ratio, boolean isSmooth, float defaultValue) {
         // Check
         if (values == null)
@@ -983,7 +983,7 @@ public abstract class ScFeature {
     /**
      * This is a structure to hold the feature information before draw a contour
      */
-    @SuppressWarnings({"unused"})
+    @SuppressWarnings("InnerClassMayBeStatic")
     public class ContourInfo {
 
         // ***************************************************************************************

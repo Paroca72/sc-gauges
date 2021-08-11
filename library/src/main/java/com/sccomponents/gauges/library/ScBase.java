@@ -4,9 +4,7 @@ import android.content.Context;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 
 /**
  * The base class.
@@ -37,30 +35,6 @@ public abstract class ScBase extends View {
 
 
     // ***************************************************************************************
-    // Privates methods
-
-    /**
-     * Get the display metric.
-     * This method is used for screen measure conversion.
-     * @param context   the current context
-     * @return          the display metrics
-     */
-    private DisplayMetrics getDisplayMetrics(Context context) {
-        // Get the window manager from the window service
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        assert wm != null;
-
-        // Create the variable holder and inject the values
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        Display display = wm.getDefaultDisplay();
-        display.getMetrics(displayMetrics);
-
-        // Return
-        return displayMetrics;
-    }
-
-
-    // ***************************************************************************************
     // Public methods
 
     /**
@@ -70,9 +44,8 @@ public abstract class ScBase extends View {
      */
     @SuppressWarnings("unused")
     public float dipToPixel(float dip) {
-        // Get the display metrics
-        DisplayMetrics metrics = this.getDisplayMetrics(this.getContext());
-        // Calc the conversion by the screen density
+        // Calc the conversion using the screen density
+        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
         return dip * metrics.density;
     }
 
@@ -96,10 +69,7 @@ public abstract class ScBase extends View {
 
         // If is over the limit return the normalized value
         if (value < min) return min;
-        if (value > max) return max;
-
-        // Else return the original value
-        return value;
+        return Math.min(value, max);
     }
 
     /**

@@ -10,6 +10,7 @@ import android.graphics.Paint;
  * @version 3.5.0
  * @since 2016-05-26
  */
+@SuppressWarnings("FieldMayBeFinal")
 public class ScPointer extends ScNotches {
 
     // ***************************************************************************************

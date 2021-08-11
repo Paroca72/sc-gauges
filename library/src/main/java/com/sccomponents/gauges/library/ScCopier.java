@@ -25,7 +25,7 @@ import java.util.Arrays;
  * @version 3.5.0
  * @since 2016-05-26
  */
-@SuppressWarnings({"WeakerAccess"})
+@SuppressWarnings({"FieldMayBeFinal"})
 public class ScCopier extends ScFeature {
 
     // ***************************************************************************************

@@ -18,7 +18,6 @@ import java.util.Arrays;
  * @version 3.5.0
  * @since 2016-05-26
  */
-@SuppressWarnings({"WeakerAccess"})
 public class ScPathMeasure extends PathMeasure {
 
     // ***************************************************************************************

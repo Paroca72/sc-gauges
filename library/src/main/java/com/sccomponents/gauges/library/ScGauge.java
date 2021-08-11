@@ -105,6 +105,7 @@ import java.util.List;
  * @since 2016-05-26
  * -----------------------------------------------------------------------------------------------
  */
+@SuppressWarnings("FieldMayBeFinal")
 public abstract class ScGauge extends ScDrawer
         implements ScFeature.OnPropertyChangedListener {
 
@@ -209,6 +210,7 @@ public abstract class ScGauge extends ScDrawer
     // ***************************************************************************************
     // Classes
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     class AnimationStarter implements Runnable {
         private ValueAnimator animator;
         private float lastValue;
@@ -725,7 +727,7 @@ public abstract class ScGauge extends ScDrawer
         // Cycle all token
         for (int index = 0; index < tokens.length; index++) {
             // Try to convert
-            float value = Float.valueOf(tokens[index]);
+            float value = Float.parseFloat(tokens[index]);
             widths[index] = this.dipToPixel(value);
         }
 

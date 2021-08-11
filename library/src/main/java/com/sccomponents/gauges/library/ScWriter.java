@@ -19,6 +19,7 @@ import java.util.Arrays;
  * @version 3.5.0
  * @since 2016-05-26
  */
+@SuppressWarnings("FieldMayBeFinal")
 public class ScWriter extends ScRepetitions {
 
     // ***************************************************************************************
@@ -206,7 +207,7 @@ public class ScWriter extends ScRepetitions {
      */
     private float getInternalLetterSpacing() {
         float letterSpacing = this.getPainter().getTextSize() * this.mLetterSpacing;
-        return letterSpacing < 1.0f ? 1.0f: letterSpacing;
+        return Math.max(letterSpacing, 1.0f);
     }
 
     /**

@@ -13,6 +13,7 @@ import java.util.Arrays;
  * @version 3.5.0
  * @since 2018-08-13
  */
+@SuppressWarnings("FieldMayBeFinal")
 public class ScLabeler extends ScWriter {
 
     // ***************************************************************************************
